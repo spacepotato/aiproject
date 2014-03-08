@@ -3,8 +3,7 @@ aiproject
 
 The github repository for the Artificial Intelligence group project 1.
 
-In its current state, the project is able to read input from a text file (it still gets the text file from a hard coded 
-location so this is something that will need to be fixed) and store this as relevant information.
+In its current state, the project is able to read input from a text file and store this as relevant information.
 
 Its current process is as follows:
 
