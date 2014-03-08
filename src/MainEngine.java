@@ -6,7 +6,7 @@ public class MainEngine {
 	public static void main(String args[]) throws IOException {
 
 		List<Hexagon> generatedBoard;
-		Gameboard board = new Gameboard(3, "C:\\Users\\James\\Desktop\\3.txt");
+		Gameboard board = new Gameboard(3, args[0]);
 		board.readTextFile();
 		
 		generatedBoard = board.getBoard();
