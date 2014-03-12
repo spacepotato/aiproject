@@ -7,6 +7,7 @@ public class Hexagon {
 		protected char value;
 		protected Integer[] adjacentBelow;
 		protected Integer[] adjacentAbove;
+		protected Integer[] adjacentSide;
 		
 		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge){
 			adjacentBelow = new Integer[2];

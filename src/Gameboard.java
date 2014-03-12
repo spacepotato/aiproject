@@ -35,17 +35,24 @@ public class Gameboard {
 		  	char[] tempChars;
 		  	int row = 0;
 		  	int totalRows = 0;
+		  	int offset = 0;
+		  	boolean consumed = false;
 		  	
 			for (String tempInput : input) {
-				
-				if(row == 0){
+				//We need to read the first line to get the board size
+				if(!consumed){
 					totalRows = Integer.parseInt(tempInput) * 2 - 1;
-					row++;
+					consumed = true;
 					continue;
+				}
+				
+				//All hexagons below the middle row do not start at 0 due to the layout of the columns
+				if(row >= (totalRows + 1)/2){
+					offset++;
 				}
 				tempChars = tempInput.toCharArray();
 				for (int i = 0; i < tempChars.length; i++) {
-					this.gameboard.add(new Hexagon(row, i, totalRows, tempChars[i], false));
+					this.gameboard.add(new Hexagon(row, i + offset, totalRows, tempChars[i], false));
 				}
 				row++;
 			}
