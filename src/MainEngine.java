@@ -5,14 +5,16 @@ public class MainEngine {
 
 	public static void main(String args[]) throws IOException {
 
-		List<Hexagon> generatedBoard;
+		List<List<Hexagon>> generatedBoard;
 		Gameboard board = new Gameboard(3, args[0]);
 		board.readTextFile();
-		
+
 		generatedBoard = board.getBoard();
-		
-		for(Hexagon tempHexagon: generatedBoard){
-			System.out.println(tempHexagon.toString());
+
+		for (List<Hexagon> tempList : generatedBoard) {
+			for (Hexagon tempHexagon : tempList) {
+				System.out.println(tempHexagon.toString());
+			}
 		}
 
 	}

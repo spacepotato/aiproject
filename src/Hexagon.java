@@ -8,13 +8,16 @@ public class Hexagon {
 		protected Integer[] adjacentBelow;
 		protected Integer[] adjacentAbove;
 		protected Integer[] adjacentSide;
+		protected boolean isEdge;
 		
 		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge){
 			adjacentBelow = new Integer[2];
+			adjacentSide = new Integer[2];
 			
 			this.row = row;
 			this.column = column;
 			this.value = value;
+			this.isEdge = isEdge;
 			
 			//If the hexagon lies in the top half of the board or it is not an edge piece
 			//in the bottom half of the board we know that it will be
@@ -32,6 +35,13 @@ public class Hexagon {
 			//If it is not we know that it will only be adjacent to the piece below it
 			else{
 				adjacentBelow[0] = column;
+				adjacentBelow[1] = 999;
+			}
+			
+			//Side adjacencies
+			if(!this.isEdge){
+				adjacentSide[0] = column - 1;
+				adjacentSide[1] = column + 1;
 			}
 			
 		}
@@ -57,6 +67,6 @@ public class Hexagon {
 		@Override
 		public String toString(){
 			return "This " + value + " hexagon lies at: (" +  Integer.toString(row) + "," + Integer.toString(column) + ") "
-					+ "and is adjacent to " + adjacentBelow[0].toString() + " , " + adjacentBelow[1].toString();
+					+ "and is adjacent to " + adjacentBelow[0].toString() + " , " + adjacentBelow[1].toString() + " and isEdge = " + isEdge;
 		}
 }
