@@ -2,6 +2,8 @@
 public class Hexagon {
 		
 	
+		protected final int emptyCell = 999;
+	
 		protected int row;
 		protected int column;
 		protected char value;
@@ -28,14 +30,14 @@ public class Hexagon {
 			}
 			
 			else if(row == totalRows){
-				adjacentBelow[0] = 999;
-				adjacentBelow[1] = 999;
+				adjacentBelow[0] = emptyCell;
+				adjacentBelow[1] = emptyCell;
 			}
 			
 			//If it is not we know that it will only be adjacent to the piece below it
 			else{
 				adjacentBelow[0] = column;
-				adjacentBelow[1] = 999;
+				adjacentBelow[1] = emptyCell;
 			}
 			
 			//Side adjacencies
@@ -44,11 +46,30 @@ public class Hexagon {
 				adjacentSide[1] = column + 1;
 			}
 			
+			//Left side edge
+			else if(this.isEdge && column <= totalRows/2){
+				adjacentSide[0] = emptyCell;
+				adjacentSide[1] = column + 1;
+			}
+			
+			else{
+				adjacentSide[0] = column - 1;
+				adjacentSide[1] = emptyCell;
+			}
+			
 		}
 		
-		//Getting the adjacency matrix
-		protected Integer[] getAdjacent(){
+		//Getting the adjacency objects 
+		protected Integer[] getAdjacentBelow(){
 			return this.adjacentBelow;
+		}
+		
+		protected Integer[] getAdjacentSide(){
+			return this.adjacentSide;
+		}
+		
+		protected Integer[] getAdjacentAbove(){
+			return this.adjacentAbove;
 		}
 		
 		protected int getRow(){
@@ -66,7 +87,6 @@ public class Hexagon {
 		//Just so we can make sure that the array has been read in properly
 		@Override
 		public String toString(){
-			return "This " + value + " hexagon lies at: (" +  Integer.toString(row) + "," + Integer.toString(column) + ") "
-					+ "and is adjacent to " + adjacentBelow[0].toString() + " , " + adjacentBelow[1].toString() + " and isEdge = " + isEdge;
+			return "This " + value + " hexagon lies at: (" +  Integer.toString(row) + "," + Integer.toString(column) + ") ";
 		}
 }

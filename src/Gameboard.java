@@ -9,14 +9,13 @@ import java.util.List;
 
 public class Gameboard {
 	
-	protected int sidelength;
 	protected String filePath;
 	protected List<List<Hexagon>> gameboard = new ArrayList<List<Hexagon>>();
+	protected int totalRows;
 	
 	//When we initialise the game board we need to know how many rows there are 
 	//so that we can construct the board as necessary
-	public Gameboard(int sidelength, String filePath){
-		this.sidelength = sidelength;
+	public Gameboard(String filePath){
 		this.filePath = filePath;
 		
 	}
@@ -33,27 +32,28 @@ public class Gameboard {
 	  //TODO get the total rows from the input file
 	  protected void generateHexagons(List<String> input){
 		  	
-		  	List<Hexagon> tempList = new ArrayList<Hexagon>();
+		  	List<Hexagon> tempList;
 		  
 		  	char[] tempChars;
 		  	int row = 0;
-		  	int totalRows = 0;
 		  	int offset = 0;
 		  	boolean consumed = false;
 		  	boolean isEdge; 
 		  	
 			for (String tempInput : input) {
 				
-				this.gameboard.add(new ArrayList<Hexagon>());
+				tempList = new ArrayList<Hexagon>();
+				this.gameboard.add(tempList);
+				
 				//We need to read the first line to get the board size
 				if(!consumed){
-					totalRows = Integer.parseInt(tempInput) * 2 - 1;
+					this.totalRows = Integer.parseInt(tempInput) * 2 - 1;
 					consumed = true;
 					continue;
 				}
 				
 				//All hexagons below the middle row do not start at 0 due to the layout of the columns
-				if(row > Math.ceil((totalRows)/2)){
+				if(row > Math.ceil((this.totalRows)/2)){
 					offset++;
 				}
 				tempChars = tempInput.toCharArray();
@@ -62,10 +62,11 @@ public class Gameboard {
 					//Simple ternary check for edge pieces
 					isEdge = (i == 0 || i == tempChars.length - 1)? true: false;
 					
-					tempList.add(new Hexagon(row, i + offset, totalRows, tempChars[i], isEdge));
+					tempList.add(new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge));
 				}
 				row++;
-				this.gameboard.add(tempList);
+//				
+//				System.out.println(this.gameboard.toString());
 			}
 			
 			
@@ -74,15 +75,7 @@ public class Gameboard {
 	  
 	
 	
-	//Getters and setters
-	protected int getRows(){
-		return this.sidelength;
-	}
-	
-	protected void setRows(int sidelength){
-		this.sidelength = sidelength;
-	}
-	
+	//Getters and setters	
 	protected String getFilePath(){
 		return this.filePath;
 	}
@@ -93,5 +86,9 @@ public class Gameboard {
 	
 	protected List<List<Hexagon>> getBoard(){
 		return this.gameboard;
+	}
+	
+	protected int getTotalRows(){
+		return this.totalRows;
 	}
 }
