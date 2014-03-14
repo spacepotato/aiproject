@@ -43,7 +43,7 @@ public class Gameboard {
 			for (String tempInput : input) {
 				
 				tempList = new ArrayList<Hexagon>();
-				this.gameboard.add(tempList);
+				this.gameboard.add(row, tempList);
 				
 				//We need to read the first line to get the board size
 				if(!consumed){
@@ -56,17 +56,22 @@ public class Gameboard {
 				if(row > Math.ceil((this.totalRows)/2)){
 					offset++;
 				}
+				
+				for(int j = 0; j < offset; j++){
+					tempList.add(j, null);
+				}
+				
 				tempChars = tempInput.toCharArray();
 				for (int i = 0; i < tempChars.length; i++) {
 					
 					//Simple ternary check for edge pieces
 					isEdge = (i == 0 || i == tempChars.length - 1)? true: false;
 					
-					tempList.add(new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge));
+					tempList.add(i + offset, new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge, offset));
+
 				}
+
 				row++;
-//				
-//				System.out.println(this.gameboard.toString());
 			}
 			
 			

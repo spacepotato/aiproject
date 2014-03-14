@@ -12,47 +12,71 @@ public class MainEngine {
 
 		generatedBoard = board.getBoard();
 
+
 		for (List<Hexagon> tempList : generatedBoard) {
 			for (Hexagon tempHexagon : tempList) {
-				System.out.println(tempHexagon.toString()
-						+ "and has "
-						+ checkAdjacency(tempHexagon, generatedBoard,
-								board.getTotalRows()) + " adjacent pieces");
+				if (tempHexagon != null) {
+					System.out.println(tempHexagon.toString()
+							+ "and has "
+							+ checkAdjacency(tempHexagon, generatedBoard,
+									board.getTotalRows()));
+				}
 
 			}
 		}
 
 	}
 
+	//Checking the 6 adjacent pieces to see if they are the same value as the hexagon we are checking
 	protected static int checkAdjacency(Hexagon toCheck,
 			List<List<Hexagon>> board, int totalRows) {
 
 		Integer[] checkSide = toCheck.getAdjacentSide();
 		Integer[] checkBelow = toCheck.getAdjacentBelow();
+		Integer[] checkAbove = toCheck.getAdjacentAbove();
 
-		List<Hexagon> sideCheck = board.get(toCheck.getRow());
+		int currentRow = toCheck.getRow();
+		
+		char currentValue = 'W';
 
+		
 		int numberAdjacent = 0;
 
-		// If our hexagon is in the bottom row then there is no point checking
-		// the rows below it...
-		if (toCheck.getRow() != totalRows - 1) {
-			List<Hexagon> belowCheck = board.get(toCheck.getRow() + 1);
-
-			for (Hexagon temp : belowCheck) {
-				if ((temp.getColumn() == checkBelow[0] || temp.getColumn() == checkBelow[1])
-						&& temp.getValue() == 'W') {
-					numberAdjacent += 1;
-					continue;
-				}
+		if (checkSide[0] != 999
+				&& checkSide[0] != board.get(currentRow).size()) {
+			if (board.get(currentRow).get(checkSide[0]).getValue() == currentValue) {
+				numberAdjacent++;
 			}
 		}
 
-		for (Hexagon temp : sideCheck) {
-			if ((temp.getColumn() == checkSide[0] || temp.getColumn() == checkSide[1])
-					&& temp.getValue() == 'W') {
-				numberAdjacent += 1;
-				continue;
+		if (checkSide[1] != 999
+				&& checkSide[1] != board.get(currentRow).size()) {
+			if (board.get(currentRow).get(checkSide[1]).getValue() == currentValue) {
+				numberAdjacent++;
+			}
+		}
+
+		if (checkBelow[0] != 999) {
+			if (board.get(currentRow + 1).get(checkBelow[0]).getValue() == currentValue) {
+				numberAdjacent++;
+			}
+		}
+
+		if (checkBelow[1] != 999) {
+			if (board.get(currentRow + 1).get(checkBelow[1]).getValue() == currentValue) {
+				numberAdjacent++;
+			}
+		}
+		
+		if (checkAbove[0] != 999) {
+			if (board.get(currentRow - 1).get(checkAbove[0]).getValue() == currentValue) {
+				numberAdjacent++;
+			}
+		}
+
+		if (checkAbove[1] != 999) {
+			if (board.get(currentRow - 1).get(checkAbove[1]).getValue() == currentValue) {
+				numberAdjacent++;
 			}
 		}
 
