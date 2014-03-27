@@ -82,4 +82,87 @@ public class MainEngine {
 
 		return numberAdjacent;
 	}
+	
+	
+	protected static boolean isItAWin(GameBoard board, char player){
+		
+		boolean win;
+		List<List<Hexagon>> hexagons;
+		int currentCol, currentRow;
+		int [] edgesIndicators = new int[6];
+		boolean foundLoop = false;
+		
+		PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>();
+		
+		hexagons = board.getBoard();
+		
+		for (List<Hexagon> tempList : hexagons) {
+			for (Hexagon tempHexagon : tempList) {
+				
+				if(checkAdjacency(tempHexagon, hexagons, board.getTotalRows()) == 0 || tempHexagon.value != player){
+					continue; // Hexagon has no adjacent pices of same colour, or is wrong colour, move on to next hexagon
+				}
+				if(tempHexagon.checked != 0) continue; // skip over checked hexagons.
+				
+				hexagonQueue.add(tempHexagon);
+				
+				while(!hexagonQueue.isEmpty()){
+					Hexagon currentHex = hexagonQueue.poll();
+					
+					for(Hexagon next : currentHex.adjacencies){
+						
+						if(next.value == current.value){
+							hexagonQueue.add(next);
+						}
+												
+					}
+					
+					//Finding the number of edge hexagons in the current path
+					if (edgesIndicators[0] == 0 && currentHex.adjacentAbove[0] == 999 && currentHex.adjacentAbove[1] == 999){
+						edgesIndicators[0]++;
+					}
+					else if (edgesIndicators[1] == 0 && currentHex.adjacentAbove[1] == 999 && currentHex.adjacentSide[1] == 999){
+						edgesIndicators[1]++;
+					}
+					else if (edgesIndicators[2] == 0 && currentHex.adjacentBelow[1] == 999 && currentHex.adjacentSide[1] == 999){
+						edgesIndicators[2]++;
+					}
+					else if (edgesIndicators[3] == 0 && currentHex.adjacentBelow[0] == 999 && currentHex.adjacentBelow[1] == 999){
+						edgesIndicators[3]++;
+					}
+					else if (edgesIndicators[4] == 0 && currentHex.adjacentBelow[0] == 999 && currentHex.adjacentSide[0] == 999){
+						edgesIndicators[4]++;
+					}
+					else if (edgesIndicators[5] == 0 && currentHex.adjacentAbove[0] == 999 && currentHex.adjacentSide[0] == 999){
+						edgesIndicators[5]++;
+					}
+					
+					//Summing the number of edge hexagons possible for a tree...
+					for(int : edgesIndicators){
+						edgenum += edgesIndictators[i];
+					}
+					
+					if(edgenum > 3){
+						return true; //Wins by having a tree
+					}
+					
+					
+					
+					
+					
+				}
+				
+				tempHexagon.isChecked();
+			}
+		}
+		
+		
+		
+		
+		return win;
+		
+		
+	}
+	
+	
 }

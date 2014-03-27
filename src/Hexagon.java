@@ -12,6 +12,7 @@ public class Hexagon {
 		protected Integer[] adjacentAbove;
 		protected Integer[] adjacentSide;
 		protected boolean isEdge;
+		protected int checked;//ASTON (See below method for explaination)
 		
 		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge, int offset){
 			adjacentBelow = new Integer[2];
@@ -23,6 +24,9 @@ public class Hexagon {
 			this.value = value;
 			this.offset = offset;
 			this.isEdge = isEdge;
+			
+			//setting the hexagon to have not been checked yet.
+			this.checked = 0;
 			
 			//
 			//Below adjacencies
@@ -118,6 +122,17 @@ public class Hexagon {
 			}
 			
 		}
+		
+		//ASTON: Added to keep a track of checked hexagons so that multiple checking is not done.
+		//Note: not sure how to will be used specifically.
+		protected void isChecked(int num){
+				this.checked = num;
+		}
+		protected boolean getChecked(){
+			return this.checked;
+		}
+		
+		
 		
 		//Getting the adjacency objects 
 		protected Integer[] getAdjacentBelow(){
