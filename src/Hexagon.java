@@ -128,7 +128,7 @@ public class Hexagon {
 		protected void isChecked(int num){
 				this.checked = num;
 		}
-		protected boolean getChecked(){
+		protected int getChecked(){
 			return this.checked;
 		}
 		
