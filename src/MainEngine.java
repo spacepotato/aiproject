@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class MainEngine {
 
@@ -84,12 +85,14 @@ public class MainEngine {
 	}
 	
 	
-	protected static boolean isItAWin(GameBoard board, char player){
+	protected static boolean isItAWin(Gameboard board, char player){
 		
-		boolean win;
+		boolean win = false;
 		List<List<Hexagon>> hexagons;
 		int currentCol, currentRow;
 		int [] edgesIndicators = new int[6];
+		int edgenum = 0;
+		int order = 1;
 		boolean foundLoop = false;
 		
 		PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>();
@@ -109,9 +112,9 @@ public class MainEngine {
 				while(!hexagonQueue.isEmpty()){
 					Hexagon currentHex = hexagonQueue.poll();
 					
-					for(Hexagon next : currentHex.adjacencies){
-						
-						if(next.value == current.value){
+					for(Coordinate coords : currentHex.getAdjacencies()){
+						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
+						if(next.value == currentHex.value){
 							hexagonQueue.add(next);
 						}
 												
@@ -138,8 +141,8 @@ public class MainEngine {
 					}
 					
 					//Summing the number of edge hexagons possible for a tree...
-					for(int : edgesIndicators){
-						edgenum += edgesIndictators[i];
+					for(int i : edgesIndicators){
+						edgenum += edgesIndicators[i];
 					}
 					
 					if(edgenum > 3){
@@ -152,7 +155,8 @@ public class MainEngine {
 					
 				}
 				
-				tempHexagon.isChecked();
+				tempHexagon.isChecked(order);
+				order++;
 			}
 		}
 		
