@@ -21,7 +21,7 @@ public class Hexagon {
 			adjacentBelow = new Integer[2];
 			adjacentSide = new Integer[2];
 			adjacentAbove = new Integer[2];
-			
+			Coordinate initialCoord = new Coordinate(0,0);
 			this.row = row;
 			this.column = column;
 			this.value = value;
@@ -31,6 +31,12 @@ public class Hexagon {
 			//setting the hexagon to have not been checked yet.
 			this.checked = 0;
 			
+			//Setting up the adjacency list for the hexagon
+			this.adjacencies.ensureCapacity(6);
+			for(int i=0;i<6;i++){
+				this.adjacencies.add(initialCoord);
+			}
+						
 			//
 			//Below adjacencies
 			//
@@ -39,8 +45,10 @@ public class Hexagon {
 			if(row < (totalRows + 1)/ 2 - 1 ){
 				adjacentBelow[0] = column;
 				adjacentBelow[1] = column + 1;
-				adjacencies.add(4, new Coordinate(column, row + 1));
-				adjacencies.add(3, new Coordinate(column + 1, row + 1));
+				
+				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
+				this.adjacencies.add(4, new Coordinate(column, row + 1));
+				
 			}
 			
 			//Non-edge pieces in bottom half
@@ -48,8 +56,8 @@ public class Hexagon {
 				adjacentBelow[0] = column;
 				adjacentBelow[1] = column + 1;
 				
-				adjacencies.add(4, new Coordinate(column, row + 1));
-				adjacencies.add(3, new Coordinate(column + 1, row + 1));
+				this.adjacencies.add(4, new Coordinate(column, row + 1));
+				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
 			} //fine
 			
 			//Bottom line pieces
@@ -57,8 +65,8 @@ public class Hexagon {
 				adjacentBelow[0] = emptyCell;
 				adjacentBelow[1] = emptyCell;
 				
-				adjacencies.add(4, new Coordinate(999,999));
-				adjacencies.add(3, new Coordinate(999,999));
+				this.adjacencies.add(4, new Coordinate(999,999));
+				this.adjacencies.add(3, new Coordinate(999,999));
 				
 				
 			}
@@ -68,8 +76,8 @@ public class Hexagon {
 				adjacentBelow[0] = column;
 				adjacentBelow[1] = emptyCell;
 				
-				adjacencies.add(4, new Coordinate(column, row + 1));
-				adjacencies.add(3, new Coordinate(999,999));
+				this.adjacencies.add(4, new Coordinate(column, row + 1));
+				this.adjacencies.add(3, new Coordinate(999,999));
 			}
 			
 			//Left-edge in bottom
@@ -77,8 +85,8 @@ public class Hexagon {
 				adjacentBelow[0] = emptyCell;
 				adjacentBelow[1] = column + 1;
 				
-				adjacencies.add(4, new Coordinate(999, 999));
-				adjacencies.add(3, new Coordinate(column + 1, row + 1));
+				this.adjacencies.add(4, new Coordinate(999, 999));
+				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
 			}
 //			System.out.println("We have set below[0] to be " + adjacentBelow[0] + " on the hexagon at " + this.row + " , " + this.column);
 //			System.out.println("We have set below[1] to be " + adjacentBelow[1] + " on the hexagon at " + this.row + " , " + this.column);
@@ -90,8 +98,8 @@ public class Hexagon {
 				adjacentSide[0] = column - 1;
 				adjacentSide[1] = column + 1;
 				
-				adjacencies.add(5, new Coordinate(column - 1, row));
-				adjacencies.add(2, new Coordinate(column + 1, row));
+				this.adjacencies.add(5, new Coordinate(column - 1, row));
+				this.adjacencies.add(2, new Coordinate(column + 1, row));
 			}
 			
 			//Left side edge
@@ -99,16 +107,16 @@ public class Hexagon {
 				adjacentSide[0] = emptyCell;
 				adjacentSide[1] = column + 1;
 				
-				adjacencies.add(5, new Coordinate(999, 999));
-				adjacencies.add(2, new Coordinate(column + 1, row));
+				this.adjacencies.add(5, new Coordinate(999, 999));
+				this.adjacencies.add(2, new Coordinate(column + 1, row));
 			}
 			
 			else{
 				adjacentSide[0] = column - 1;
 				adjacentSide[1] = emptyCell;
 				
-				adjacencies.add(5, new Coordinate(column - 1, row));
-				adjacencies.add(2, new Coordinate(999, 999));
+				this.adjacencies.add(5, new Coordinate(column - 1, row));
+				this.adjacencies.add(2, new Coordinate(999, 999));
 			}
 			
 			//
@@ -120,8 +128,8 @@ public class Hexagon {
 				adjacentAbove[0] = emptyCell;
 				adjacentAbove[1] = emptyCell;
 				
-				adjacencies.add(0, new Coordinate(999,999));
-				adjacencies.add(1, new Coordinate(999,999));
+				this.adjacencies.add(0, new Coordinate(999,999));
+				this.adjacencies.add(1, new Coordinate(999,999));
 			}
 			
 			//Bottom half pieces
@@ -129,8 +137,8 @@ public class Hexagon {
 				adjacentAbove[0] = column - 1;
 				adjacentAbove[1] = column;
 				
-				adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				adjacencies.add(1, new Coordinate(column, row - 1));
+				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
+				this.adjacencies.add(1, new Coordinate(column, row - 1));
 			}
 			
 			//Non-edge pieces in Top half
@@ -138,8 +146,8 @@ public class Hexagon {
 				adjacentAbove[0] = column - 1;
 				adjacentAbove[1] = column;
 				
-				adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				adjacencies.add(1, new Coordinate(column, row - 1));
+				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
+				this.adjacencies.add(1, new Coordinate(column, row - 1));
 			} //fine
 			
 
@@ -151,8 +159,8 @@ public class Hexagon {
 				adjacentAbove[0] = column - 1;
 				adjacentAbove[1] = emptyCell;
 				
-				adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				adjacencies.add(1, new Coordinate(999,999));
+				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
+				this.adjacencies.add(1, new Coordinate(999,999));
 			}
 			
 			//Left-edge in top
@@ -160,8 +168,8 @@ public class Hexagon {
 				adjacentAbove[0] = emptyCell;
 				adjacentAbove[1] = column;
 				
-				adjacencies.add(0, new Coordinate(999,999));
-				adjacencies.add(1, new Coordinate(column,row - 1));
+				this.adjacencies.add(0, new Coordinate(999,999));
+				this.adjacencies.add(1, new Coordinate(column,row - 1));
 			}
 
 			
@@ -169,7 +177,7 @@ public class Hexagon {
 		
 		//ASTON: Added to keep a track of checked hexagons so that multiple checking is not done.
 		//Note: not sure how to will be used specifically.
-		protected void isChecked(int num){
+		protected void setChecked(int num){
 				this.checked = num;
 		}
 		protected int getChecked(){
