@@ -22,8 +22,6 @@ public class Gameboard {
 	
 	//Reading in the data from the file and then generating the arraylist from this
 	//data
-	
-	//At the moment this just prints out each line that it reads in
 	  protected void readTextFile() throws IOException {
 		    Path path = Paths.get(this.filePath);
 		    this.generateHexagons(Files.readAllLines(path, StandardCharsets.UTF_8));

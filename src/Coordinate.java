@@ -13,8 +13,16 @@ public class Coordinate {
 		return this.column;
 	}
 	
+	protected void setColumn(int column){
+		this.column = column;
+	}
+	
 	protected int getRow(){
 		return this.row;
+	}
+	
+	protected void setRow(int row){
+		this.row = row;
 	}
 	
 }

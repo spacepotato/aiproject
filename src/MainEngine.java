@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -36,51 +37,62 @@ public class MainEngine {
 	protected static int checkAdjacency(Hexagon toCheck,
 			List<List<Hexagon>> board, int totalRows) {
 
-		Integer[] checkSide = toCheck.getAdjacentSide();
-		Integer[] checkBelow = toCheck.getAdjacentBelow();
-		Integer[] checkAbove = toCheck.getAdjacentAbove();
+//		Integer[] checkSide = toCheck.getAdjacentSide();
+//		Integer[] checkBelow = toCheck.getAdjacentBelow();
+//		Integer[] checkAbove = toCheck.getAdjacentAbove();
+		
+		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
 
-		int currentRow = toCheck.getRow();
+
 		
 		char currentValue = 'W';
 
 		
 		int numberAdjacent = 0;
 
-		if (checkSide[0] != 999
-				&& checkSide[0] != board.get(currentRow).size()) {
-			if (board.get(currentRow).get(checkSide[0]).getValue() == currentValue) {
-				numberAdjacent++;
-			}
-		}
-
-		if (checkSide[1] != 999
-				&& checkSide[1] != board.get(currentRow).size()) {
-			if (board.get(currentRow).get(checkSide[1]).getValue() == currentValue) {
-				numberAdjacent++;
-			}
-		}
-
-		if (checkBelow[0] != 999) {
-			if (board.get(currentRow + 1).get(checkBelow[0]).getValue() == currentValue) {
-				numberAdjacent++;
-			}
-		}
-
-		if (checkBelow[1] != 999) {
-			if (board.get(currentRow + 1).get(checkBelow[1]).getValue() == currentValue) {
-				numberAdjacent++;
-			}
-		}
+//		if (checkSide[0] != 999
+//				&& checkSide[0] != board.get(currentRow).size()) {
+//			if (board.get(currentRow).get(checkSide[0]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
+//
+//		if (checkSide[1] != 999
+//				&& checkSide[1] != board.get(currentRow).size()) {
+//			if (board.get(currentRow).get(checkSide[1]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
+//
+//		if (checkBelow[0] != 999) {
+//			if (board.get(currentRow + 1).get(checkBelow[0]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
+//
+//		if (checkBelow[1] != 999) {
+//			if (board.get(currentRow + 1).get(checkBelow[1]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
+//		
+//		if (checkAbove[0] != 999) {
+//			if (board.get(currentRow - 1).get(checkAbove[0]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
+//
+//		if (checkAbove[1] != 999) {
+//			if (board.get(currentRow - 1).get(checkAbove[1]).getValue() == currentValue) {
+//				numberAdjacent++;
+//			}
+//		}
 		
-		if (checkAbove[0] != 999) {
-			if (board.get(currentRow - 1).get(checkAbove[0]).getValue() == currentValue) {
-				numberAdjacent++;
-			}
-		}
-
-		if (checkAbove[1] != 999) {
-			if (board.get(currentRow - 1).get(checkAbove[1]).getValue() == currentValue) {
+		for(Coordinate tempCoords: adjacencies){
+			int tempColumn = tempCoords.getColumn();
+			int tempRow = tempCoords.getRow();
+			
+			if(tempColumn != 999 && board.get(tempRow).get(tempColumn).getValue() == currentValue){
 				numberAdjacent++;
 			}
 		}

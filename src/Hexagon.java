@@ -21,7 +21,9 @@ public class Hexagon {
 			adjacentBelow = new Integer[2];
 			adjacentSide = new Integer[2];
 			adjacentAbove = new Integer[2];
+			
 			Coordinate initialCoord = new Coordinate(0,0);
+			
 			this.row = row;
 			this.column = column;
 			this.value = value;
@@ -41,82 +43,97 @@ public class Hexagon {
 			//Below adjacencies
 			//
 			
-			//Hexagon in top half
-			if(row < (totalRows + 1)/ 2 - 1 ){
-				adjacentBelow[0] = column;
-				adjacentBelow[1] = column + 1;
+			//Hexagon in top half or non-edge pieces in bottom half
+			if((row < (totalRows + 1)/ 2 - 1)||(!isEdge && row != totalRows - 1)){
+//				adjacentBelow[0] = column;
+//				adjacentBelow[1] = column + 1;
 				
-				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
-				this.adjacencies.add(4, new Coordinate(column, row + 1));
+				this.adjacencies.get(3).setColumn(column + 1);
+				this.adjacencies.get(3).setRow(row + 1);
+				this.adjacencies.get(4).setColumn(column);
+				this.adjacencies.get(4).setRow(row + 1);
 				
 			}
 			
-			//Non-edge pieces in bottom half
-			else if(!isEdge && row != totalRows - 1){
-				adjacentBelow[0] = column;
-				adjacentBelow[1] = column + 1;
-				
-				this.adjacencies.add(4, new Coordinate(column, row + 1));
-				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
-			} //fine
+//			//Non-edge pieces in bottom half
+//			else if(!isEdge && row != totalRows - 1){
+//				adjacentBelow[0] = column;
+//				adjacentBelow[1] = column + 1;
+//				
+//				this.adjacencies.add(4, new Coordinate(column, row + 1));
+//				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
+//			} //fine
 			
 			//Bottom line pieces
 			else if(row == totalRows - 1){
-				adjacentBelow[0] = emptyCell;
-				adjacentBelow[1] = emptyCell;
+//				adjacentBelow[0] = emptyCell;
+//				adjacentBelow[1] = emptyCell;
+
 				
-				this.adjacencies.add(4, new Coordinate(999,999));
-				this.adjacencies.add(3, new Coordinate(999,999));
+				this.adjacencies.get(3).setColumn(emptyCell);
+				this.adjacencies.get(3).setRow(emptyCell);
+				this.adjacencies.get(4).setColumn(emptyCell);
+				this.adjacencies.get(4).setRow(emptyCell);
 				
 				
 			}
 			
 			//Right-edge in bottom
 			else if (isEdge && column == totalRows - 1){
-				adjacentBelow[0] = column;
-				adjacentBelow[1] = emptyCell;
+//				adjacentBelow[0] = column;
+//				adjacentBelow[1] = emptyCell;
 				
-				this.adjacencies.add(4, new Coordinate(column, row + 1));
-				this.adjacencies.add(3, new Coordinate(999,999));
+				this.adjacencies.get(3).setColumn(emptyCell);
+				this.adjacencies.get(3).setRow(emptyCell);
+				this.adjacencies.get(4).setColumn(column);
+				this.adjacencies.get(4).setRow(row + 1);
 			}
 			
 			//Left-edge in bottom
 			else{
-				adjacentBelow[0] = emptyCell;
-				adjacentBelow[1] = column + 1;
+//				adjacentBelow[0] = emptyCell;
+//				adjacentBelow[1] = column + 1;
 				
-				this.adjacencies.add(4, new Coordinate(999, 999));
-				this.adjacencies.add(3, new Coordinate(column + 1, row + 1));
+				this.adjacencies.get(3).setColumn(column + 1);
+				this.adjacencies.get(3).setRow(row + 1);
+				this.adjacencies.get(4).setColumn(emptyCell);
+				this.adjacencies.get(4).setRow(emptyCell);
 			}
-//			System.out.println("We have set below[0] to be " + adjacentBelow[0] + " on the hexagon at " + this.row + " , " + this.column);
-//			System.out.println("We have set below[1] to be " + adjacentBelow[1] + " on the hexagon at " + this.row + " , " + this.column);
-			
+
 			//
 			//Side adjacencies
 			//
 			if(!this.isEdge){
-				adjacentSide[0] = column - 1;
-				adjacentSide[1] = column + 1;
+//				adjacentSide[0] = column - 1;
+//				adjacentSide[1] = column + 1;
+
 				
-				this.adjacencies.add(5, new Coordinate(column - 1, row));
-				this.adjacencies.add(2, new Coordinate(column + 1, row));
+				this.adjacencies.get(2).setColumn(column + 1);
+				this.adjacencies.get(2).setRow(row);
+				this.adjacencies.get(5).setColumn(column - 1);
+				this.adjacencies.get(5).setRow(row);
 			}
 			
 			//Left side edge
 			else if(this.isEdge && column <= totalRows/2){
-				adjacentSide[0] = emptyCell;
-				adjacentSide[1] = column + 1;
+//				adjacentSide[0] = emptyCell;
+//				adjacentSide[1] = column + 1;
 				
-				this.adjacencies.add(5, new Coordinate(999, 999));
-				this.adjacencies.add(2, new Coordinate(column + 1, row));
+				this.adjacencies.get(2).setColumn(column + 1);
+				this.adjacencies.get(2).setRow(row);
+				this.adjacencies.get(5).setColumn(emptyCell);
+				this.adjacencies.get(5).setRow(emptyCell);
 			}
 			
 			else{
-				adjacentSide[0] = column - 1;
-				adjacentSide[1] = emptyCell;
+//				adjacentSide[0] = column - 1;
+//				adjacentSide[1] = emptyCell;
 				
-				this.adjacencies.add(5, new Coordinate(column - 1, row));
-				this.adjacencies.add(2, new Coordinate(999, 999));
+				
+				this.adjacencies.get(2).setColumn(emptyCell);
+				this.adjacencies.get(2).setRow(emptyCell);
+				this.adjacencies.get(5).setColumn(column - 1);
+				this.adjacencies.get(5).setRow(row);
 			}
 			
 			//
@@ -125,30 +142,34 @@ public class Hexagon {
 			
 			//Top line pieces
 			if(row == 0){
-				adjacentAbove[0] = emptyCell;
-				adjacentAbove[1] = emptyCell;
+//				adjacentAbove[0] = emptyCell;
+//				adjacentAbove[1] = emptyCell;
 				
-				this.adjacencies.add(0, new Coordinate(999,999));
-				this.adjacencies.add(1, new Coordinate(999,999));
+				this.adjacencies.get(0).setColumn(emptyCell);
+				this.adjacencies.get(0).setRow(emptyCell);
+				this.adjacencies.get(1).setColumn(emptyCell);
+				this.adjacencies.get(1).setRow(emptyCell);
 			}
 			
 			//Bottom half pieces
-			else if(row > (totalRows + 1)/ 2 - 1 ){
-				adjacentAbove[0] = column - 1;
-				adjacentAbove[1] = column;
+			else if((row > (totalRows + 1)/ 2 - 1 )||(!isEdge && row != totalRows - 1)){
+//				adjacentAbove[0] = column - 1;
+//				adjacentAbove[1] = column;
 				
-				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				this.adjacencies.add(1, new Coordinate(column, row - 1));
+				this.adjacencies.get(0).setColumn(column - 1);
+				this.adjacencies.get(0).setRow(row - 1);
+				this.adjacencies.get(1).setColumn(column);
+				this.adjacencies.get(1).setRow(row - 1);
 			}
 			
-			//Non-edge pieces in Top half
-			else if(!isEdge && row != totalRows - 1){
-				adjacentAbove[0] = column - 1;
-				adjacentAbove[1] = column;
-				
-				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				this.adjacencies.add(1, new Coordinate(column, row - 1));
-			} //fine
+//			//Non-edge pieces in Top half
+//			else if((!isEdge && row != totalRows - 1){
+//				adjacentAbove[0] = column - 1;
+//				adjacentAbove[1] = column;
+//				
+//				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
+//				this.adjacencies.add(1, new Coordinate(column, row - 1));
+//			} //fine
 			
 
 			
@@ -156,20 +177,24 @@ public class Hexagon {
 			
 			
 			else if (isEdge && column > Math.floor(totalRows/2)){
-				adjacentAbove[0] = column - 1;
-				adjacentAbove[1] = emptyCell;
+//				adjacentAbove[0] = column - 1;
+//				adjacentAbove[1] = emptyCell;
 				
-				this.adjacencies.add(0, new Coordinate(column - 1, row - 1));
-				this.adjacencies.add(1, new Coordinate(999,999));
+				this.adjacencies.get(0).setColumn(column - 1);
+				this.adjacencies.get(0).setRow(row - 1);
+				this.adjacencies.get(1).setColumn(emptyCell);
+				this.adjacencies.get(1).setRow(emptyCell);
 			}
 			
 			//Left-edge in top
 			else{
-				adjacentAbove[0] = emptyCell;
-				adjacentAbove[1] = column;
+//				adjacentAbove[0] = emptyCell;
+//				adjacentAbove[1] = column;
 				
-				this.adjacencies.add(0, new Coordinate(999,999));
-				this.adjacencies.add(1, new Coordinate(column,row - 1));
+				this.adjacencies.get(0).setColumn(emptyCell);
+				this.adjacencies.get(0).setRow(emptyCell);
+				this.adjacencies.get(1).setColumn(column);
+				this.adjacencies.get(1).setRow(row - 1);
 			}
 
 			
@@ -186,18 +211,18 @@ public class Hexagon {
 		
 		
 		
-		//Getting the adjacency objects 
-		protected Integer[] getAdjacentBelow(){
-			return this.adjacentBelow;
-		}
-		
-		protected Integer[] getAdjacentSide(){
-			return this.adjacentSide;
-		}
-		
-		protected Integer[] getAdjacentAbove(){
-			return this.adjacentAbove;
-		}
+//		//Getting the adjacency objects 
+//		protected Integer[] getAdjacentBelow(){
+//			return this.adjacentBelow;
+//		}
+//		
+//		protected Integer[] getAdjacentSide(){
+//			return this.adjacentSide;
+//		}
+//		
+//		protected Integer[] getAdjacentAbove(){
+//			return this.adjacentAbove;
+//		}
 		
 		protected ArrayList<Coordinate> getAdjacencies(){
 			return this.adjacencies;
