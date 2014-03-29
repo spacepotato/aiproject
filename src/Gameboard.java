@@ -65,7 +65,7 @@ public class Gameboard {
 					//Simple ternary check for edge pieces
 					isEdge = (i == 0 || i == tempChars.length - 1)? true: false;
 					
-					tempList.add(i + offset, new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge, offset));
+					tempList.add(i + offset, new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge, offset, tempChars.length + offset));
 
 				}
 
