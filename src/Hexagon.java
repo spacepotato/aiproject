@@ -8,19 +8,22 @@ public class Hexagon {
 	
 		protected int row;
 		protected int column;
-		protected char value;
 		protected int offset;
-		ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
-		protected boolean isEdge;
-		protected int checked;//ASTON (See below method for explaination)
+		protected int checked;
 		
-		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge, int offset, int lineLength){
+		protected boolean isEdge;
+		
+		protected char value;
+		
+		protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
+		
+		
+		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge, int lineLength){
 
 			
 			this.row = row;
 			this.column = column;
 			this.value = value;
-			this.offset = offset;
 			this.isEdge = isEdge;
 			
 			//setting the hexagon to have not been checked yet.
@@ -187,8 +190,7 @@ public class Hexagon {
 			
 		}
 		
-		//ASTON: Added to keep a track of checked hexagons so that multiple checking is not done.
-		//Note: not sure how to will be used specifically.
+		//Keeps track of checked hexagons so that multiple checking is not done.
 		protected void setChecked(int num){
 				this.checked = num;
 		}
@@ -199,12 +201,6 @@ public class Hexagon {
 		
 		protected ArrayList<Coordinate> getAdjacencies(){
 			return this.adjacencies;
-		}
-		
-		protected void printAdjacencies(){
-			for(int i = 0; i < 6; i++){
-				System.out.println("The hexagon at: " + this.row + " , " + this.column + " is adjacent to " + this.adjacencies.get(i).getRow() + " , " + this.adjacencies.get(i).getColumn());
-			}
 		}
 		
 		protected int getRow(){
