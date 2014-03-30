@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+  //import java.util.PriorityQueue;
+//import java.util.Comparator;
 import java.util.Stack;
 
 public class MainEngine {
@@ -14,13 +16,15 @@ public class MainEngine {
 
 		generatedBoard = board.getBoard();
 
+		char player = 'B';
+		
 		for (List<Hexagon> tempList : generatedBoard) {
 			for (Hexagon tempHexagon : tempList) {
 				if (tempHexagon != null) {
 					System.out.println(tempHexagon.toString()
 							+ "and has "
 							+ checkAdjacency(tempHexagon, generatedBoard,
-									board.getTotalRows()));
+									board.getTotalRows(), player));
 
 					// tempHexagon.printAdjacencies();
 
@@ -29,9 +33,12 @@ public class MainEngine {
 			}
 		}
 
-		if (isItAWin(board, 'W')) {
+		if (isItAWin(board, player)) {
 			;
 			System.out.println("We have a winner");
+		}
+		else{
+			System.out.println("No winner was found");
 		}
 
 	}// End of main method
@@ -39,10 +46,10 @@ public class MainEngine {
 	// Checking the 6 adjacent pieces to see if they are the same value as the
 	// hexagon we are checking
 	protected static int checkAdjacency(Hexagon toCheck,
-			List<List<Hexagon>> board, int totalRows) {
+			List<List<Hexagon>> board, int totalRows, char player) {
 
 		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
-		char currentValue = 'W';
+		//char currentValue = 'W';
 		int numberAdjacent = 0;
 
 		for (Coordinate tempCoords : adjacencies) {
@@ -50,7 +57,7 @@ public class MainEngine {
 			int tempRow = tempCoords.getRow();
 
 			if (tempColumn != 999
-					&& board.get(tempRow).get(tempColumn).getValue() == currentValue) {
+					&& board.get(tempRow).get(tempColumn).getValue() == player) {
 				numberAdjacent++;
 			}
 		}
@@ -70,35 +77,42 @@ public class MainEngine {
 		Stack<Hexagon> hexagonStack = new Stack<Hexagon>();
 //		PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>(100, new Comparator<Hexagon>());
 //	    PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>(100, new Comparator<Hexagon>() {
-	//        public int compare(Hexagon hexagon1, Hexagon hexagon2) {
-	  //          return (hexagon1.getRow() > hexagon2.getRow()) ? 1: -1;
-	    //    }
-	    //});
+//	        public int compare(Hexagon hexagon1, Hexagon hexagon2) {
+//	            return (hexagon1.getRow() > hexagon2.getRow()) ? 1: -1;
+//	        }
+//	    });
 		hexagons = board.getBoard();
 
-		for (List<Hexagon> tempList : hexagons) {
-			for (Hexagon tempHexagon : tempList) {
-				if(checkAdjacency(tempHexagon, hexagons, board.getTotalRows()) == 0 || tempHexagon.value != player){
-					continue; // Hexagon has no adjacent pieces of same color, or is wrong color, move on to next hexagon
-				}
-				if(tempHexagon.checked != 0) continue; // skip over already checked hexagons.
-
-				hexagonStack.add(tempHexagon);
-
+		outerloop: for (List<Hexagon> tempList : hexagons) {
+			innerloop: for (Hexagon tempHexagon : tempList) {
+				
+				if(tempHexagon == null) continue innerloop;
+			    else if(tempHexagon.value != player) continue innerloop;
+				else if(checkAdjacency(tempHexagon,hexagons,board.getTotalRows(), player) == 0) continue innerloop;
+				else if(tempHexagon.getChecked() != 0) continue innerloop; 
+				
+				hexagonStack.push(tempHexagon);
+				
 				while(!hexagonStack.isEmpty()){
-					System.out.println("In while loop...");
+					//System.out.println("In while loop...");
 					Hexagon currentHex = hexagonStack.pop();
 
-					for(Coordinate coords : currentHex.getAdjacencies()){
-						if(coords.getRow() == 999 || coords.getColumn() == 999) continue;
+					adjacencyLoop: for(Coordinate coords : currentHex.getAdjacencies()){
+						
+						//Check if next hexagon is on the board
+						if(coords.getRow() == 999 || coords.getColumn() == 999) continue adjacencyLoop; 
+						
 						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
+						
+						if(next.value != player) continue adjacencyLoop;
+						//Check if next hexagon has already been checked, or to be checked
+						else if(hexagonStack.contains(next) || next.checked != 0) continue adjacencyLoop; 
+												
 						if(next.value == currentHex.value){
-							hexagonStack.add(next);
-							//Currently failing here due to some comparison. I think it has something to do with
-							//the use of a priority queue. Not sure if we can use another form of queue or stack.
+							hexagonStack.push(next);
 						}
 
-					}//End of forloop
+					}//End of adjacencyLoop
 
 
 					//Determining whether a tripod has been formed.
@@ -131,8 +145,9 @@ public class MainEngine {
 						numberOfEdgeHexagons += edgesIndicators[i];
 					}
 
-					if(numberOfEdgeHexagons > 3){
+					if(numberOfEdgeHexagons == 3){
 						win = true; //Wins by having a tree
+						break outerloop;
 					}
 
 					//====================================================================================================================
@@ -142,9 +157,14 @@ public class MainEngine {
 
 					currentHex.setChecked(order);
 					order++;
+					
+					numberOfEdgeHexagons = 0;
+					for(int i : edgesIndicators){
+						edgesIndicators[i] = 0;
+					}
 
 				}//End of while loop
-
+				
 			}//End of inner forloop
 		}//End of outer forloop
 
