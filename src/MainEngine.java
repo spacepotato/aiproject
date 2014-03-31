@@ -157,13 +157,13 @@ public class MainEngine {
 
 					currentHex.setChecked(order);
 					order++;
-					
+				}
 					numberOfEdgeHexagons = 0;
 					for(int i : edgesIndicators){
 						edgesIndicators[i] = 0;
 					}
 
-				}//End of while loop
+				//End of while loop
 				
 			}//End of inner forloop
 		}//End of outer forloop
