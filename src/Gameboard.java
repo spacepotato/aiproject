@@ -1,10 +1,6 @@
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class Gameboard {
@@ -12,24 +8,13 @@ public class Gameboard {
 	protected String filePath;
 	protected List<List<Hexagon>> gameboard = new ArrayList<List<Hexagon>>();
 	protected int totalRows;
-	
-	//When we initialise the game board we need to know how many rows there are 
-	//so that we can construct the board as necessary
-	public Gameboard(String filePath){
-		this.filePath = filePath;
+
+	public Gameboard(){
 		
 	}
-	
-	//Reading in the data from the file and then generating the arraylist from this
-	//data
-	  protected void readTextFile() throws IOException {
-		    Path path = Paths.get(this.filePath);
-		    this.generateHexagons(Files.readAllLines(path, StandardCharsets.UTF_8));
-		  }
-	  
-	  //TODO get the total rows from the input file
-	  protected void generateHexagons(List<String> input){
-		  	
+
+	  protected void generateHexagons(){
+		  	Scanner in = new Scanner(System.in);
 		  	List<Hexagon> tempList;
 		  
 		  	char[] tempChars;
@@ -37,8 +22,12 @@ public class Gameboard {
 		  	int offset = 0;
 		  	boolean consumed = false;
 		  	boolean isEdge; 
-		  	
-			for (String tempInput : input) {
+
+			while(in.hasNextLine()){
+				
+				String tempInput = in.nextLine();
+				//Get rid of all spaces
+				tempInput.replaceAll("\\s", "");
 				
 				tempList = new ArrayList<Hexagon>();
 				this.gameboard.add(row, tempList);
@@ -71,6 +60,8 @@ public class Gameboard {
 
 				row++;
 			}
+			//Closing the inputstream
+			in.close();
 			
 			
 	  }
@@ -78,15 +69,7 @@ public class Gameboard {
 	  
 	
 	
-	//Getters and setters	
-	protected String getFilePath(){
-		return this.filePath;
-	}
-	
-	protected void setInput(String filePath){
-		this.filePath = filePath;
-	}
-	
+	//Getters and setters		
 	protected List<List<Hexagon>> getBoard(){
 		return this.gameboard;
 	}

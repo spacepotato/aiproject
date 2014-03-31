@@ -11,8 +11,8 @@ public class MainEngine {
 
 		List<List<Hexagon>> generatedBoard;
 
-		Gameboard board = new Gameboard(args[0]);
-		board.readTextFile();
+		Gameboard board = new Gameboard();
+		board.generateHexagons();
 
 		generatedBoard = board.getBoard();
 
@@ -33,19 +33,19 @@ public class MainEngine {
 			}
 		}
 
-		if(draw(board)){
-			System.out.println("Draw");
-			System.out.println("Nil");
-		}
-		System.exit(0);
-		if (isItAWin(board, player)) {
-			System.out.println("We have a winner");
-		}
-		else{
-			System.out.println("No winner was found");
-		}
-		
-		loopWin(board, player);
+//		if(draw(board)){
+//			System.out.println("Draw");
+//			System.out.println("Nil");
+//		}
+//		System.exit(0);
+//		if (isItAWin(board, player)) {
+//			System.out.println("We have a winner");
+//		}
+//		else{
+//			System.out.println("No winner was found");
+//		}
+//		
+//		loopWin(board, player);
 
 	}// End of main method
 
