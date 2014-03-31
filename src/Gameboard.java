@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Gameboard {
 	
 	protected String filePath;
-	protected List<List<Hexagon>> gameboard = new ArrayList<List<Hexagon>>();
+	protected List<List<Hexagon>> gameboard; 
 	protected int totalRows;
 
 	public Gameboard(){
@@ -16,6 +16,7 @@ public class Gameboard {
 	  protected void generateHexagons(){
 		  	Scanner in = new Scanner(System.in);
 		  	List<Hexagon> tempList;
+		  	gameboard = new ArrayList<List<Hexagon>>();
 		  
 		  	char[] tempChars;
 		  	int row = 0;
