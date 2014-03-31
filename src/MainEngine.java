@@ -16,7 +16,7 @@ public class MainEngine {
 
 		generatedBoard = board.getBoard();
 
-		char player = 'W';
+		char player = 'B';
 
 		for (List<Hexagon> tempList : generatedBoard) {
 			for (Hexagon tempHexagon : tempList) {
@@ -33,6 +33,11 @@ public class MainEngine {
 			}
 		}
 
+		if(draw(board)){
+			System.out.println("Draw");
+			System.out.println("Nil");
+		}
+		System.exit(0);
 		if (isItAWin(board, player)) {
 			System.out.println("We have a winner");
 		}
@@ -291,5 +296,31 @@ public class MainEngine {
 
 
 	}
+	
+	//Checks if there are any empty places on the board. If not, then it is considered a draw.
+	protected static boolean draw(Gameboard board){
+		
+		List<List<Hexagon>> hexagons;
+		boolean draw = true;
+		
+		hexagons = board.getBoard();
+		
+		outerloop : for(List<Hexagon> tempList : hexagons){
+			innerloop : for(Hexagon tempHexagon : tempList){
+				
+				if(tempHexagon == null) continue innerloop;
+				if(tempHexagon.value == '-'){
+					draw = false;
+					break outerloop;
+				}
+				
+			}
+		}
+		
+		
+		return draw;
+		
+	}
+	
 
 }
