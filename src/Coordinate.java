@@ -1,6 +1,6 @@
 /**
  * 
- * @author James
+ * @author James, Aston
  * A simple class to aid in keeping track of Adjacent hexagons
  * @param column refers to column on the game board
  * @param likewise row refers to a row on the game board
@@ -15,6 +15,8 @@ public class Coordinate {
 		this.row = row;
 	}
 	
+	
+	//Getters and Setters
 	protected int getColumn(){
 		return this.column;
 	}

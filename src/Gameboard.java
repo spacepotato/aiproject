@@ -6,14 +6,14 @@ import java.util.Scanner;
 public class Gameboard {
 	
 	protected String filePath;
-	protected List<List<Hexagon>> gameboard = new ArrayList<List<Hexagon>>(); 
+	protected List<List<Hexagon>> gameboard; 
 	protected int totalRows;
 
 	public Gameboard(){
-		
+		gameboard = new ArrayList<List<Hexagon>>();
 	}
 
-	  protected void generateHexagons(){
+	  protected boolean generateHexagons(){
 		  	Scanner in = new Scanner(System.in);
 		  	List<Hexagon> tempList;
 		  
@@ -51,6 +51,11 @@ public class Gameboard {
 				tempChars = tempInput.toCharArray();
 				for (int i = 0; i < tempChars.length; i++) {
 					
+					if(tempChars[i] != 'B' || tempChars[i] != 'W' || tempChars[i] != '-'){
+						in.close();
+						return false;
+					}
+					
 					//Simple ternary check for edge pieces
 					isEdge = (i == 0 || i == tempChars.length - 1)? true: false;
 					
@@ -62,6 +67,7 @@ public class Gameboard {
 			}
 			//Closing the inputstream
 			in.close();
+			return true;
 			
 			
 	  }

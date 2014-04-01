@@ -12,26 +12,21 @@ public class MainEngine {
 		List<List<Hexagon>> generatedBoard;
 
 		Gameboard board = new Gameboard();
-		board.generateHexagons();
-
-		generatedBoard = board.getBoard();
-
-		char player = 'B';
-
-		for (List<Hexagon> tempList : generatedBoard) {
-			for (Hexagon tempHexagon : tempList) {
-				if (tempHexagon != null) {
-					System.out.println(tempHexagon.toString()
-							+ "and has "
-							+ checkAdjacency(tempHexagon, generatedBoard,
-									board.getTotalRows(), player));
-
-					// tempHexagon.printAdjacencies();
-
-				}
-
-			}
+		
+		if(board.generateHexagons()){
+			generatedBoard = board.getBoard();
 		}
+		
+		else{
+			System.out.println("There was an error with the input");
+			return;
+		}
+
+		ArrayList<String> players = new ArrayList<String>();
+		players.add("Black");
+		players.add("White");
+
+
 
 //		if(draw(board)){
 //			System.out.println("Draw");
@@ -81,12 +76,7 @@ public class MainEngine {
 		boolean win = false;
 		//boolean foundLoop = false;
 		Stack<Hexagon> hexagonStack = new Stack<Hexagon>();
-//		PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>(100, new Comparator<Hexagon>());
-//	    PriorityQueue<Hexagon> hexagonQueue = new PriorityQueue<Hexagon>(100, new Comparator<Hexagon>() {
-//	        public int compare(Hexagon hexagon1, Hexagon hexagon2) {
-//	            return (hexagon1.getRow() > hexagon2.getRow()) ? 1: -1;
-//	        }
-//	    });
+
 		hexagons = board.getBoard();
 
 		outerloop: for (List<Hexagon> tempList : hexagons) {
@@ -100,7 +90,6 @@ public class MainEngine {
 				hexagonStack.push(tempHexagon);
 
 				while(!hexagonStack.isEmpty()){
-					//System.out.println("In while loop...");
 					Hexagon currentHex = hexagonStack.pop();
 
 					adjacencyLoop: for(Coordinate coords : currentHex.getAdjacencies()){
@@ -178,9 +167,6 @@ public class MainEngine {
 			}//End of inner forloop
 		}//End of outer forloop
 
-
-
-
 		return win;
 
 
@@ -202,10 +188,15 @@ public class MainEngine {
 		outerloop: for (List<Hexagon> tempList : hexagons) {
 			innerloop: for (Hexagon tempHexagon : tempList) {
 
-				if(tempHexagon == null) continue innerloop;
-			    else if(tempHexagon.value == player) continue innerloop;
-//				else if(checkAdjacency(tempHexagon,hexagons,board.getTotalRows(), player) == 0) continue innerloop;
-				else if(tempHexagon.getChecked() != 0) continue innerloop; 
+				if(tempHexagon == null){
+					continue innerloop;
+				}
+			    else if(tempHexagon.value == player){
+			    	continue innerloop;
+			    }
+				else if(tempHexagon.getChecked() != 0){
+					continue innerloop; 
+				}
 
 				hexagonStack.push(tempHexagon);
 
@@ -220,9 +211,13 @@ public class MainEngine {
 
 						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
 
-						if(next.value == player) continue adjacencyLoop;
+						if(next.value == player){
+							continue adjacencyLoop;
+						}
 						//Check if next hexagon has already been checked, or to be checked
-						else if(hexagonStack.contains(next) || next.checked != 0) continue adjacencyLoop; 
+						else if(hexagonStack.contains(next) || next.checked != 0){
+							continue adjacencyLoop; 
+						}
 
 						if(next.value != player){
 							hexagonStack.push(next);
@@ -235,6 +230,7 @@ public class MainEngine {
 					//====================================================================================================================
 
 					int sum=0;
+					
 					for(int i=0;i<6;i++){//Finding the number of exposed edges that the hexagon has
 						sum += currentHex.adjacencies.get(i).getRow();
 					}
@@ -244,7 +240,9 @@ public class MainEngine {
 					if(numberOfExposedEdges == 2){ //Checking to see if the current hexagon is only an edge piece
 						for(int i=0, j=1;i<6;i++){ //If not a corner, finding which edge of the board it is on
 
-							if(j>5) j=0;
+							if(j>5){
+								j=0;
+							}
 
 							if(currentHex.adjacencies.get(i).getRow() == 999 && currentHex.adjacencies.get(j).getRow() == 999){
 								edgesIndicators[i] = 1;
