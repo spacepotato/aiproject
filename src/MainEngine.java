@@ -48,14 +48,20 @@ public class MainEngine {
 					System.out.println(player2.getPlayerWinState());
 				}
 			}
+			
+			//else do what we need if both players win
 
-			else if (draw(board)) {
+			if (draw(board)) {
 				System.out.println("Draw");
 				System.out.println("Nil");
-			} else {
+			} 
+			if(!player1.getPlayerWin() && !player2.getPlayerWin()) {
 				System.out.println("None");
 				System.out.println("Nil");
 			}
+			
+			
+
 
 		}
 
