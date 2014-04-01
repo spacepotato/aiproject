@@ -40,7 +40,7 @@ public class Gameboard {
 			while(in.hasNextLine()){
 				
 				String tempInput = in.nextLine();
-				
+				index = 0;
 				tempList = new ArrayList<Hexagon>();
 				this.gameboard.add(row, tempList);
 				
