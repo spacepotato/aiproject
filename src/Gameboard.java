@@ -48,6 +48,12 @@ public class Gameboard {
 			lastChar = 0;
 			tempList = new ArrayList<Hexagon>();
 			this.gameboard.add(row, tempList);
+			
+			//Too many rows
+			if(row > this.totalRows){
+				in.close();
+				return false;
+			}
 
 			// All hexagons below the middle row do not start at 0 due to the
 			// layout of the columns
@@ -84,6 +90,7 @@ public class Gameboard {
 				// Simple ternary check for edge pieces
 				isLeftEdge = (k == 0 || k == tempChars.length - 1) ? true : false;
 				isRightEdge = (k == lastChar ? true : false);
+				
 				tempList.add(index + offset, new Hexagon(row, index + offset,
 						this.totalRows, tempChars[k], isLeftEdge, isRightEdge));
 

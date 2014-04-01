@@ -14,7 +14,7 @@ public class MainEngine {
 
 		Player player1;
 		Player player2;
-
+try{
 		if (board.generateHexagons()) {
 
 			for (Player tempPlayer : players) {
@@ -75,6 +75,15 @@ public class MainEngine {
 			System.out.println("There was an error with the input");
 			return;
 		}
+}
+//If these are reached we can assume that the input has not been formatted properly
+catch(NullPointerException e){
+	System.out.println("There was an error with the input");
+}
+
+catch(IndexOutOfBoundsException e){
+	System.out.println("There was an error with the input");
+}
 
 	}//End of main function
 
