@@ -1,20 +1,64 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-  //import java.util.PriorityQueue;
-//import java.util.Comparator;
 import java.util.Stack;
 
 public class MainEngine {
 
 	public static void main(String args[]) throws IOException {
 
-		List<List<Hexagon>> generatedBoard;
-
 		Gameboard board = new Gameboard();
 		
+		
+		ArrayList<String> players = new ArrayList<String>();
+		players.add("Black");
+		players.add("White");
+		
 		if(board.generateHexagons()){
-			generatedBoard = board.getBoard();
+			
+			List<List<Hexagon>> tempList = board.getBoard();
+			System.out.println(tempList.get(0).get(1).toString());
+			
+//			List<List<Hexagon>> tempBoard = board.getBoard();
+			
+//			for(List<Hexagon> tempList: tempBoard){
+//				for(Hexagon tempHex: tempList){
+//					if(tempHex != null){
+//					System.out.println(tempHex.toString());
+//					}
+//				}
+//			}
+			
+			if(loopWin(board, 'B')){
+				System.out.println("Black wins on a loop");
+			}
+			
+//			for(String currentPlayer: players){
+//				
+//				
+//				char player = currentPlayer.charAt(0);
+//				
+//				
+//			if (draw(board)) {
+//				System.out.println("Draw");
+//				System.out.println("Nil");
+//			}
+//			
+//			if (isItAWin(board, player)) {
+//				System.out.println(currentPlayer);
+//				System.out.println("Tripod");
+//			} else if (loopWin(board, player)){
+//				System.out.println(currentPlayer);
+//				System.out.println("Loop");
+//				
+//			}
+//				else {
+//
+//				System.out.println("No winner was found");
+//			}
+//
+//			loopWin(board, player);
+			//}
 		}
 		
 		else{
@@ -22,25 +66,11 @@ public class MainEngine {
 			return;
 		}
 
-		ArrayList<String> players = new ArrayList<String>();
-		players.add("Black");
-		players.add("White");
 
 
 
-//		if(draw(board)){
-//			System.out.println("Draw");
-//			System.out.println("Nil");
-//		}
-//		System.exit(0);
-//		if (isItAWin(board, player)) {
-//			System.out.println("We have a winner");
-//		}
-//		else{
-//			System.out.println("No winner was found");
-//		}
-//		
-//		loopWin(board, player);
+
+
 
 	}// End of main method
 
@@ -201,14 +231,13 @@ public class MainEngine {
 				hexagonStack.push(tempHexagon);
 
 				while(!hexagonStack.isEmpty()){
-					//System.out.println("In while loop...");
 					Hexagon currentHex = hexagonStack.pop();
 
 					adjacencyLoop: for(Coordinate coords : currentHex.getAdjacencies()){
 
 						//Check if next hexagon is on the board
 						if(coords.getRow() == 999 || coords.getColumn() == 999) continue adjacencyLoop; 
-
+						System.out.println("We are trying to get the hexagon at "+ coords.getRow() + " , " + coords.getColumn());
 						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
 
 						if(next.value == player){
@@ -306,7 +335,10 @@ public class MainEngine {
 		outerloop : for(List<Hexagon> tempList : hexagons){
 			innerloop : for(Hexagon tempHexagon : tempList){
 				
-				if(tempHexagon == null) continue innerloop;
+				if(tempHexagon == null){
+					continue innerloop;
+				}
+				
 				if(tempHexagon.value == '-'){
 					draw = false;
 					break outerloop;

@@ -11,20 +11,23 @@ public class Hexagon {
 		protected int offset;
 		protected int checked;
 		
-		protected boolean isEdge;
+		protected boolean isLeftEdge;
+		protected boolean isRightEdge;
 		
 		protected char value;
 		
 		protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
 		
 		
-		public Hexagon(int row, int column, int totalRows, char value, boolean isEdge, int lineLength){
+		public Hexagon(int row, int column, int totalRows, char value, boolean isLeftEdge, boolean isRightEdge){
 
 			
 			this.row = row;
 			this.column = column;
 			this.value = value;
-			this.isEdge = isEdge;
+			this.isLeftEdge = isLeftEdge;
+			this.isRightEdge = isRightEdge;
+			
 			
 			//setting the hexagon to have not been checked yet.
 			this.checked = 0;
@@ -40,7 +43,7 @@ public class Hexagon {
 			//
 			
 			//Hexagon in top half or non-edge pieces in bottom half
-			if((row < (totalRows + 1)/ 2 - 1)||(!isEdge && row != totalRows - 1)){
+			if((row < (totalRows + 1)/ 2 - 1)||(!isLeftEdge && !isRightEdge && row != totalRows - 1)){
 
 				Coordinate temp1 = this.adjacencies.get(3);
 				Coordinate temp2 = this.adjacencies.get(4);
@@ -67,7 +70,7 @@ public class Hexagon {
 			}
 			
 			//Right-edge in bottom
-			else if (isEdge && column == totalRows - 1){
+			else if (isRightEdge){
 				
 				Coordinate temp1 = this.adjacencies.get(3);
 				Coordinate temp2 = this.adjacencies.get(4);
@@ -93,7 +96,7 @@ public class Hexagon {
 			//
 			//Side adjacencies
 			//
-			if(!this.isEdge){
+			if(!this.isLeftEdge && !this.isRightEdge){
 				
 				Coordinate temp1 = this.adjacencies.get(2);
 				Coordinate temp2 = this.adjacencies.get(5);
@@ -106,7 +109,7 @@ public class Hexagon {
 			}
 			
 			//Left side edge
-			else if(this.isEdge && column != lineLength - 1){
+			else if(!this.isRightEdge){
 
 				
 				Coordinate temp1 = this.adjacencies.get(2);
@@ -149,7 +152,7 @@ public class Hexagon {
 			}
 			
 			//Bottom half pieces
-			else if((row > (totalRows + 1)/ 2 - 1 )||(!isEdge && row != totalRows - 1)){
+			else if((row > (totalRows + 1)/ 2 - 1 )||(!isLeftEdge && !isRightEdge && row != totalRows - 1)){
 
 				
 				Coordinate temp1 = this.adjacencies.get(0);
@@ -165,7 +168,7 @@ public class Hexagon {
 			//Right-edge in top
 			
 			
-			else if (isEdge && column > Math.floor(totalRows/2)){
+			else if (isRightEdge){
 				
 				Coordinate temp1 = this.adjacencies.get(0);
 				Coordinate temp2 = this.adjacencies.get(1);
@@ -215,8 +218,8 @@ public class Hexagon {
 			return this.value;
 		}
 		
-		protected boolean isEdge(){
-			return this.isEdge;
+		protected boolean isLeftEdge(){
+			return this.isLeftEdge;
 		}
 		//Just so we can make sure that the array has been read in properly
 		@Override
