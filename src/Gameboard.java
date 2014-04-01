@@ -22,6 +22,15 @@ public class Gameboard {
 		  	int offset = 0;
 		  	boolean consumed = false;
 		  	boolean isEdge; 
+		  	
+		  	if(in.hasNextInt()){
+		  		this.totalRows = in.nextInt();
+		  	}
+		  	
+		  	else{
+		  		in.close();
+		  		return false;
+		  	}
 
 			while(in.hasNextLine()){
 				
@@ -31,13 +40,6 @@ public class Gameboard {
 				
 				tempList = new ArrayList<Hexagon>();
 				this.gameboard.add(row, tempList);
-				
-				//We need to read the first line to get the board size
-				if(!consumed){
-					this.totalRows = Integer.parseInt(tempInput) * 2 - 1;
-					consumed = true;
-					continue;
-				}
 				
 				//All hexagons below the middle row do not start at 0 due to the layout of the columns
 				if(row > Math.ceil((this.totalRows)/2)){
