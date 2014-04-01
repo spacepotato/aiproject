@@ -16,6 +16,7 @@ public class Gameboard {
 	  protected boolean generateHexagons(){
 		  	Scanner in = new Scanner(System.in);
 		  	List<Hexagon> tempList;
+		  	int index = 0;
 		  
 		  	char[] tempChars;
 		  	int row = 0;
@@ -65,8 +66,8 @@ public class Gameboard {
 					//Simple ternary check for edge pieces
 					isEdge = (i == 0 || i == tempChars.length - 1)? true: false;
 					
-					tempList.add(i + offset, new Hexagon(row, i + offset, this.totalRows, tempChars[i], isEdge, tempChars.length + offset));
-
+					tempList.add(index + offset, new Hexagon(row, index + offset, this.totalRows, tempChars[i], isEdge, tempChars.length + offset));
+					index++;
 				}
 
 				row++;
