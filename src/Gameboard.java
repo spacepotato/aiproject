@@ -25,6 +25,10 @@ public class Gameboard {
 		  	
 		  	if(in.hasNextInt()){
 		  		this.totalRows = in.nextInt();
+		  		if(in.hasNextInt()){
+		  			in.close();
+		  			return false;
+		  		}
 		  	}
 		  	
 		  	else{
@@ -35,8 +39,6 @@ public class Gameboard {
 			while(in.hasNextLine()){
 				
 				String tempInput = in.nextLine();
-				//Get rid of all spaces
-				tempInput.replaceAll("\\s", "");
 				
 				tempList = new ArrayList<Hexagon>();
 				this.gameboard.add(row, tempList);
@@ -52,8 +54,10 @@ public class Gameboard {
 				
 				tempChars = tempInput.toCharArray();
 				for (int i = 0; i < tempChars.length; i++) {
-					
-					if(tempChars[i] != 'B' || tempChars[i] != 'W' || tempChars[i] != '-'){
+					if(tempChars[i] == ' '){
+						continue;		
+					}
+					if(tempChars[i] != 'B' && tempChars[i] != 'W' && tempChars[i] != '-'){
 						in.close();
 						return false;
 					}
