@@ -221,6 +221,10 @@ public class Hexagon {
 		protected boolean isLeftEdge(){
 			return this.isLeftEdge;
 		}
+		
+		protected boolean isRightEdge(){
+			return this.isRightEdge;
+		}
 		//Just so we can make sure that the array has been read in properly
 		@Override
 		public String toString(){

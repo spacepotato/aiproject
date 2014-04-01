@@ -4,119 +4,81 @@ import java.util.List;
 import java.util.Stack;
 
 public class MainEngine {
-	
-
 
 	public static void main(String args[]) throws IOException {
 
 		Gameboard board = new Gameboard();
-		
-		boolean whiteWin = false;
-		boolean blackWin = false;
-		String whiteWinState = null;
-		String blackWinState = null;
-		
+		List<Player> players = new ArrayList<Player>();
+		players.add(new Player("Black"));
+		players.add(new Player("White"));
 
-		
-		if(board.generateHexagons()){
-//			
-//			if(loopWin(board, 'B')){
-//				System.out.println("black win");
-//			}
-			
-			if(isItAWin(board, 'W')){
-				whiteWin = true;
-				whiteWinState = "Tripod";
-			}
-			
-			else if(loopWin(board, 'W')){
-				if(whiteWin){
-					whiteWinState = "Both";
+		Player player1;
+		Player player2;
+
+		if (board.generateHexagons()) {
+
+			for (Player tempPlayer : players) {
+
+				if (isItAWin(board, tempPlayer.getPlayerChar())) {
+					tempPlayer.setPlayerWin(true);
+					tempPlayer.setPlayerWinState("Tripod");
 				}
-				else{
-					whiteWin = true;
-					whiteWinState = "Loop";
-				}
-			}
-			
-			else if(isItAWin(board, 'B')){
-				blackWin = true;
-				blackWinState = "Tripod";
-			}
-			
-			else if(loopWin(board, 'B')){
-				System.out.println("We are getting to here");
-				if(blackWin){
-					blackWinState = "Both";
-				}
-				else{
-					blackWin = true;
-					blackWinState = "Loop";
+
+				else if (loopWin(board, tempPlayer.getPlayerChar())) {
+					if (tempPlayer.getPlayerWin()) {
+						tempPlayer.setPlayerWinState("Both");
+					} else {
+						tempPlayer.setPlayerWin(true);
+						tempPlayer.setPlayerWinState("Loop");
+					}
 				}
 			}
 			
-			if(!(blackWin&&whiteWin)){
-				if(blackWin){
-					System.out.println("Black");
-					System.out.println(blackWinState);
+			player1 = players.get(0);
+			player2 = players.get(1);
+
+			if (!(player1.getPlayerWin() && player2.getPlayerWin())) {
+				if (player1.getPlayerWin()) {
+					System.out.println(player1.getPlayerName());
+					System.out.println(player1.getPlayerWinState());
 				}
-				
-				if(whiteWin){
-					System.out.println("White");
-					System.out.println(whiteWinState);
+
+				else if (player2.getPlayerWin()) {
+					System.out.println(player2.getPlayerName());
+					System.out.println(player2.getPlayerWinState());
 				}
 			}
-			
-			else if(draw(board)){
+
+			else if (draw(board)) {
 				System.out.println("Draw");
 				System.out.println("Nil");
-			}
-			else{
+			} else {
 				System.out.println("None");
 				System.out.println("Nil");
 			}
-			
-			System.out.println(blackWinState + " " + whiteWinState);
-//			for(String currentPlayer: players){
-//				
-//				
-//				char player = currentPlayer.charAt(0);
-//				
-//				
-//			if (draw(board)) {
-//				System.out.println("Draw");
-//				System.out.println("Nil");
-//			}
-//			
-//			if (isItAWin(board, player)) {
-//				System.out.println(currentPlayer);
-//				System.out.println("Tripod");
-//			} else if (loopWin(board, player)){
-//				System.out.println(currentPlayer);
-//				System.out.println("Loop");
-//				
-//			}
-//				else {
-//
-//				System.out.println("No winner was found");
-//			}
-//
-//			loopWin(board, player);
-			//}
+
 		}
-		
-		else{
+
+		else {
 			System.out.println("There was an error with the input");
 			return;
 		}
 
+	}
 
+	protected static void resetCheckedState(Gameboard board) {
 
+		List<List<Hexagon>> tempBoard = board.getBoard();
 
+		for (List<Hexagon> tempList : tempBoard) {
+			for (Hexagon tempHex : tempList) {
+				if (tempHex != null) {
+					tempHex.checked = 0;
+				}
+			}
+		}
 
-
-
-	}// End of main method
+	}
 
 	// Checking the 6 adjacent pieces to see if they are the same value as the
 	// hexagon we are checking
@@ -124,7 +86,7 @@ public class MainEngine {
 			List<List<Hexagon>> board, int totalRows, char player) {
 
 		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
-		//char currentValue = 'W';
+
 		int numberAdjacent = 0;
 
 		for (Coordinate tempCoords : adjacencies) {
@@ -140,15 +102,14 @@ public class MainEngine {
 		return numberAdjacent;
 	}
 
-	protected static boolean isItAWin(Gameboard board, char player){
+	protected static boolean isItAWin(Gameboard board, char player) {
 
 		List<List<Hexagon>> hexagons;
 
-		int [] edgesIndicators = new int[6];
+		int[] edgesIndicators = new int[6];
 		int numberOfEdgeHexagons = 0;
 		int order = 1;
 		boolean win = false;
-		//boolean foundLoop = false;
 		Stack<Hexagon> hexagonStack = new Stack<Hexagon>();
 
 		hexagons = board.getBoard();
@@ -156,50 +117,71 @@ public class MainEngine {
 		outerloop: for (List<Hexagon> tempList : hexagons) {
 			innerloop: for (Hexagon tempHexagon : tempList) {
 
-				if(tempHexagon == null) continue innerloop;
-			    else if(tempHexagon.value != player) continue innerloop;
-				else if(checkAdjacency(tempHexagon,hexagons,board.getTotalRows(), player) == 0) continue innerloop;
-				else if(tempHexagon.getChecked() != 0) continue innerloop; 
+				if (tempHexagon == null)
+					continue innerloop;
+				else if (tempHexagon.value != player)
+					continue innerloop;
+				else if (checkAdjacency(tempHexagon, hexagons,
+						board.getTotalRows(), player) == 0)
+					continue innerloop;
+				else if (tempHexagon.getChecked() != 0)
+					continue innerloop;
 
 				hexagonStack.push(tempHexagon);
 
-				while(!hexagonStack.isEmpty()){
+				while (!hexagonStack.isEmpty()) {
 					Hexagon currentHex = hexagonStack.pop();
 
-					adjacencyLoop: for(Coordinate coords : currentHex.getAdjacencies()){
+					adjacencyLoop: for (Coordinate coords : currentHex
+							.getAdjacencies()) {
 
-						//Check if next hexagon is on the board
-						if(coords.getRow() == 999 || coords.getColumn() == 999) continue adjacencyLoop; 
+						// Check if next hexagon is on the board
+						if (coords.getRow() == 999 || coords.getColumn() == 999)
+							continue adjacencyLoop;
 
-						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
+						Hexagon next = hexagons.get(coords.getRow()).get(
+								coords.getColumn());
 
-						if(next.value != player) continue adjacencyLoop;
-						//Check if next hexagon has already been checked, or to be checked
-						else if(hexagonStack.contains(next) || next.checked != 0) continue adjacencyLoop; 
+						if (next.value != player)
+							continue adjacencyLoop;
+						// Check if next hexagon has already been checked, or to
+						// be checked
+						else if (hexagonStack.contains(next)
+								|| next.checked != 0)
+							continue adjacencyLoop;
 
-						if(next.value == currentHex.value){
+						if (next.value == currentHex.value) {
 							hexagonStack.push(next);
 						}
 
-					}//End of adjacencyLoop
+					}// End of adjacencyLoop
 
+					// Determining whether a tripod has been formed.
+					// ====================================================================================================================
 
-					//Determining whether a tripod has been formed.
-					//====================================================================================================================
-
-					int sum=0;
-					for(int i=0;i<6;i++){//Finding the number of exposed edges that the hexagon has
+					int sum = 0;
+					for (int i = 0; i < 6; i++) {// Finding the number of
+													// exposed edges that the
+													// hexagon has
 						sum += currentHex.adjacencies.get(i).getRow();
 					}
 
-					int numberOfExposedEdges = sum/999;
+					int numberOfExposedEdges = sum / 999;
 
-					if(numberOfExposedEdges == 2){ //Checking to see if the current hexagon is only an edge piece
-						for(int i=0, j=1;i<6;i++){ //If not a corner, finding which edge of the board it is on
+					if (numberOfExposedEdges == 2) { // Checking to see if the
+														// current hexagon is
+														// only an edge piece
+						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,
+																// finding which
+																// edge of the
+																// board it is
+																// on
 
-							if(j>5) j=0;
+							if (j > 5)
+								j = 0;
 
-							if(currentHex.adjacencies.get(i).getRow() == 999 && currentHex.adjacencies.get(j).getRow() == 999){
+							if (currentHex.adjacencies.get(i).getRow() == 999
+									&& currentHex.adjacencies.get(j).getRow() == 999) {
 								edgesIndicators[i] = 1;
 							}
 
@@ -211,50 +193,46 @@ public class MainEngine {
 					currentHex.setChecked(order);
 					order++;
 
-				}//End of while loop
+				}// End of while loop
 
+				// ====================================================================================================================
 
+				// Determining if a tripod has occurred
+				// ====================================================================================================================
 
-				//====================================================================================================================
-
-				//Determining if a tripod has occurred
-				//====================================================================================================================
-
-				//Summing the number of edge hexagons possible for a tree...
-				for(int i=0;i<6;i++){
-					numberOfEdgeHexagons += edgesIndicators[i];			
+				// Summing the number of edge hexagons possible for a tree...
+				for (int i = 0; i < 6; i++) {
+					numberOfEdgeHexagons += edgesIndicators[i];
 				}
 
-				if(numberOfEdgeHexagons >= 3){
+				if (numberOfEdgeHexagons >= 3) {
 
-					win = true; //Wins by having a tree
+					win = true; // Wins by having a tree
 					break outerloop;
 				}
 
-
-				//resetting the tripod indicators
+				// resetting the tripod indicators
 				numberOfEdgeHexagons = 0;
-				for(int i=0;i<6;i++){
+				for (int i = 0; i < 6; i++) {
 					edgesIndicators[i] = 0;
 				}
 
-			}//End of inner forloop
-		}//End of outer forloop
-
+			}// End of inner forloop
+		}// End of outer forloop
+		resetCheckedState(board);
 		return win;
 
-
 	}
-	
-	protected static boolean loopWin(Gameboard board, char player){
+
+	protected static boolean loopWin(Gameboard board, char player) {
 
 		List<List<Hexagon>> hexagons;
 
-		int [] edgesIndicators = new int[6];
+		int[] edgesIndicators = new int[6];
 		int numberOfEdgeHexagons = 0;
 		int order = 1;
 		boolean win = false;
-		//boolean foundLoop = false;
+		// boolean foundLoop = false;
 		Stack<Hexagon> hexagonStack = new Stack<Hexagon>();
 
 		hexagons = board.getBoard();
@@ -262,62 +240,73 @@ public class MainEngine {
 		outerloop: for (List<Hexagon> tempList : hexagons) {
 			innerloop: for (Hexagon tempHexagon : tempList) {
 
-				if(tempHexagon == null){
+				if (tempHexagon == null) {
 					continue innerloop;
-				}
-			    else if(tempHexagon.value == player){
-			    	continue innerloop;
-			    }
-				else if(tempHexagon.getChecked() != 0){
-					continue innerloop; 
+				} else if (tempHexagon.value == player) {
+					continue innerloop;
+				} else if (tempHexagon.getChecked() != 0) {
+					continue innerloop;
 				}
 
 				hexagonStack.push(tempHexagon);
 
-				while(!hexagonStack.isEmpty()){
+				while (!hexagonStack.isEmpty()) {
 					Hexagon currentHex = hexagonStack.pop();
 
-					adjacencyLoop: for(Coordinate coords : currentHex.getAdjacencies()){
+					adjacencyLoop: for (Coordinate coords : currentHex
+							.getAdjacencies()) {
 
-						//Check if next hexagon is on the board
-						if(coords.getRow() == 999 || coords.getColumn() == 999) continue adjacencyLoop; 
-				
-						Hexagon next = hexagons.get(coords.getRow()).get(coords.getColumn());
+						// Check if next hexagon is on the board
+						if (coords.getRow() == 999 || coords.getColumn() == 999)
+							continue adjacencyLoop;
 
-						if(next.value == player){
+						Hexagon next = hexagons.get(coords.getRow()).get(
+								coords.getColumn());
+
+						if (next.value == player) {
 							continue adjacencyLoop;
 						}
-						//Check if next hexagon has already been checked, or to be checked
-						else if(hexagonStack.contains(next) || next.checked != 0){
-							continue adjacencyLoop; 
+						// Check if next hexagon has already been checked, or to
+						// be checked
+						else if (hexagonStack.contains(next)
+								|| next.checked != 0) {
+							continue adjacencyLoop;
 						}
 
-						if(next.value != player){
+						if (next.value != player) {
 							hexagonStack.push(next);
 						}
 
-					}//End of adjacencyLoop
+					}// End of adjacencyLoop
 
+					// Determining whether a tripod has been formed.
+					// ====================================================================================================================
 
-					//Determining whether a tripod has been formed.
-					//====================================================================================================================
+					int sum = 0;
 
-					int sum=0;
-					
-					for(int i=0;i<6;i++){//Finding the number of exposed edges that the hexagon has
+					for (int i = 0; i < 6; i++) {// Finding the number of
+													// exposed edges that the
+													// hexagon has
 						sum += currentHex.adjacencies.get(i).getRow();
 					}
 
-					int numberOfExposedEdges = sum/999;
+					int numberOfExposedEdges = sum / 999;
 
-					if(numberOfExposedEdges == 2){ //Checking to see if the current hexagon is only an edge piece
-						for(int i=0, j=1;i<6;i++){ //If not a corner, finding which edge of the board it is on
+					if (numberOfExposedEdges == 2) { // Checking to see if the
+														// current hexagon is
+														// only an edge piece
+						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,
+																// finding which
+																// edge of the
+																// board it is
+																// on
 
-							if(j>5){
-								j=0;
+							if (j > 5) {
+								j = 0;
 							}
 
-							if(currentHex.adjacencies.get(i).getRow() == 999 && currentHex.adjacencies.get(j).getRow() == 999){
+							if (currentHex.adjacencies.get(i).getRow() == 999
+									&& currentHex.adjacencies.get(j).getRow() == 999) {
 								edgesIndicators[i] = 1;
 							}
 
@@ -329,71 +318,63 @@ public class MainEngine {
 					currentHex.setChecked(order);
 					order++;
 
-				}//End of while loop
+				}// End of while loop
 
+				// ====================================================================================================================
 
+				// Determining if a tripod has occurred
+				// ====================================================================================================================
 
-				//====================================================================================================================
-
-				//Determining if a tripod has occurred
-				//====================================================================================================================
-
-				//Summing the number of edge hexagons possible for a tree...
-				for(int i=0;i<6;i++){
-					numberOfEdgeHexagons += edgesIndicators[i];			
+				// Summing the number of edge hexagons possible for a tree...
+				for (int i = 0; i < 6; i++) {
+					numberOfEdgeHexagons += edgesIndicators[i];
 				}
 
-				if(numberOfEdgeHexagons == 0){
+				if (numberOfEdgeHexagons == 0) {
 
-					win = true; //Wins by having a loop
+					win = true; // Wins by having a loop
 					break outerloop;
 				}
 
-
-				//resetting the tripod indicators
+				// resetting the tripod indicators
 				numberOfEdgeHexagons = 0;
-				for(int i=0;i<6;i++){
+				for (int i = 0; i < 6; i++) {
 					edgesIndicators[i] = 0;
 				}
 
-			}//End of inner forloop
-		}//End of outer forloop
-
-
-
-
+			}// End of inner forloop
+		}// End of outer forloop
+		resetCheckedState(board);
 		return win;
 
-
 	}
-	
-	//Checks if there are any empty places on the board. If not, then it is considered a draw.
-	protected static boolean draw(Gameboard board){
-		
+
+	// Checks if there are any empty places on the board. If not, then it is
+	// considered a draw.
+	protected static boolean draw(Gameboard board) {
+
 		List<List<Hexagon>> hexagons;
 		boolean draw = true;
-		
+
 		hexagons = board.getBoard();
-		
-		outerloop : for(List<Hexagon> tempList : hexagons){
-			innerloop : for(Hexagon tempHexagon : tempList){
-				
-				if(tempHexagon == null){
+
+		outerloop: for (List<Hexagon> tempList : hexagons) {
+			innerloop: for (Hexagon tempHexagon : tempList) {
+
+				if (tempHexagon == null) {
 					continue innerloop;
 				}
-				
-				if(tempHexagon.value == '-'){
+
+				if (tempHexagon.value == '-') {
 					draw = false;
 					break outerloop;
 				}
-				
+
 			}
 		}
-		
-		
+
 		return draw;
-		
+
 	}
-	
 
 }
