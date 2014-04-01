@@ -19,12 +19,12 @@ public class MainEngine {
 
 			for (Player tempPlayer : players) {
 
-				if (isItAWin(board, tempPlayer.getPlayerChar())) {
+				if (tripodWin(board, tempPlayer.getPlayerChar())) {
 					tempPlayer.setPlayerWin(true);
 					tempPlayer.setPlayerWinState("Tripod");
 				}
 
-				else if (loopWin(board, tempPlayer.getPlayerChar())) {
+				if (loopWin(board, tempPlayer.getPlayerChar())) {
 					if (tempPlayer.getPlayerWin()) {
 						tempPlayer.setPlayerWinState("Both");
 					} else {
@@ -32,34 +32,40 @@ public class MainEngine {
 						tempPlayer.setPlayerWinState("Loop");
 					}
 				}
-			}
+			}//End forloop
 			
 			player1 = players.get(0);
 			player2 = players.get(1);
 
-			if (!(player1.getPlayerWin() && player2.getPlayerWin())) {
-				if (player1.getPlayerWin()) {
-					System.out.println(player1.getPlayerName());
-					System.out.println(player1.getPlayerWinState());
-				}
-
-				else if (player2.getPlayerWin()) {
-					System.out.println(player2.getPlayerName());
-					System.out.println(player2.getPlayerWinState());
-				}
+			if (player1.getPlayerWin() && player2.getPlayerWin()) {
+				System.out.println(player1.getPlayerName() + ", " + player2.getPlayerName());
+				System.out.println(player1.getPlayerWinState() + ", " + player2.getPlayerWinState());
 			}
+			else if (player1.getPlayerWin()) {
+				System.out.println(player1.getPlayerName());
+				System.out.println(player1.getPlayerWinState());
+			}
+
+			else if (player2.getPlayerWin()) {
+				System.out.println(player2.getPlayerName());
+				System.out.println(player2.getPlayerWinState());
+			}
+
 			
 			//else do what we need if both players win
 
-			if (draw(board)) {
+			else if (draw(board)) {
 				System.out.println("Draw");
 				System.out.println("Nil");
 			} 
-			if(!player1.getPlayerWin() && !player2.getPlayerWin()) {
+//			else if(!player1.getPlayerWin() && !player2.getPlayerWin()) {
+//				System.out.println("None");
+//				System.out.println("Nil");
+//			}
+			else {
 				System.out.println("None");
 				System.out.println("Nil");
 			}
-			
 			
 
 
@@ -70,7 +76,7 @@ public class MainEngine {
 			return;
 		}
 
-	}
+	}//End of main function
 
 	protected static void resetCheckedState(Gameboard board) {
 
@@ -108,7 +114,7 @@ public class MainEngine {
 		return numberAdjacent;
 	}
 
-	protected static boolean isItAWin(Gameboard board, char player) {
+	protected static boolean tripodWin(Gameboard board, char player) {
 
 		List<List<Hexagon>> hexagons;
 

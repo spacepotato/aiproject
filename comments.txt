@@ -1,0 +1,149 @@
+Comments File for PartA Project 2014
+------------------------------------
+By Aston Howindt and James McLaren
+
+
+Time Complexity
+---------------
+Note: For all future discussions, the variable n will indicate the number of spaces (hexagons) on the board.
+
+
+
+
+
+
+Pseudocode overview
+------------------
+
+
+
+MAINENGINE ALGORITHM
+
+Read in gameboard from standard input
+
+Check to see if there was an error with the input formatting
+
+For each player (represented by string) :
+
+	- Check for tripod win
+		- If true, print who won and how; return
+	- Check for loop win
+		- If true, print who one and how; return
+	- Check for free spaces
+		- If true, print that no one has one, and there was not a winning method; return
+		- If false, print that it was a draw with no winner, and no winning method; return
+		
+End ForLoop
+
+END ALGORITHM
+
+
+LOOP CHECKING ALGORITHM
+
+For each hexagon :
+	- Check to see if it exists
+		- If not, skip over
+	- Check to see if it contains specified player's piece
+		- If true, skip over
+	- Check to see if the hexagon has already been checked
+		- If true, skip over
+		
+	Add current hexagon to the stack
+	
+	While the stack is not empty :
+		Take top hexagon off the stack
+		
+		For each adjacent hexagon :
+			
+			- Check if the adjacent hexagon is on the board
+				- If not, skip over adjacent hexagon
+			
+			Retrieve the adjacent hexagon
+			
+			- Check if the adjacent hexagon has specified player's piece
+				- If true, skip to the next adjacent hexagon
+			- Check if the adjacent hexagon is already in the stack or has already been checked
+				- If true, skip to the next hexagon
+			
+			Put the adjacent hexagon on to the stack
+			
+		End ForLoop
+
+		- Check if hexagon is an edge
+			- If true, 
+
+
+END ALGORITHM
+
+
+TRIPOD CHECKING ALGORITHM
+
+For each hexagon :
+	- Check to see if it exists
+		- If not, skip over
+	- Check to see if it contains the specified player's piece
+		- If not, skip over
+	- Check to see if there are any adjacent hexagons that have the same piece as the current hexagon
+		- If not, skip over
+	- Check to see if the hexagon has already been checked
+		- If true, skip over
+		
+	Add current hexagon to the stack
+	
+	While the stack is not empty :
+		Take top hexagon off the stack
+		
+		For each adjacent hexagon :
+			
+			- Check if the adjacent hexagon is on the board
+				- If not, skip over adjacent hexagon
+			
+			Retrieve the adjacent hexagon
+			
+			- Check if the adjacent hexagon has the same player's piece as the current hexagon
+				- If not, skip to the next adjacent hexagon
+			- Check if the adjacent hexagon is already in the stack or has already been checked
+				- If true, skip to the next hexagon
+			
+			Put the adjacent hexagon on to the stack
+			
+		End ForLoop
+		
+		- Check how many exposed edges (edges that form the outside of the board) the current hexagon has
+		
+		- If number of exposed edges is 2 (is not a corner piece and is on the edge of the board)
+		
+			For each adjacent hexagon :
+		
+				Find where the hexagon is located (i.e. which side it is sitting on
+		
+			End ForLoop
+		
+		
+	End While
+		
+	Find the total number of edge hexagons
+	
+	
+	- If total number of edge hexagons is greater or equal to 3
+	
+		- A tripod has been formed
+		- The player has won; Break out of initial ForLoop
+	
+End ForLoop
+	
+END ALGORITHM
+
+	
+FINDING FREE SPACES ALGORITHM
+
+For each hexagon on board : 
+	- Check if there are any free spaces
+		- If true, the game is not complete and it is not a draw; return
+		
+End ForLoop
+
+END ALGORITHM
+
+			
+			
