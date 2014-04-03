@@ -15,9 +15,9 @@ The Tripod algorithm:
 
 Functions by checking each space to see if it is part of a tripod. This is done by checking if a path can be formed from
 a hexagon to at least 3 edges. The path checking part of the algorithm works by adding an adjacent hexagon to the stack if 
-it contains the same player's peice. Due to some if conditions places before the stack is initialised, each hexagon is only
+it contains the same player's peice. Due to some if conditions placed before the stack is initialised, each hexagon is only
 checked once.
-And since each palce is only checked once, the tripod algorithm is O(n).
+And since each place is only checked once, the tripod algorithm is O(n).
 
 
 
