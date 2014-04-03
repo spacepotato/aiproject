@@ -7,8 +7,39 @@ Time Complexity
 ---------------
 Note: For all future discussions, the variable n will indicate the number of spaces (hexagons) on the board.
 
+The three main algorithms used to determine whether a player has won, and by what means, are called the Tripod Algorithm, 
+the Loop Algorithm, and the Draw algorithm.
 
 
+The Tripod algorithm:
+
+Functions by checking each space to see if it is part of a tripod. This is done by checking if a path can be formed from
+a hexagon to at least 3 edges. The path checking part of the algorithm works by adding an adjacent hexagon to the stack if 
+it contains the same player's peice. Due to some if conditions places before the stack is initialised, each hexagon is only
+checked once.
+And since each palce is only checked once, the tripod algorithm is O(n).
+
+
+
+The Loop Algorithm:
+
+The loop algorithm is the same to the tripod checking algorithm, but instead of having only the player's spaces being added to 
+the stack, the opponents spaces and empty spaces are added. It is then checked to see if there is a situation where a loop
+surrounds empty and/or opponents spaces (i.e. cannot reach the edge of the board from the current hexagon going via empty 
+and opponent pieces).
+In a similar way, the loop algorithm is O(n) because each hexagon is only checked once. This is regardless if it has already 
+been checked.
+
+
+The Draw Algorithm:
+
+Functions by checking every space (hexagon) to see if it is empty. This check is performed after the Tripod Algorithm and
+Loop Algorithm. Therefore, if there are no empty spaces, the board state is a draw.
+Since it checks every space once, the time complexity for this algorithm is O(n).
+
+Overall:
+
+Since the Tripod, Loop and Draw Algorithms are all O(n), that means that the entire algorithm is of O(n).
 
 
 
@@ -16,26 +47,40 @@ Pseudocode overview
 ------------------
 
 
-
 MAINENGINE ALGORITHM
 
 Read in gameboard from standard input
-
-Check to see if there was an error with the input formatting
+	- Check for syntactic errors in the input
+		- If errors exist, print out error message and exit program
 
 For each player (represented by string) :
 
 	- Check for tripod win
-		- If true, print who won and how; return
-	- Check for loop win
-		- If true, print who one and how; return
-	- Check for free spaces
-		- If true, print that no one has one, and there was not a winning method; return
-		- If false, print that it was a draw with no winner, and no winning method; return
+		- If true, player has won by tripod
 		
-End ForLoop
+	- Check for loop win
+	
+		- Check if player has already won
+			- If true, player has won by tripod and loop
+			- If false, player has won by a loop
+	
+End FoorLoop
 
-END ALGORITHM
+- Check if player 1 is a winner
+	- If true, print player 1's colour and winning method
+	
+- If player 1 is not a winner, check if player 2 has won
+	- If true, print player 2's colour and winning method
+	
+- If neither player has won, check if there are no free spaces on the gameboard
+	- If true, then the game is a tie; print out draw output
+	
+- If neither player has won and there are still free spaces on the board
+	- Print 'no outcome' output statement
+
+
+END MAINENGINE ALGORITHM
+
 
 
 LOOP CHECKING ALGORITHM
@@ -69,11 +114,29 @@ For each hexagon :
 			
 		End ForLoop
 
-		- Check if hexagon is an edge
-			- If true, 
+		- Check how many exposed edges (edges that form the outside of the board) the current hexagon has
+		
+		- If number of exposed edges is 2 (is not a corner piece and is on the edge of the board)
+		
+			For each adjacent hexagon :
+		
+				Find where the hexagon is located (i.e. which side it is sitting on)
+		
+			End ForLoop
+		
+	End While
+		
+	Find the total number of edge hexagons
+	
+	- If total number of edge hexagons is equal to zero
+	
+		- A loop has been formed around opponent player's piece and/or empty spaces
+		- Player has won; break out of initial forloop
+		
+End ForLoop
 
+END LOOP CHECKING ALGORITHM
 
-END ALGORITHM
 
 
 TRIPOD CHECKING ALGORITHM
@@ -132,10 +195,11 @@ For each hexagon :
 	
 End ForLoop
 	
-END ALGORITHM
+END TRIPOD CHECKING ALGORITHM
+
 
 	
-FINDING FREE SPACES ALGORITHM
+FINDING DRAW ALGORITHM
 
 For each hexagon on board : 
 	- Check if there are any free spaces
@@ -143,7 +207,7 @@ For each hexagon on board :
 		
 End ForLoop
 
-END ALGORITHM
+END FINDING DRAW ALGORITHM
 
 			
 			

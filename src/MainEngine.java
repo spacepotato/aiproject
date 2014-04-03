@@ -37,11 +37,7 @@ try{
 			player1 = players.get(0);
 			player2 = players.get(1);
 
-			if (player1.getPlayerWin() && player2.getPlayerWin()) {
-				System.out.println(player1.getPlayerName() + ", " + player2.getPlayerName());
-				System.out.println(player1.getPlayerWinState() + ", " + player2.getPlayerWinState());
-			}
-			else if (player1.getPlayerWin()) {
+			if (player1.getPlayerWin()) {
 				System.out.println(player1.getPlayerName());
 				System.out.println(player1.getPlayerWinState());
 			}
@@ -50,18 +46,10 @@ try{
 				System.out.println(player2.getPlayerName());
 				System.out.println(player2.getPlayerWinState());
 			}
-
-			
-			//else do what we need if both players win
-
 			else if (draw(board)) {
 				System.out.println("Draw");
 				System.out.println("Nil");
 			} 
-//			else if(!player1.getPlayerWin() && !player2.getPlayerWin()) {
-//				System.out.println("None");
-//				System.out.println("Nil");
-//			}
 			else {
 				System.out.println("None");
 				System.out.println("Nil");
