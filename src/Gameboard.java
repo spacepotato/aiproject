@@ -11,6 +11,35 @@ public class Gameboard {
 	public Gameboard() {
 		gameboard = new ArrayList<List<Hexagon>>();
 	}
+	
+	public Gameboard(GameBoardDisplay gbd){
+		int i=0,j=0, k=0;
+		gameboard = new ArrayList<List<Hexagon>>();
+		int totalRows = 2*(gbd.getBoardSize()) - 1;
+		boolean isLeftEdge, isRightEdge;
+		ArrayList<ArrayList<HexagonCell>> hexagonCells = gbd.getBoard();
+		
+		for(ArrayList<HexagonCell> tempCellList : hexagonCells){
+			this.gameboard.add(i,new ArrayList<Hexagon>());
+			for(HexagonCell tempHexCell : tempCellList){
+				if(tempHexCell == null){
+					gameboard.get(i).add(j,null);
+				}
+				else{
+					isLeftEdge = (k == 0) ? true : false;
+					isRightEdge = (j == tempCellList.size()-1) ? true : false;
+					gameboard.get(i).add(j,new Hexagon(tempHexCell, totalRows, isLeftEdge, isRightEdge));
+					k++;
+				}
+				j++;
+			}
+			j=0;
+			k=0;
+			i++;
+		}
+		
+		
+	}
 
 	protected boolean generateHexagons() {
 		Scanner in = new Scanner(System.in);
