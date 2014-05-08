@@ -1,10 +1,10 @@
-public class Player {
+public class PlayerCustom {
 
 	protected String playerName;
 	protected boolean playerWin;
 	protected String playerWinState;
 
-	public Player(String name) {
+	public PlayerCustom(String name) {
 		this.playerName = name;
 	}
 	

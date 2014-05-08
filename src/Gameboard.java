@@ -41,8 +41,7 @@ public class Gameboard {
 		
 	}
 
-	protected boolean generateHexagons() {
-		Scanner in = new Scanner(System.in);
+	protected boolean generateHexagons(int dimensions) {
 		List<Hexagon> tempList;
 		int index = 0;
 		int lastChar = 0;
@@ -51,27 +50,10 @@ public class Gameboard {
 		int row = 0;
 		int offset = 0;
 		boolean isLeftEdge, isRightEdge;
-		
-		//Dealing with the first line being the number of rows
-		//and also with fringe cases where there is an error in the input 
-		//where two seperate numbers are entered. E.g 5 6
-		if (in.hasNextInt()) {
-			this.totalRows = in.nextInt() * 2 - 1;
-			in.nextLine();
-			if (in.hasNextInt()) {
-				in.close();
-				return false;
-			}
-		}
+		this.totalRows = dimensions * 2 - 1;
 
-		else {
-			in.close();
-			return false;
-		}
 
-		while (in.hasNextLine()) {
-
-			String tempInput = in.nextLine();
+		for(int i = 0; i < this.totalRows; i++){
 			
 			index = 0;
 			lastChar = 0;
@@ -80,7 +62,6 @@ public class Gameboard {
 			
 			//Too many rows
 			if(row > this.totalRows){
-				in.close();
 				return false;
 			}
 
@@ -90,46 +71,42 @@ public class Gameboard {
 				offset++;
 			}
 
-			for (int i = 0; i < offset; i++) {
+			for (int x = 0; i < offset; i++) {
 				tempList.add(i, null);
 			}
-
-			tempChars = tempInput.toCharArray();
 			
 			//Because we don't know how many whitespaces, we do this check to see if the character
 			//we are about to create a hexagon for is the last non-whitespace character in the line
 			//and thus can be considered as a right edge
-			for(int j = 0; j < tempChars.length; j++){
-				if(tempChars[j] != ' '){
-					lastChar = j;
-				}
-			}
+//			for(int j = 0; j < tempChars.length; j++){
+//				if(tempChars[j] != ' '){
+//					lastChar = j;
+//				}
+//			}
+//
+//			for (int k = 0; k < tempChars.length; k++) {
+//				if (tempChars[k] == ' ') {
+//					continue;
+//				}
+//
+//				if (tempChars[k] != 'B' && tempChars[k] != 'W'
+//						&& tempChars[k] != '-') {
+//					return false;
+//				}
+//
+//				// Simple ternary check for edge pieces
+//				isLeftEdge = (k == 0 || k == tempChars.length - 1) ? true : false;
+//				isRightEdge = (k == lastChar ? true : false);
+//				
+//				tempList.add(index + offset, new Hexagon(row, index + offset,
+//						this.totalRows, tempChars[k], isLeftEdge, isRightEdge));
 
-			for (int k = 0; k < tempChars.length; k++) {
-				if (tempChars[k] == ' ') {
-					continue;
-				}
-
-				if (tempChars[k] != 'B' && tempChars[k] != 'W'
-						&& tempChars[k] != '-') {
-					in.close();
-					return false;
-				}
-
-				// Simple ternary check for edge pieces
-				isLeftEdge = (k == 0 || k == tempChars.length - 1) ? true : false;
-				isRightEdge = (k == lastChar ? true : false);
-				
-				tempList.add(index + offset, new Hexagon(row, index + offset,
-						this.totalRows, tempChars[k], isLeftEdge, isRightEdge));
-
-				index++;
-			}
+//				index++;
+//			}
 
 			row++;
 		}
 		// Closing the inputstream
-		in.close();
 		return true;
 
 	}

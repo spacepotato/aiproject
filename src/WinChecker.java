@@ -1,117 +1,36 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class MainEngine {
+public class WinChecker {
 
-	public static void main(String args[]) throws IOException {
+	protected boolean draw(Gameboard board) {
 
-		Gameboard board = new Gameboard();
-		List<Player> players = new ArrayList<Player>();
-		players.add(new Player("Black"));
-		players.add(new Player("White"));
+		List<List<Hexagon>> hexagons;
+		boolean draw = true;
 
-		Player player1;
-		Player player2;
-try{
-		if (board.generateHexagons()) {
+		hexagons = board.getBoard();
 
-			for (Player tempPlayer : players) {
+		outerloop: for (List<Hexagon> tempList : hexagons) {
+			innerloop: for (Hexagon tempHexagon : tempList) {
 
-				if (tripodWin(board, tempPlayer.getPlayerChar())) {
-					tempPlayer.setPlayerWin(true);
-					tempPlayer.setPlayerWinState("Tripod");
+				if (tempHexagon == null) {
+					continue innerloop;
 				}
 
-				if (loopWin(board, tempPlayer.getPlayerChar())) {
-					if (tempPlayer.getPlayerWin()) {
-						tempPlayer.setPlayerWinState("Both");
-					} else {
-						tempPlayer.setPlayerWin(true);
-						tempPlayer.setPlayerWinState("Loop");
-					}
+				if (tempHexagon.value == '-') {
+					draw = false;
+					break outerloop;
 				}
-			}//End forloop
-			
-			player1 = players.get(0);
-			player2 = players.get(1);
 
-			if (player1.getPlayerWin()) {
-				System.out.println(player1.getPlayerName());
-				System.out.println(player1.getPlayerWinState());
-			}
-
-			else if (player2.getPlayerWin()) {
-				System.out.println(player2.getPlayerName());
-				System.out.println(player2.getPlayerWinState());
-			}
-			else if (draw(board)) {
-				System.out.println("Draw");
-				System.out.println("Nil");
-			} 
-			else {
-				System.out.println("None");
-				System.out.println("Nil");
-			}
-			
-
-
-		}
-
-		else {
-			System.out.println("There was an error with the input");
-			return;
-		}
-}
-//If these are reached we can assume that the input has not been formatted properly
-catch(NullPointerException e){
-	System.out.println("There was an error with the input");
-}
-
-catch(IndexOutOfBoundsException e){
-	System.out.println("There was an error with the input");
-}
-
-	}//End of main function
-
-	protected static void resetCheckedState(Gameboard board) {
-
-		List<List<Hexagon>> tempBoard = board.getBoard();
-
-		for (List<Hexagon> tempList : tempBoard) {
-			for (Hexagon tempHex : tempList) {
-				if (tempHex != null) {
-					tempHex.checked = 0;
-				}
 			}
 		}
+
+		return draw;
 
 	}
 
-	// Checking the 6 adjacent pieces to see if they are the same value as the
-	// hexagon we are checking
-	protected static int checkAdjacency(Hexagon toCheck,
-			List<List<Hexagon>> board, int totalRows, char player) {
-
-		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
-
-		int numberAdjacent = 0;
-
-		for (Coordinate tempCoords : adjacencies) {
-			int tempColumn = tempCoords.getColumn();
-			int tempRow = tempCoords.getRow();
-
-			if (tempColumn != 999
-					&& board.get(tempRow).get(tempColumn).getValue() == player) {
-				numberAdjacent++;
-			}
-		}
-
-		return numberAdjacent;
-	}
-
-	protected static boolean tripodWin(Gameboard board, char player) {
+	protected boolean tripodWin(Gameboard board, char player) {
 
 		List<List<Hexagon>> hexagons;
 
@@ -233,7 +152,7 @@ catch(IndexOutOfBoundsException e){
 
 	}
 
-	protected static boolean loopWin(Gameboard board, char player) {
+	protected boolean loopWin(Gameboard board, char player) {
 
 		List<List<Hexagon>> hexagons;
 
@@ -357,33 +276,42 @@ catch(IndexOutOfBoundsException e){
 		return win;
 
 	}
+	
 
-	// Checks if there are any empty places on the board. If not, then it is
-	// considered a draw.
-	protected static boolean draw(Gameboard board) {
+	protected void resetCheckedState(Gameboard board) {
 
-		List<List<Hexagon>> hexagons;
-		boolean draw = true;
+		List<List<Hexagon>> tempBoard = board.getBoard();
 
-		hexagons = board.getBoard();
-
-		outerloop: for (List<Hexagon> tempList : hexagons) {
-			innerloop: for (Hexagon tempHexagon : tempList) {
-
-				if (tempHexagon == null) {
-					continue innerloop;
+		for (List<Hexagon> tempList : tempBoard) {
+			for (Hexagon tempHex : tempList) {
+				if (tempHex != null) {
+					tempHex.checked = 0;
 				}
-
-				if (tempHexagon.value == '-') {
-					draw = false;
-					break outerloop;
-				}
-
 			}
 		}
 
-		return draw;
+	}
 
+	// Checking the 6 adjacent pieces to see if they are the same value as the
+	// hexagon we are checking
+	protected int checkAdjacency(Hexagon toCheck,
+			List<List<Hexagon>> board, int totalRows, char player) {
+
+		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
+
+		int numberAdjacent = 0;
+
+		for (Coordinate tempCoords : adjacencies) {
+			int tempColumn = tempCoords.getColumn();
+			int tempRow = tempCoords.getRow();
+
+			if (tempColumn != 999
+					&& board.get(tempRow).get(tempColumn).getValue() == player) {
+				numberAdjacent++;
+			}
+		}
+
+		return numberAdjacent;
 	}
 
 }
