@@ -30,7 +30,7 @@ public class WinChecker {
 
 	}
 
-	protected boolean tripodWin(Gameboard board, char player) {
+	protected boolean tripodWin(Gameboard board, int player) {
 
 		List<List<Hexagon>> hexagons;
 
@@ -152,7 +152,7 @@ public class WinChecker {
 
 	}
 
-	protected boolean loopWin(Gameboard board, char player) {
+	protected boolean loopWin(Gameboard board, int player) {
 
 		List<List<Hexagon>> hexagons;
 
@@ -295,7 +295,7 @@ public class WinChecker {
 	// Checking the 6 adjacent pieces to see if they are the same value as the
 	// hexagon we are checking
 	protected int checkAdjacency(Hexagon toCheck,
-			List<List<Hexagon>> board, int totalRows, char player) {
+			List<List<Hexagon>> board, int totalRows, int player) {
 
 		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
 

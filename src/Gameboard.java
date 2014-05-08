@@ -1,6 +1,10 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+
+import aiproj.fencemaster.Move;
 
 public class Gameboard {
 
@@ -44,19 +48,18 @@ public class Gameboard {
 	protected boolean generateHexagons(int dimensions) {
 		List<Hexagon> tempList;
 		int index = 0;
-		int lastChar = 0;
 
-		char[] tempChars;
 		int row = 0;
+		int column = dimensions;
 		int offset = 0;
-		boolean isLeftEdge, isRightEdge;
+		boolean isLeftEdge = false;
+		boolean isRightEdge = false;
 		this.totalRows = dimensions * 2 - 1;
 
 
 		for(int i = 0; i < this.totalRows; i++){
 			
 			index = 0;
-			lastChar = 0;
 			tempList = new ArrayList<Hexagon>();
 			this.gameboard.add(row, tempList);
 			
@@ -71,44 +74,46 @@ public class Gameboard {
 				offset++;
 			}
 
-			for (int x = 0; i < offset; i++) {
+			for (int j = 0; j < offset; j++) {
 				tempList.add(i, null);
 			}
 			
 			//Because we don't know how many whitespaces, we do this check to see if the character
 			//we are about to create a hexagon for is the last non-whitespace character in the line
 			//and thus can be considered as a right edge
-//			for(int j = 0; j < tempChars.length; j++){
-//				if(tempChars[j] != ' '){
-//					lastChar = j;
-//				}
-//			}
-//
-//			for (int k = 0; k < tempChars.length; k++) {
-//				if (tempChars[k] == ' ') {
-//					continue;
-//				}
-//
-//				if (tempChars[k] != 'B' && tempChars[k] != 'W'
-//						&& tempChars[k] != '-') {
-//					return false;
-//				}
-//
-//				// Simple ternary check for edge pieces
-//				isLeftEdge = (k == 0 || k == tempChars.length - 1) ? true : false;
-//				isRightEdge = (k == lastChar ? true : false);
-//				
-//				tempList.add(index + offset, new Hexagon(row, index + offset,
-//						this.totalRows, tempChars[k], isLeftEdge, isRightEdge));
 
-//				index++;
-//			}
+
+			for(int k = offset; k < column; k++ ){
+				if(k == offset){
+					isLeftEdge = true;
+				}
+				
+				if(k + 1 == column){
+					isRightEdge = true;
+				}
+				
+				tempList.add(index + offset, new Hexagon(row, index + offset, this.totalRows, isLeftEdge, isRightEdge));
+				index++;
+			}
 
 			row++;
 		}
-		// Closing the inputstream
 		return true;
 
+	}
+	
+	protected boolean updateBoard(Move move){
+		Hexagon toChange = this.gameboard.get(move.Col).get(move.Row);
+		
+		//If the square is already occupied and the move is not a swap move then it must be an illegal move
+		if(toChange.getValue() != 0 && !move.IsSwap){
+			return false;
+		}
+		
+		else{
+			toChange.setValue(move.P);
+			return true;
+		}
 	}
 
 	// Getters and setters

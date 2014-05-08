@@ -3,6 +3,7 @@ public class PlayerCustom {
 	protected String playerName;
 	protected boolean playerWin;
 	protected String playerWinState;
+	protected int playerValue;
 
 	public PlayerCustom(String name) {
 		this.playerName = name;
@@ -24,11 +25,11 @@ public class PlayerCustom {
 		return this.playerWinState;
 	}
 	
-	public char getPlayerChar(){
-		return this.playerName.charAt(0);
+	public int getPlayerValue(){
+		return this.playerValue;
 	}
 	
-	public String getPlayerName(){
-		return this.playerName;
+	public void setPlayerValue(int playerValue){
+		this.playerValue = playerValue;
 	}
 }

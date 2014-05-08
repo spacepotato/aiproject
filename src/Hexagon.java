@@ -14,7 +14,7 @@ public class Hexagon {
 		protected boolean isLeftEdge;
 		protected boolean isRightEdge;
 		
-		protected char value;
+		protected int value;
 		
 		protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
 		
@@ -193,12 +193,12 @@ public class Hexagon {
 		}
 		
 		
-		public Hexagon(int row, int column, int totalRows, char value, boolean isLeftEdge, boolean isRightEdge){
+		public Hexagon(int row, int column, int totalRows, boolean isLeftEdge, boolean isRightEdge){
 
 			
 			this.row = row;
 			this.column = column;
-			this.value = value;
+			this.value = ' ';
 			this.isLeftEdge = isLeftEdge;
 			this.isRightEdge = isRightEdge;
 			
@@ -388,11 +388,11 @@ public class Hexagon {
 			return this.column;
 		}
 		
-		protected char getValue(){
+		protected int getValue(){
 			return this.value;
 		}
 		
-		protected void setValue(char player){
+		protected void setValue(int player){
 			this.value = player;
 		}
 		
@@ -406,6 +406,6 @@ public class Hexagon {
 		//Just so we can make sure that the array has been read in properly
 		@Override
 		public String toString(){
-			return "This " + value + " hexagon lies at: (" +  Integer.toString(row) + "," + Integer.toString(column) + ") ";
+			return "This  hexagon lies at: (" +  Integer.toString(row) + "," + Integer.toString(column) + ") ";
 		}
 }
