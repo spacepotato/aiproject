@@ -91,8 +91,9 @@ public class Gameboard {
 				
 				tempList.add(index + offset, new Hexagon(row, index + offset, this.totalRows, isLeftEdge, isRightEdge));
 				index++;
+				
 			}
-
+			column++;
 			row++;
 		}
 		return true;
@@ -100,7 +101,7 @@ public class Gameboard {
 	}
 	
 	protected boolean updateBoard(Move move){
-		Hexagon toChange = this.gameboard.get(move.Col).get(move.Row);
+		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		
 		//If the square is already occupied and the move is not a swap move then it must be an illegal move
 		if(toChange.getValue() != 0 && !move.IsSwap){

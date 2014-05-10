@@ -115,6 +115,8 @@ public class FenceMaster extends JFrame implements MouseListener{
 			playerMove.Row = hexClicked.getRow();
 			playerMove.Col = hexClicked.getColumn();
 			
+			System.out.println("You just clicked the hexagon at: " + hexClicked.getRow() + " , " + hexClicked.getColumn());
+			
 			boardController.opponentMove(playerMove);
 			
 			repaint();

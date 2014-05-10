@@ -198,7 +198,7 @@ public class Hexagon {
 			
 			this.row = row;
 			this.column = column;
-			this.value = ' ';
+			this.value = 0;
 			this.isLeftEdge = isLeftEdge;
 			this.isRightEdge = isRightEdge;
 			
