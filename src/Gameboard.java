@@ -72,7 +72,7 @@ public class Gameboard {
 			}
 
 			for (int j = 0; j < offset; j++) {
-				tempList.add(i, null);
+				tempList.add(j, null);
 			}
 			
 			//Because we don't know how many whitespaces, we do this check to see if the character
@@ -80,12 +80,12 @@ public class Gameboard {
 			//and thus can be considered as a right edge
 
 
-			for(int k = offset; k < column; k++ ){
+			for(int k = offset; k < column + offset; k++ ){
 				if(k == offset){
 					isLeftEdge = true;
 				}
 				
-				if(k + 1 == column){
+				if(k + 1 == column + offset){
 					isRightEdge = true;
 				}
 				

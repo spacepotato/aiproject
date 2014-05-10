@@ -38,6 +38,9 @@ public class Ahowindt implements Player, Piece {
 		Move ourMove = new Move();
 		ourMove.P = ourPlayerValue;
 		
+		ourMove.Row = 5;
+		ourMove.Col = 5;
+		
 		this.board.updateBoard(ourMove);
 		return ourMove;
 	}

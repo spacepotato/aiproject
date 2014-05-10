@@ -2,7 +2,14 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+
+import aiproj.fencemaster.Move;
 
 
 @SuppressWarnings("serial")
@@ -10,12 +17,15 @@ public class FenceMaster extends JFrame implements MouseListener{
 	
 	boolean replaceRule = true;
 	GameBoardDisplay gb = new GameBoardDisplay();
+	Ahowindt boardController= new Ahowindt();
 	String player;
 	int clickNum;
 	WinState gameWinState;
 	JScrollPane history;
 	
 	public FenceMaster(){
+		
+
 		
 		String input = JOptionPane.showInputDialog("Please enter board size:");
 		if(input == null){
@@ -27,12 +37,18 @@ public class FenceMaster extends JFrame implements MouseListener{
 		int width = 68*(2*n-1) + 40;
 		int height = 80*(2*n-1) - 20*(2*n-2) + 60;
 		
-		input = JOptionPane.showInputDialog("Who will go first: Black or White?");
-		if(input == null){
-			JOptionPane.showMessageDialog(null, "Inccorect input. Game exiting.");
-			System.exit(0);
-		}
-		player = input;
+//		input = JOptionPane.showInputDialog("Who will go first: Black or White?");
+//		if(input == null){
+//			JOptionPane.showMessageDialog(null, "Inccorect input. Game exiting.");
+//			System.exit(0);
+//		}
+//		player = input;
+		
+		player = "Black";
+		
+		//Initializing a white AI player
+		boardController.init(n, 1);
+		
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -69,6 +85,9 @@ public class FenceMaster extends JFrame implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		Move playerMove = new Move();
+		Move AIMove = new Move();
+		
 		int x = e.getX();
 		int y = e.getY();
 		boolean goAgain = false;
@@ -92,7 +111,12 @@ public class FenceMaster extends JFrame implements MouseListener{
 			}
 		}
 		if(!goAgain){
-			gb.updateGameBoard(player.charAt(0),hexClicked.getRow(), hexClicked.getColumn());
+			gb.updateGameBoard('B',hexClicked.getRow(), hexClicked.getColumn());
+			playerMove.Row = hexClicked.getRow();
+			playerMove.Col = hexClicked.getColumn();
+			
+			boardController.opponentMove(playerMove);
+			
 			repaint();
 			
 			gameWinState.updateWinState(hexClicked.getRow(), hexClicked.getColumn(), player);
@@ -107,12 +131,18 @@ public class FenceMaster extends JFrame implements MouseListener{
 			}
 			
 			System.out.println(player);
-			if(player.charAt(0) == 'B'){
-				player = "White";
-			}
-			else if(player.charAt(0) == 'W'){
-				player = "Black";
-			}
+			
+			AIMove = boardController.makeMove();
+			
+			gb.updateGameBoard('W',AIMove.Row, AIMove.Col);
+			
+			repaint();
+			
+			gameWinState.updateWinState(AIMove.Row, AIMove.Col, "White");
+			
+			System.out.println("Black");
+			
+			
 		}
 		
 		if(finished){
