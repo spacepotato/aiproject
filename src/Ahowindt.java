@@ -68,6 +68,10 @@ public class Ahowindt implements Player, Piece {
 				System.out.println(adjacency);
 				nextMove = adjacencies.get(adjacency);
 				
+				if(nextMove.getRow() > this.board.totalRows){
+					continue;
+				}
+				
 				if(nextMove.getRow() == 999 || nextMove.getColumn() == 999){
 					continue;
 				}
