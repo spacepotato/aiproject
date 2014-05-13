@@ -47,7 +47,7 @@ public class Gameboard {
 		int index = 0;
 
 		int row = 0;
-		int column = dimensions;
+		int column = dimensions - 1;
 		int offset = 0;
 		boolean isLeftEdge = false;
 		boolean isRightEdge = false;
@@ -55,6 +55,8 @@ public class Gameboard {
 
 
 		for(int i = 0; i < this.totalRows; i++){
+			
+
 			
 			index = 0;
 			tempList = new ArrayList<Hexagon>();
@@ -69,6 +71,11 @@ public class Gameboard {
 			// layout of the columns
 			if (row > Math.ceil((this.totalRows) / 2)) {
 				offset++;
+				column--;
+			}
+			
+			else{
+				column++;
 			}
 
 			for (int j = 0; j < offset; j++) {
@@ -81,6 +88,10 @@ public class Gameboard {
 
 
 			for(int k = offset; k < column + offset; k++ ){
+				
+				isLeftEdge = false;
+				isRightEdge = false;
+				
 				if(k == offset){
 					isLeftEdge = true;
 				}
@@ -93,7 +104,6 @@ public class Gameboard {
 				index++;
 				
 			}
-			column++;
 			row++;
 		}
 		return true;

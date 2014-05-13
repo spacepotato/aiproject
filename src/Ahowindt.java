@@ -45,42 +45,46 @@ public class Ahowindt implements Player, Piece {
 		
 		Random rand = new Random();
 		Coordinate nextMove = null;
-		boolean foundMove = false;
 
 		Move ourMove = new Move();
 
 		if (previousMove == null) {
 			ourMove.P = ourPlayerValue;
 
-			ourMove.Row = 5;
-			ourMove.Col = 5;
+			ourMove.Row = 1;
+			ourMove.Col = 1;
 		}
 		else{
 			Hexagon previousHexagon = this.hexBoard.get(previousMove.Row).get(previousMove.Col);
 			List<Coordinate> adjacencies = previousHexagon.getAdjacencies();
+			List<Coordinate> potentials = new ArrayList<Coordinate>();
 			
 			ourMove.P = ourPlayerValue;
 			
+			System.out.println("We are getting to here");
+			System.out.println("There are " + adjacencies.size() + " spots in total");
 			
-			
-			while(!foundMove){
-				int  adjacency = rand.nextInt(5);
-				System.out.println(adjacency);
-				nextMove = adjacencies.get(adjacency);
+						
+			for(Coordinate tempCoord: adjacencies){
+				System.out.println("The coord we are checking is at: " + tempCoord.getRow() + " , " + tempCoord.getColumn());
 				
-				if(nextMove.getRow() > this.board.totalRows){
-					continue;
+				if(tempCoord.getRow() != 999 || tempCoord.getColumn() != 999){
+					Hexagon toAdd = this.hexBoard.get(tempCoord.getRow()).get(tempCoord.getColumn());
+					System.out.println("The value of the hexagon is " + toAdd.getValue());
+					if(toAdd.getValue() == 0){
+						potentials.add(tempCoord);
+					}
 				}
 				
-				if(nextMove.getRow() == 999 || nextMove.getColumn() == 999){
-					continue;
-				}
-				else if(this.hexBoard.get(nextMove.getRow()).get(nextMove.getColumn()).getValue() == 0){
-					ourMove.Row = nextMove.getRow();
-					ourMove.Col = nextMove.getColumn();
-					foundMove = true;
-				}
 			}
+			
+			System.out.println("We are finding " + potentials.size() + " free spots");
+			
+			//generating the random move
+			nextMove = potentials.get(rand.nextInt(potentials.size()));
+			ourMove.Col = nextMove.getColumn();
+			ourMove.Row = nextMove.getRow();
+			ourMove.P = 1;
 			
 			
 		}
