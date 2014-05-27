@@ -213,7 +213,8 @@ public class MinMaxTree implements Piece{
 		}
 		
 	
-		int number = 0, maxNum = 0, order = 1;
+		int number = 0, minNum = Integer.MAX_VALUE, order = 1;
+		int [] edgeCounter = new int[6];
 		
 		Comparator<Hexagon> comparator = new HexagonComparator();
 		PriorityQueue<Hexagon> hexQueue = new PriorityQueue<Hexagon>(11, comparator);
@@ -266,6 +267,8 @@ public class MinMaxTree implements Piece{
 					
 					hexQueue.comparator();
 					
+					
+					
 					if(currentHex.getIsEdge()){
 						number += backtrace(currentHex);
 					}
@@ -275,14 +278,14 @@ public class MinMaxTree implements Piece{
 				}//End of While Loop
 				
 				System.out.println("Exited While Loop, number = " + number);
-				if(number > maxNum){
-					maxNum = number;
+				if(number < minNum){
+					minNum = number;
 				}
 				number =0;
 			}//End of inner for loop
 		}//End of outer for loop
 		
-		return Math.pow(100, -maxNum);
+		return Math.pow(100, -minNum);
 	}//End of tripodEval
 	
 	int backtrace(Hexagon h){

@@ -15,7 +15,9 @@ public class Gameboard {
 	}
 	
 	public Gameboard(Gameboard gb){
-		gameboard = gb.getBoard();
+		this.gameboard = new ArrayList<List<Hexagon>>(gb.getBoard());
+		this.totalRows = gb.totalRows;
+		this.filePath = gb.filePath;
 	}
 	
 
