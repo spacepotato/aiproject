@@ -98,6 +98,7 @@ public class Ahowindt implements Player, Piece {
 		else if (secondMove == true) {
 			ourMove.Row = 0;
 			ourMove.Col = 1;
+			ourMove.P = 1;
 			secondMove = false;
 		}
 

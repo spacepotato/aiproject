@@ -1,10 +1,11 @@
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Stack;
+import java.util.Queue;
 
-import aiproj.fencemaster.Piece;
 import aiproj.fencemaster.Move;
+import aiproj.fencemaster.Piece;
 
 
 
@@ -12,7 +13,6 @@ public class MinMaxTree implements Piece{
 	
 	private Node parent;
 	private Move idealMove;
-	private Move nextMove;
 	private int player, opponent;
 	
 	protected double base = 3;
@@ -22,8 +22,7 @@ public class MinMaxTree implements Piece{
 		//System.setOut(new PrintStream(new FileOutputStream("output.txt")));
 		
 		this.idealMove = new Move(player,false,0,0);
-		this.nextMove = new Move();
-		this.parent = new Node(gb, 0, this.nextMove);
+		this.parent = new Node(gb, 0, new Move());
 		this.player = player;
 		
 		if(player == BLACK){
@@ -40,72 +39,69 @@ public class MinMaxTree implements Piece{
 	}
 	
 	protected void createTree(){
-		List<List<Hexagon>> Hexagons = this.parent.getState().getBoard();
-
 		
-		int ply=0;
-//		boolean gameEnd = false;
+		int nextPlayer = opponent, count=0;
 		
-		Stack<Node> treeStack = new Stack<Node>();
+		Queue<Node> treeQueue = new LinkedList<Node>();
 		WinChecker winCheck = new WinChecker();
 		
-		treeStack.push(parent);
+		treeQueue.add(parent);
 		
-		while(!treeStack.isEmpty()){
+		while(!treeQueue.isEmpty()){
 			
-			Node currentNode = treeStack.pop();
+			Node currentNode = treeQueue.poll();
 			
+			if(winCheck.getWin(currentNode.getState()) < 0){
+				continue;
+			}
 
-			if(winCheck.getWin(this.parent.getState()) == 1){
+			//Restricting the depth to which we will create the tree
+			if(currentNode.getPly() > 2){
 				continue;
 			}
 			
-			if(currentNode.getPly() >= 1){
-				continue;
-			}
-			
-
-					
-			for(List<Hexagon> tempList : Hexagons){
+			for(List<Hexagon> tempList : currentNode.getState().getBoard()){
 				for(Hexagon tempHex : tempList){
+					
 					if(tempHex == null){
 						continue;
 					}
-					if(tempHex.getValue() == EMPTY){
-						
-						
-						
-						nextMove.Row = tempHex.getRow();
-						nextMove.Col = tempHex.getColumn();
-						
-						//Determining who will make the next move
-						if(currentNode.getPly()%2 == 0){
-							nextMove.P = this.opponent;
-						} else if(currentNode.getPly()%2 == 1){
-							nextMove.P = this.player;
-						}
 
-						Gameboard newGB = new Gameboard(currentNode.getState());
-						Node newNode = new Node(newGB, ply, nextMove);
+					if(tempHex.getValue() == EMPTY){
+
+						if(currentNode.getPly()%2 == 0){
+							nextPlayer = opponent;
+						} else if(currentNode.getPly()%2 == 1){
+							nextPlayer = player;
+						}
+						
+						Move nextMove = new Move(nextPlayer,false,tempHex.getRow(),tempHex.getColumn());
+						
+						Gameboard newState = new Gameboard(currentNode.getState());
+						newState.updateBoard(nextMove);
+						
+						Node newNode = new Node(newState,currentNode.getPly()+1,nextMove);
 						newNode.setParent(currentNode);
+						
 						currentNode.children.add(newNode);
-						currentNode.getState().updateBoard(nextMove);
-						treeStack.push(newNode);
+						treeQueue.add(newNode);
 						
-						System.out.println("To the current node of: " + currentNode.getMove().Row + " , " + currentNode.getMove().Col + " we are adding the child " + newNode.getMove().Row + " " + newNode.getMove().Col);
+						count++;
 						
+						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
+								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
 					}//End of if statement
 
 				}//End of inner ForLoop
 			}//End of outer ForLoop
 
-			if(ply == 0){
-				ply++;
-			} else {
-				ply = currentNode.getParent().getPly() + 2;
-			}
-				}
-			}
+			
+		}//End of While Loop
+			
+		System.out.println(count);
+		
+		
+	}//End of Create Tree Function
 
 	
 	//The minimax recursive algorithm enclosed by the searchTree function was adapted from "Artificial Intelligence: A 
@@ -258,7 +254,7 @@ public class MinMaxTree implements Piece{
 					hexQueue.comparator();
 					
 					if(currentHex.getIsEdge()){
-						number += backtrace(currentHex, tempHex);
+						number += backtrace(currentHex);
 					}
 					
 					currentHex.setChecked(order);
@@ -274,14 +270,16 @@ public class MinMaxTree implements Piece{
 		return Math.pow(100, -number);
 	}
 	
-	int backtrace(Hexagon end, Hexagon start){
+	int backtrace(Hexagon h){
 		
-		Hexagon hex = end;
+		Hexagon hex = h;
 		int number=0;
-		while(hex != start){
-			System.out.println("We are getting stuck in the backtrace loop");
+
+		while(hex.parent != null){
+			if(hex.getValue() == EMPTY){
+				number++;
+			}
 			hex = hex.parent;
-			number++;
 		}
 		return number;
 	}
