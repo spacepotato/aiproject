@@ -1,11 +1,5 @@
 import java.util.Comparator;
-<<<<<<< HEAD
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-=======
 import java.util.LinkedList;
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -45,28 +39,16 @@ public class MinMaxTree implements Piece{
 	}
 	
 	protected void createTree(){
-		
-<<<<<<< HEAD
-		int ply=0, nextPlayer = opponent;
-//		boolean gameEnd = false;
-		
-		Stack<Node> treeStack = new Stack<Node>();
-//		WinChecker winCheck = new WinChecker();
-=======
-		int nextPlayer = opponent, count=0;
+
+		int nextPlayer = opponent;
 		
 		Queue<Node> treeQueue = new LinkedList<Node>();
 		WinChecker winCheck = new WinChecker();
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 		
 		treeQueue.add(parent);
 		
 		while(!treeQueue.isEmpty()){
 			
-<<<<<<< HEAD
-
-			if(currentNode.getPly() >= 2){
-=======
 			Node currentNode = treeQueue.poll();
 			
 			if(winCheck.getWin(currentNode.getState()) < 0){
@@ -75,7 +57,6 @@ public class MinMaxTree implements Piece{
 
 			//Restricting the depth to which we will create the tree
 			if(currentNode.getPly() > 2){
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 				continue;
 			}
 			
@@ -87,11 +68,6 @@ public class MinMaxTree implements Piece{
 					}
 
 					if(tempHex.getValue() == EMPTY){
-<<<<<<< HEAD
-						
-=======
-
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 						if(currentNode.getPly()%2 == 0){
 							nextPlayer = opponent;
 						} else if(currentNode.getPly()%2 == 1){
@@ -102,27 +78,13 @@ public class MinMaxTree implements Piece{
 						
 						Gameboard newState = new Gameboard(currentNode.getState());
 						newState.updateBoard(nextMove);
-<<<<<<< HEAD
-=======
-						
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
+
 						Node newNode = new Node(newState,currentNode.getPly()+1,nextMove);
 						newNode.setParent(currentNode);
 						
 						currentNode.children.add(newNode);
-<<<<<<< HEAD
-						treeStack.push(newNode);
-						
-						count++;
-						
-						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
-								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
-						
-=======
+
 						treeQueue.add(newNode);
-						
-						count++;
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 						
 						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
 								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
@@ -131,23 +93,12 @@ public class MinMaxTree implements Piece{
 				}//End of inner ForLoop
 			}//End of outer ForLoop
 
-<<<<<<< HEAD
-			
-			}//End of While Loop
-			
-=======
 			
 		}//End of While Loop
 			
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
-		System.out.println(count);
 		
 		
 	}//End of Create Tree Function
-<<<<<<< HEAD
-=======
-
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 	
 	//The minimax recursive algorithm enclosed by the searchTree function was adapted from "Artificial Intelligence: A 
 	//Modern Approach" by Stuart Russell and Peter Norvig.
@@ -172,15 +123,9 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 		
-<<<<<<< HEAD
 
-		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode));
-
-=======
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 			return currentNode.getEvalValue();
 		}
 		
@@ -209,18 +154,10 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
 		
-<<<<<<< HEAD
 
-		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode));
-//			System.out.println(evalFunc(currentNode) + " for " + currentNode.getMove().Row + " " + currentNode.getMove().Col);
-			
-			return evalFunc(currentNode);
-=======
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
 			return evalFunc(currentNode.getState());
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 		}
 		
 		value = Double.POSITIVE_INFINITY;
@@ -245,18 +182,10 @@ public class MinMaxTree implements Piece{
 
 		return value;
 	}
-<<<<<<< HEAD
-	
-
-	private Double evalFunc(Node node){
-		return (tripodEval(node.getState().getBoard(), this.player) - tripodEval(node.getState().getBoard(), this.opponent)) + 
-				(loopEval(node, this.player) - loopEval(node, this.opponent));
-=======
 
 	private Double evalFunc(Gameboard gb){
 		return (tripodEval(gb.getBoard(), this.player) - tripodEval(gb.getBoard(), this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 	}
 	
 	private double tripodEval(List<List<Hexagon>> hexBoard, int player){
@@ -340,15 +269,11 @@ public class MinMaxTree implements Piece{
 		
 		Hexagon hex = h;
 		int number=0;
-<<<<<<< HEAD
-		while(hex.parent != null){
-=======
 
 		while(hex.parent != null){
 			if(hex.getValue() == EMPTY){
 				number++;
 			}
->>>>>>> c1f64cd30f2f0428c7a26e370f158d566415dd3c
 			hex = hex.parent;
 		}
 		return number;
