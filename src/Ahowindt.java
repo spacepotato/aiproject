@@ -106,37 +106,6 @@ public class Ahowindt implements Player, Piece {
 			ourMove = mmt.getMove();
 		
 			
-//			
-//			Hexagon previousHexagon = this.hexBoard.get(previousMove.Row).get(previousMove.Col);
-//			List<Coordinate> adjacencies = previousHexagon.getAdjacencies();
-//			List<Coordinate> potentials = new ArrayList<Coordinate>();
-//			
-//			ourMove.P = ourPlayerValue;
-//			
-//			System.out.println("We are getting to here");
-//			System.out.println("There are " + adjacencies.size() + " spots in total");
-//			
-//						
-//			for(Coordinate tempCoord: adjacencies){
-//				System.out.println("The coord we are checking is at: " + tempCoord.getRow() + " , " + tempCoord.getColumn());
-//				
-//				if(tempCoord.getRow() != 999 || tempCoord.getColumn() != 999){
-//					Hexagon toAdd = this.hexBoard.get(tempCoord.getRow()).get(tempCoord.getColumn());
-//					System.out.println("The value of the hexagon is " + toAdd.getValue());
-//					if(toAdd.getValue() == 0){
-//						potentials.add(tempCoord);
-//					}
-//				}
-//				
-//			}
-//			
-//			System.out.println("We are finding " + potentials.size() + " free spots");
-//			
-//			//generating the random move
-//			nextMove = potentials.get(rand.nextInt(potentials.size()));
-//			ourMove.Col = nextMove.getColumn();
-//			ourMove.Row = nextMove.getRow();
-//			ourMove.P = 1;
 			
 			
 		}

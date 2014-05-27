@@ -17,7 +17,7 @@ public class MinMaxTree implements Piece{
 	
 	public MinMaxTree(Gameboard gb, int player){
 		
-		this.idealMove = new Move();
+		this.idealMove = new Move(player,false,0,0);
 		this.nextMove = new Move();
 		this.parent = new Node(gb, 0, this.nextMove);
 		this.player = player;
@@ -116,7 +116,6 @@ public class MinMaxTree implements Piece{
 	
 	protected Double maxValue(Node currentNode, Double alpha, Double beta){
 		
-		System.out.println("Alpha : " + alpha);
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 		
@@ -147,7 +146,6 @@ public class MinMaxTree implements Piece{
 	
 	protected Double minValue(Node currentNode, Double alpha, Double beta){
 
-		System.out.println("Beta : " + beta);
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
 		
@@ -164,7 +162,6 @@ public class MinMaxTree implements Piece{
 			
 			if(value < minVal){
 				minVal = value;
-
 			}
 			
 			currentNode.setEvalValue(minVal);
