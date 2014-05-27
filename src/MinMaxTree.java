@@ -76,15 +76,29 @@ public class MinMaxTree implements Piece{
 				continue;
 			}
 			
-			for(List<Hexagon> tempList : Hexagons){
-				for(Hexagon tempHex : tempList){
-					if(tempHex == null){
+			for(List<Hexagon> tempListOuter: Hexagons){
+				for(Hexagon tempHexOuter: tempListOuter){
+					if(tempHexOuter == null){ 
 						continue;
 					}
-					if(tempHex.getValue() == EMPTY){
+					
+					Move ParentMove = new Move();
+					ParentMove.Row = tempHexOuter.getRow();
+					ParentMove.Col = tempHexOuter.getColumn();
+					
+
+			
+			for(List<Hexagon> tempListInner : Hexagons){
+				for(Hexagon tempHexInner : tempListInner){
+					if(tempHexInner == null){
+						continue;
+					}
+					if(tempHexInner.getValue() == EMPTY){
 						
-						nextMove.Row = tempHex.getRow();
-						nextMove.Col = tempHex.getColumn();
+						
+						
+						nextMove.Row = tempHexInner.getRow();
+						nextMove.Col = tempHexInner.getColumn();
 						
 						//Determining who will make the next move
 						if(currentNode.getPly()%2 == 0){
@@ -112,7 +126,8 @@ public class MinMaxTree implements Piece{
 			} else {
 				ply = currentNode.getParent().getPly() + 2;
 			}
-			
+				}
+			}
 			
 		}//End of While Loop
 		System.out.println(count);
