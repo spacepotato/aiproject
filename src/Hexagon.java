@@ -408,13 +408,12 @@ public class Hexagon {
 	}
 
 	protected boolean getIsEdge(){
-		boolean isEdge = false;
-		
+	
 		if(this.numberOfExposedEdges() >0){
-			isEdge = true;
+			return true;
 		}
 		
-		return isEdge;
+		return false;
 	}
 	
 	// Just so we can make sure that the array has been read in properly
@@ -432,7 +431,4 @@ public class Hexagon {
 		}
 	}
 	
-	public boolean equals(Hexagon h){
-		return (this.getPriorityValue() == h.getPriorityValue());
-	}
 }
