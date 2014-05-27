@@ -117,6 +117,10 @@ public class MinMaxTree implements Piece{
 		
 		for(Node tempNode : this.parent.children){
 //			System.out.println("eval value for child : " + evalFunc(tempNode));
+			
+			//TODO I Think this may be the problem. We are only considering the move that has the highest value for us
+			//For example, in the case when we are checking if the opponent is about to get a loop
+			//we are returning the correct heuristic value of -10000 but we don't make the move
 			if(tempNode.getEvalValue() > maxVal){
 				this.idealMove = tempNode.getMove();
 				maxVal = tempNode.getEvalValue();
@@ -352,7 +356,7 @@ public class MinMaxTree implements Piece{
 		
 		if(winCheck.loopWin(board, playerValue)){
 //			System.out.println("Playing a move at (" + node.getMove().Row + " , " + node.getMove().Col + ") causes a win for " + node.getMove().P);
-				return 100;
+				return 10000;
 		}
 		else{
 			return 0;
