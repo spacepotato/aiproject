@@ -22,7 +22,7 @@ public class MinMaxTree implements Piece{
 		//System.setOut(new PrintStream(new FileOutputStream("output.txt")));
 		
 		this.idealMove = new Move(player,false,0,0);
-		this.parent = new Node(gb, 0, new Move());
+		this.parent = new Node(gb, 1, new Move());
 		this.player = player;
 		
 		if(player == BLACK){
@@ -56,7 +56,7 @@ public class MinMaxTree implements Piece{
 //			}
 
 			//Restricting the depth to which we will create the tree
-			if(currentNode.getPly() > 2){
+			if(currentNode.getPly() > 3){
 				break;
 			}
 			
@@ -97,7 +97,7 @@ public class MinMaxTree implements Piece{
 				}//End of inner ForLoop
 			}//End of outer ForLoop
 			
-			currentNode.printChildren();
+//			currentNode.printChildren();
 			
 		}//End of While Loop
 		
@@ -235,7 +235,6 @@ public class MinMaxTree implements Piece{
 				}
 				
 				while(!hexQueue.isEmpty()){
-					System.out.println("In While Loop");
 					
 					Hexagon currentHex = hexQueue.poll();
 					
@@ -279,7 +278,7 @@ public class MinMaxTree implements Piece{
 			}//End of inner for loop
 		}//End of outer for loop
 		
-		return Math.pow(100, -number);
+		return Math.pow(100, -maxNum);
 	}//End of tripodEval
 	
 	int backtrace(Hexagon h){
