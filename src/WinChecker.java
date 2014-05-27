@@ -4,6 +4,47 @@ import java.util.Stack;
 
 public class WinChecker {
 	
+	public int getWin(Gameboard board){
+		List<PlayerCustom> players = new ArrayList<PlayerCustom>();
+		players.add(new PlayerCustom("Black"));
+		players.add(new PlayerCustom("White"));
+
+		PlayerCustom player1;
+		PlayerCustom player2;
+
+		for (PlayerCustom tempPlayer : players) {
+
+			if (tripodWin(board, tempPlayer.getPlayerValue())) {
+				tempPlayer.setPlayerWin(true);
+				tempPlayer.setPlayerWinState("Tripod");
+			}
+
+			if (loopWin(board, tempPlayer.getPlayerValue())) {
+				if (tempPlayer.getPlayerWin()) {
+					tempPlayer.setPlayerWinState("Both");
+				} else {
+					tempPlayer.setPlayerWin(true);
+					tempPlayer.setPlayerWinState("Loop");
+				}
+			}
+		}// End forloop
+
+		player1 = players.get(0);
+		player2 = players.get(1);
+
+		if (player1.getPlayerWin()) {
+			return 2;
+		}
+
+		else if (player2.getPlayerWin()) {
+			return 1;
+		} else if (draw(board)) {
+			return 0;
+		} else {
+			return -1;
+		}
+	}
+	
 	protected boolean draw(Gameboard board) {
 
 		List<List<Hexagon>> hexagons;

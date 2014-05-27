@@ -1,5 +1,4 @@
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.lang.Math;
@@ -149,47 +148,11 @@ public class Ahowindt implements Player, Piece {
 
 	@Override
 	public int getWinner() {
-
-		List<PlayerCustom> players = new ArrayList<PlayerCustom>();
-		players.add(new PlayerCustom("Black"));
-		players.add(new PlayerCustom("White"));
-
+		
 		WinChecker winCheck = new WinChecker();
+		
+		return winCheck.getWin(this.board);
 
-		PlayerCustom player1;
-		PlayerCustom player2;
-
-		for (PlayerCustom tempPlayer : players) {
-
-			if (winCheck.tripodWin(this.board, tempPlayer.getPlayerValue())) {
-				tempPlayer.setPlayerWin(true);
-				tempPlayer.setPlayerWinState("Tripod");
-			}
-
-			if (winCheck.loopWin(this.board, tempPlayer.getPlayerValue())) {
-				if (tempPlayer.getPlayerWin()) {
-					tempPlayer.setPlayerWinState("Both");
-				} else {
-					tempPlayer.setPlayerWin(true);
-					tempPlayer.setPlayerWinState("Loop");
-				}
-			}
-		}// End forloop
-
-		player1 = players.get(0);
-		player2 = players.get(1);
-
-		if (player1.getPlayerWin()) {
-			return 2;
-		}
-
-		else if (player2.getPlayerWin()) {
-			return 1;
-		} else if (winCheck.draw(this.board)) {
-			return 0;
-		} else {
-			return -1;
-		}
 	}
 
 	@Override
