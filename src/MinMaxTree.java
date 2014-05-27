@@ -1,4 +1,6 @@
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 import aiproj.fencemaster.Piece;
@@ -54,7 +56,7 @@ public class MinMaxTree implements Piece{
 //				continue;
 //			}
 //			
-			if(currentNode.getPly() >= 5){
+			if(currentNode.getPly() >= 1){
 				continue;
 			}
 			
@@ -119,7 +121,7 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 		
-		if(currentNode.getPly() > 5 || currentNode.children.isEmpty()){
+		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
 			return currentNode.getEvalValue();
 		}
@@ -149,7 +151,7 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
 		
-		if(currentNode.getPly() > 5 || currentNode.children.isEmpty()){
+		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
 			return evalFunc(currentNode.getState());
 		}
@@ -178,12 +180,98 @@ public class MinMaxTree implements Piece{
 	}
 	
 	private Double evalFunc(Gameboard gb){
-		return (tripodEval(gb.getBoard()) - tripodEval(gb.getBoard())) + 
-				(loopEval(gb.getBoard()) - loopEval(gb.getBoard()));
+		return (tripodEval(gb.getBoard(), this.player) - tripodEval(gb.getBoard(), this.opponent)); 
+//				+ (loopEval(gb.getBoard()) - loopEval(gb.getBoard()));
 	}
 	
-	private double tripodEval(List<List<Hexagon>> hexBoard){
-		return 0.0;
+	private double tripodEval(List<List<Hexagon>> hexBoard, int player){
+		
+		int opponent = 0;
+		
+		//Determining the colour of the opponent
+		if(player == WHITE){
+			opponent = BLACK;
+		} else if(player == BLACK){
+			opponent = WHITE;
+		}
+		
+	
+		int number = 0;
+		int order = 1;
+		
+		Comparator<Hexagon> comparator = new HexagonComparator();
+		PriorityQueue<Hexagon> hexQueue = new PriorityQueue<Hexagon>(11, comparator);
+		
+		for(List<Hexagon> tempList : hexBoard){
+			innerloop : for(Hexagon tempHex : tempList){
+				
+				if(tempHex == null){
+					continue innerloop;
+				}
+				
+				tempHex.setPriorityValue(player);
+				
+				if(tempHex.getValue() != player){
+					continue innerloop;
+				} else if(tempHex.getChecked() != 0){
+					continue innerloop;
+				}
+				
+				if(tempHex.getValue() == player){
+					hexQueue.add(tempHex);
+					tempHex.setParent(null);
+				}
+				
+				while(!hexQueue.isEmpty()){
+					
+					Hexagon currentHex = hexQueue.poll();
+					
+					
+					for(Coordinate coords : currentHex.adjacencies){
+						
+						if(coords.getRow() == 999 || coords.getColumn() == 999){
+							continue;
+						}
+						
+						Hexagon nextHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+						nextHex.setParent(currentHex);
+						
+						if(nextHex.getValue() == opponent){
+							continue;
+						}
+						
+						hexQueue.add(nextHex);
+						
+					}
+					
+					hexQueue.comparator();
+					
+					if(currentHex.getIsEdge()){
+						number += backtrace(currentHex, tempHex);
+					}
+					
+					currentHex.setChecked(order);
+					order++;
+				}
+				
+			}
+		}
+		
+		
+		
+		
+		return Math.pow(100, -number);
+	}
+	
+	int backtrace(Hexagon end, Hexagon start){
+		
+		Hexagon hex = end;
+		int number=0;
+		while(hex != start){
+			hex = hex.parent;
+			number++;
+		}
+		return number;
 	}
 	
 
@@ -238,6 +326,18 @@ public class MinMaxTree implements Piece{
 	
 	protected Move getMove(){
 		return this.idealMove;
+	}
+	
+	public class HexagonComparator implements Comparator<Hexagon>{
+
+		@Override
+		public int compare(Hexagon h1, Hexagon h2) {
+			
+			return h1.getPriorityValue() - h2.getPriorityValue();
+		}
+		
+
+		
 	}
 
 	
