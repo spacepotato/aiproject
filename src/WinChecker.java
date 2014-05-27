@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class WinChecker {
-
+	
 	protected boolean draw(Gameboard board) {
 
 		List<List<Hexagon>> hexagons;
@@ -87,16 +87,8 @@ public class WinChecker {
 					// Determining whether a tripod has been formed.
 					// ====================================================================================================================
 
-					int sum = 0;
-					for (int i = 0; i < 6; i++) {// Finding the number of
-													// exposed edges that the
-													// hexagon has
-						sum += currentHex.adjacencies.get(i).getRow();
-					}
-
-					int numberOfExposedEdges = sum / 999;
-
-					if (numberOfExposedEdges == 2) { // Checking to see if the
+				
+					if (currentHex.numberOfExposedEdges() == 2) { // Checking to see if the
 														// current hexagon is
 														// only an edge piece
 						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,
@@ -210,17 +202,8 @@ public class WinChecker {
 					// Determining whether a tripod has been formed.
 					// ====================================================================================================================
 
-					int sum = 0;
 
-					for (int i = 0; i < 6; i++) {// Finding the number of
-													// exposed edges that the
-													// hexagon has
-						sum += currentHex.adjacencies.get(i).getRow();
-					}
-
-					int numberOfExposedEdges = sum / 999;
-
-					if (numberOfExposedEdges == 2) { // Checking to see if the
+					if (currentHex.numberOfExposedEdges() == 2) { // Checking to see if the
 														// current hexagon is
 														// only an edge piece
 						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,

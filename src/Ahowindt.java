@@ -2,6 +2,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.lang.Math;
 
 import aiproj.fencemaster.Move;
 import aiproj.fencemaster.Piece;
@@ -13,17 +14,32 @@ public class Ahowindt implements Player, Piece {
 	protected final int failure = -1;
 
 	protected Gameboard board;
+	
+
 
 	protected Move previousMove;
 
 	protected List<List<Hexagon>> hexBoard;
 
 	protected int ourPlayerValue;
+	protected int theirPlayerValue;
+	protected int size;
 
 	@Override
 	public int init(int n, int p) {
 
 		this.ourPlayerValue = p;
+
+		this.size = n;
+		
+		if(this.ourPlayerValue == WHITE){
+			this.theirPlayerValue = BLACK;
+		}
+		else if(this.ourPlayerValue == BLACK){
+			this.theirPlayerValue = WHITE;
+		}
+		
+		
 		this.board = new Gameboard();
 		// Setting up the board based on the provided dimensions
 		this.board.generateHexagons(n);
@@ -38,53 +54,90 @@ public class Ahowindt implements Player, Piece {
 		} else {
 			return failure;
 		}
+		
+
 	}
 
 	@Override
 	public Move makeMove() {
 		
 		Random rand = new Random();
-		Coordinate nextMove = null;
+//		Coordinate nextMove = null;
 
 		Move ourMove = new Move();
 
 		if (previousMove == null) {
+			
 			ourMove.P = ourPlayerValue;
+			ourMove.IsSwap = true;
+			
+			int firstMoveLoc = Math.abs(rand.nextInt(100))%6;
 
-			ourMove.Row = 1;
-			ourMove.Col = 1;
+			//First move to just inside one of the corners
+			if(firstMoveLoc == 0){
+				ourMove.Row = 1;
+				ourMove.Col = 1;
+			} else if(firstMoveLoc == 1){
+				ourMove.Row = 1;
+				ourMove.Col = size - 1;
+			} else if(firstMoveLoc == 2){
+				ourMove.Row = size - 1;
+				ourMove.Col = 2*size - 3;
+			} else if(firstMoveLoc == 3){
+				ourMove.Row = 2*size - 3;
+				ourMove.Col = 2*size - 3;
+			} else if(firstMoveLoc == 4){
+				ourMove.Row = 2*size - 3;
+				ourMove.Col = size - 1;
+			} else if(firstMoveLoc == 5){
+				ourMove.Row = size - 1;
+				ourMove.Col = 1;
+			} else{
+				ourMove.Row = 1;
+				ourMove.Col = 1;
+			}
+
+			System.out.println("First Move: " + ourMove.Row + "," + ourMove.Col);
 		}
 		else{
-			Hexagon previousHexagon = this.hexBoard.get(previousMove.Row).get(previousMove.Col);
-			List<Coordinate> adjacencies = previousHexagon.getAdjacencies();
-			List<Coordinate> potentials = new ArrayList<Coordinate>();
 			
-			ourMove.P = ourPlayerValue;
+			MinMaxTree mmt = new MinMaxTree(board,ourPlayerValue);
+			mmt.runMiniMax();
 			
-			System.out.println("We are getting to here");
-			System.out.println("There are " + adjacencies.size() + " spots in total");
+			ourMove = mmt.getMove();
+		
 			
-						
-			for(Coordinate tempCoord: adjacencies){
-				System.out.println("The coord we are checking is at: " + tempCoord.getRow() + " , " + tempCoord.getColumn());
-				
-				if(tempCoord.getRow() != 999 || tempCoord.getColumn() != 999){
-					Hexagon toAdd = this.hexBoard.get(tempCoord.getRow()).get(tempCoord.getColumn());
-					System.out.println("The value of the hexagon is " + toAdd.getValue());
-					if(toAdd.getValue() == 0){
-						potentials.add(tempCoord);
-					}
-				}
-				
-			}
-			
-			System.out.println("We are finding " + potentials.size() + " free spots");
-			
-			//generating the random move
-			nextMove = potentials.get(rand.nextInt(potentials.size()));
-			ourMove.Col = nextMove.getColumn();
-			ourMove.Row = nextMove.getRow();
-			ourMove.P = 1;
+//			
+//			Hexagon previousHexagon = this.hexBoard.get(previousMove.Row).get(previousMove.Col);
+//			List<Coordinate> adjacencies = previousHexagon.getAdjacencies();
+//			List<Coordinate> potentials = new ArrayList<Coordinate>();
+//			
+//			ourMove.P = ourPlayerValue;
+//			
+//			System.out.println("We are getting to here");
+//			System.out.println("There are " + adjacencies.size() + " spots in total");
+//			
+//						
+//			for(Coordinate tempCoord: adjacencies){
+//				System.out.println("The coord we are checking is at: " + tempCoord.getRow() + " , " + tempCoord.getColumn());
+//				
+//				if(tempCoord.getRow() != 999 || tempCoord.getColumn() != 999){
+//					Hexagon toAdd = this.hexBoard.get(tempCoord.getRow()).get(tempCoord.getColumn());
+//					System.out.println("The value of the hexagon is " + toAdd.getValue());
+//					if(toAdd.getValue() == 0){
+//						potentials.add(tempCoord);
+//					}
+//				}
+//				
+//			}
+//			
+//			System.out.println("We are finding " + potentials.size() + " free spots");
+//			
+//			//generating the random move
+//			nextMove = potentials.get(rand.nextInt(potentials.size()));
+//			ourMove.Col = nextMove.getColumn();
+//			ourMove.Row = nextMove.getRow();
+//			ourMove.P = 1;
 			
 			
 		}
@@ -167,4 +220,12 @@ public class Ahowindt implements Player, Piece {
 
 	}
 
+	
+
+	
+
+	
+
+	
+	
 }

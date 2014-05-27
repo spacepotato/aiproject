@@ -519,6 +519,18 @@ public class Hexagon {
 		}
 
 	}
+	
+	
+	protected int numberOfExposedEdges(){
+		int sum = 0;
+		for (int i = 0; i < 6; i++) {// Finding the number of
+										// exposed edges that the
+										// hexagon has
+			sum += this.adjacencies.get(i).getRow();
+		}
+
+		return sum / 999;
+	}
 
 	// Keeps track of checked hexagons so that multiple checking is not done.
 	protected void setChecked(int num) {

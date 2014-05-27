@@ -13,6 +13,10 @@ public class Gameboard {
 		gameboard = new ArrayList<List<Hexagon>>();
 	}
 	
+	public Gameboard(Gameboard gb){
+		gameboard = gb.getBoard();
+	}
+	
 	public Gameboard(GameBoardDisplay gbd){
 		int i=0,j=0, k=0;
 		gameboard = new ArrayList<List<Hexagon>>();
