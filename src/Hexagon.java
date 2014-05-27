@@ -22,7 +22,7 @@ public class Hexagon {
 
 		this.row = hex.getRow();
 		this.column = hex.getColumn();
-		this.value = hex.getColour();
+		this.value = hex.getValue();
 		this.isLeftEdge = isLeftEdge;
 		this.isRightEdge = isRightEdge;
 

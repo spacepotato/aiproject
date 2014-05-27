@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +18,7 @@ public class Ahowindt implements Player, Piece {
 
 
 	protected Move previousMove;
+	protected boolean secondMove = false;
 
 	protected List<List<Hexagon>> hexBoard;
 
@@ -70,40 +72,55 @@ public class Ahowindt implements Player, Piece {
 			ourMove.P = ourPlayerValue;
 			ourMove.IsSwap = true;
 			
-			int firstMoveLoc = Math.abs(rand.nextInt(100))%6;
+//			int firstMoveLoc = Math.abs(rand.nextInt(100))%6;
 
 			//First move to just inside one of the corners
-			if(firstMoveLoc == 0){
+//			if(firstMoveLoc == 0){
 				ourMove.Row = 1;
 				ourMove.Col = 1;
-			} else if(firstMoveLoc == 1){
-				ourMove.Row = 1;
-				ourMove.Col = size - 1;
-			} else if(firstMoveLoc == 2){
-				ourMove.Row = size - 1;
-				ourMove.Col = 2*size - 3;
-			} else if(firstMoveLoc == 3){
-				ourMove.Row = 2*size - 3;
-				ourMove.Col = 2*size - 3;
-			} else if(firstMoveLoc == 4){
-				ourMove.Row = 2*size - 3;
-				ourMove.Col = size - 1;
-			} else if(firstMoveLoc == 5){
-				ourMove.Row = size - 1;
-				ourMove.Col = 1;
-			} else{
-				ourMove.Row = 1;
-				ourMove.Col = 1;
-			}
+//			} else if(firstMoveLoc == 1){
+//				ourMove.Row = 1;
+//				ourMove.Col = size - 1;
+//			} else if(firstMoveLoc == 2){
+//				ourMove.Row = size - 1;
+//				ourMove.Col = 2*size - 3;
+//			} else if(firstMoveLoc == 3){
+//				ourMove.Row = 2*size - 3;
+//				ourMove.Col = 2*size - 3;
+//			} else if(firstMoveLoc == 4){
+//				ourMove.Row = 2*size - 3;
+//				ourMove.Col = size - 1;
+//			} else if(firstMoveLoc == 5){
+//				ourMove.Row = size - 1;
+//				ourMove.Col = 1;
+//			} else{
+//				ourMove.Row = 1;
+//				ourMove.Col = 1;
+//			}
 
 			System.out.println("First Move: " + ourMove.Row + "," + ourMove.Col);
+			secondMove = true;
 		}
+		
+		else if(secondMove == true){
+			ourMove.Row = 0;
+			ourMove.Col = 1;
+			secondMove = false;
+		}
+		
 		else{
 			
-			MinMaxTree mmt = new MinMaxTree(board,ourPlayerValue);
-			mmt.runMiniMax();
-			
-			ourMove = mmt.getMove();
+			MinMaxTree mmt;
+			try {
+				mmt = new MinMaxTree(board,WHITE);
+				mmt.runMiniMax();
+				
+				ourMove = mmt.getMove();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		
 			
 			

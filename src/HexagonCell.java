@@ -136,4 +136,13 @@ public class HexagonCell {
 	protected int getCCY(){
 		return this.circleCentreY;
 	}
+	
+	protected int getValue(){
+		if(this.colour == '-')
+				return 0;
+		else if(this.colour == 'W')
+				return 1;
+		else
+				return 2;
+	}
 }

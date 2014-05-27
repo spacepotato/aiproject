@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,7 +18,9 @@ public class MinMaxTree implements Piece{
 	
 	protected double base = 3;
 	
-	public MinMaxTree(Gameboard gb, int player){
+	public MinMaxTree(Gameboard gb, int player) throws FileNotFoundException{
+		
+		System.setOut(new PrintStream(new FileOutputStream("output.txt")));
 		
 		this.idealMove = new Move(player,false,0,0);
 		this.nextMove = new Move();
@@ -37,24 +42,27 @@ public class MinMaxTree implements Piece{
 	
 	protected void createTree(){
 		List<List<Hexagon>> Hexagons = this.parent.getState().getBoard();
+
 		
 		int ply=0;
 //		boolean gameEnd = false;
 		
 		Stack<Node> treeStack = new Stack<Node>();
-//		WinChecker winCheck = new WinChecker();
+		WinChecker winCheck = new WinChecker();
+		
+		int count = 0;
 		
 		treeStack.push(parent);
 		
 		while(!treeStack.isEmpty()){
 			Node currentNode = treeStack.pop();
 			
-//			winCheck.updateWinState(currentNode.getState());
-//			if(winCheck.getWin() || winCheck.getDraw()){
+
+//			if(winCheck.getWin(this.parent.getState()) == 1){
 //				continue;
 //			}
-//			
-			if(currentNode.getPly() >= 5){
+			
+			if(currentNode.getPly() >= 2){
 				continue;
 			}
 			
@@ -76,11 +84,13 @@ public class MinMaxTree implements Piece{
 						}
 
 						Gameboard newGB = new Gameboard(currentNode.getState());
-						newGB.updateBoard(nextMove);
 						Node newNode = new Node(newGB, ply, nextMove);
 						newNode.setParent(currentNode);
 						currentNode.children.add(newNode);
+						currentNode.getState().updateBoard(nextMove);
 						treeStack.push(newNode);
+						count++;
+						System.out.println("To the current node of: " + currentNode.getMove().Row + " , " + currentNode.getMove().Col + " we are adding the child " + newNode.getMove().Row + " " + newNode.getMove().Col);
 						
 					}//End of if statement
 
@@ -90,10 +100,12 @@ public class MinMaxTree implements Piece{
 			if(ply == 0){
 				ply++;
 			} else {
-				ply = currentNode.getParent().getPly() + 1;
+				ply = currentNode.getParent().getPly() + 2;
 			}
 			
+			
 		}//End of While Loop
+		System.out.println(count);
 		
 	}
 	
@@ -105,7 +117,7 @@ public class MinMaxTree implements Piece{
 		double maxVal = Double.NEGATIVE_INFINITY;
 		
 		for(Node tempNode : this.parent.children){
-			System.out.println("eval value for child : " + tempNode.getEvalValue());
+//			System.out.println("eval value for child : " + evalFunc(tempNode));
 			if(tempNode.getEvalValue() > maxVal){
 				this.idealMove = tempNode.getMove();
 				maxVal = tempNode.getEvalValue();
@@ -119,8 +131,8 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 		
-		if(currentNode.getPly() > 5 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode.getState()));
+		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
+			currentNode.setEvalValue(evalFunc(currentNode));
 			return currentNode.getEvalValue();
 		}
 		
@@ -149,9 +161,11 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
 		
-		if(currentNode.getPly() > 5 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode.getState()));
-			return evalFunc(currentNode.getState());
+		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
+			currentNode.setEvalValue(evalFunc(currentNode));
+//			System.out.println(evalFunc(currentNode) + " for " + currentNode.getMove().Row + " " + currentNode.getMove().Col);
+			
+			return evalFunc(currentNode);
 		}
 		
 		value = Double.POSITIVE_INFINITY;
@@ -177,9 +191,9 @@ public class MinMaxTree implements Piece{
 		return value;
 	}
 	
-	private Double evalFunc(Gameboard gb){
-		return (tripodEval(gb.getBoard()) - tripodEval(gb.getBoard())) + 
-				(loopEval(gb.getBoard()) - loopEval(gb.getBoard()));
+	private Double evalFunc(Node node){
+		return (tripodEval(node.getState().getBoard()) - tripodEval(node.getState().getBoard())) + 
+				(loopEval(node, 1) - loopEval(node, 2));
 	}
 	
 	private double tripodEval(List<List<Hexagon>> hexBoard){
@@ -187,53 +201,70 @@ public class MinMaxTree implements Piece{
 	}
 	
 
-	private double loopEval(List<List<Hexagon>> hexBoard){
+	private double loopEval(Node node, int playerValue){
 
-		int countMax = 0, count = 0;
-		int opponent = 0;
+//		int countMax = 0, count = 0;
+//		int opponentValue = 0;
+//		
+//		if(playerValue == 1){
+//			opponentValue = 2;
+//		} else if(playerValue == 2){
+//			opponentValue = 1;
+//		}
+//
+//		for(List<Hexagon> tempList : hexBoard){
+//			innerLoop : for(Hexagon tempHex : tempList){
+//				if(tempHex == null) {
+//					continue innerLoop;
+//				}
+//				if(tempHex.getValue() == playerValue) {
+//					continue innerLoop;
+//				}
+//				if(tempHex.numberOfExposedEdges() > 0){
+//					continue;
+//				}
+//				
+//				adjLoop : for(Coordinate adj : tempHex.adjacencies){
+//					if(adj.getColumn() == 999 || adj.getRow() == 999){
+//						continue adjLoop;
+//					}
+////					System.out.println(adj.getRow() + " " + adj.getColumn());
+//					Hexagon nextHex = hexBoard.get(adj.getRow()).get(adj.getColumn());
+////					System.out.println(nextHex.toString() + " has the value of " + nextHex.getValue());
+//
+//					//Counting the number of player's pieces surrounding the current space
+//					if(nextHex.getValue() == playerValue){
+//						count++;
+//					}
+//					else if(nextHex.getValue() == opponentValue){
+////						System.out.println("We are breaking the loop");
+//						count = 0;
+//						break adjLoop;
+//					}
+//				}
+//				if(count > countMax){
+//					countMax = count;
+//				}
+//				System.out.println("For hexagon: " + tempHex.toString() + "we are returning the count of " + count);
+//				count = 0;
+//			}
+//		}
+//		
+//		double countMaxD = (double) countMax;
+//		return Math.pow(base, countMaxD);
 		
-		if(player == WHITE){
-			opponent = BLACK;
-		} else if(player == BLACK){
-			opponent = WHITE;
+		WinChecker winCheck = new WinChecker();
+		
+		if(winCheck.loopWin(node.getState(), playerValue)){
+//			System.out.println("Playing a move at (" + node.getMove().Row + " , " + node.getMove().Col + ") causes a win for " + node.getMove().P);
+				return 100;
 		}
-
-				
-		for(List<Hexagon> tempList : hexBoard){
-			innerLoop : for(Hexagon tempHex : tempList){
-				if(tempHex == null) {
-					continue innerLoop;
-				}
-				if(tempHex.getValue() == player) {
-					continue innerLoop;
-				}
-				if(tempHex.numberOfExposedEdges() > 0){
-					continue;
-				}
-				
-				adjLoop : for(Coordinate adj : tempHex.adjacencies){
-					if(adj.getColumn() == 999 || adj.getRow() == 999){
-						continue adjLoop;
-					}
-					Hexagon nextHex = hexBoard.get(adj.getRow()).get(adj.getColumn());
-
-					//Counting the number of player's pieces surrounding the current space
-					if(nextHex.getValue() == player){
-						count++;
-					}
-					if(nextHex.getValue() == opponent){
-						count = 0;
-						break adjLoop;
-					}
-				}
-				if(count > countMax){
-					countMax = count;
-				}
-				count = 0;
-			}
+		else{
+			return 0;
 		}
-		double countMaxD = (double) countMax;
-		return Math.pow(base, countMaxD);
+		
+		
+		
 	}
 	
 	protected Move getMove(){
