@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 import java.util.Comparator;
-=======
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
->>>>>>> a9ed57830e381a2eb35dc5b995b9cd323314de54
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -66,13 +63,8 @@ public class MinMaxTree implements Piece{
 //			if(winCheck.getWin(this.parent.getState()) == 1){
 //				continue;
 //			}
-<<<<<<< HEAD
 //			
 			if(currentNode.getPly() >= 1){
-=======
-			
-			if(currentNode.getPly() >= 2){
->>>>>>> a9ed57830e381a2eb35dc5b995b9cd323314de54
 				continue;
 			}
 			
@@ -156,13 +148,8 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 		
-<<<<<<< HEAD
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
-=======
-		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode));
->>>>>>> a9ed57830e381a2eb35dc5b995b9cd323314de54
 			return currentNode.getEvalValue();
 		}
 		
@@ -191,17 +178,9 @@ public class MinMaxTree implements Piece{
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
 		
-<<<<<<< HEAD
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
 			return evalFunc(currentNode.getState());
-=======
-		if(currentNode.getPly() >= 2 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode));
-//			System.out.println(evalFunc(currentNode) + " for " + currentNode.getMove().Row + " " + currentNode.getMove().Col);
-			
-			return evalFunc(currentNode);
->>>>>>> a9ed57830e381a2eb35dc5b995b9cd323314de54
 		}
 		
 		value = Double.POSITIVE_INFINITY;
@@ -226,16 +205,10 @@ public class MinMaxTree implements Piece{
 
 		return value;
 	}
-	
-<<<<<<< HEAD
+
 	private Double evalFunc(Gameboard gb){
 		return (tripodEval(gb.getBoard(), this.player) - tripodEval(gb.getBoard(), this.opponent)); 
 //				+ (loopEval(gb.getBoard()) - loopEval(gb.getBoard()));
-=======
-	private Double evalFunc(Node node){
-		return (tripodEval(node.getState().getBoard()) - tripodEval(node.getState().getBoard())) + 
-				(loopEval(node, 1) - loopEval(node, 2));
->>>>>>> a9ed57830e381a2eb35dc5b995b9cd323314de54
 	}
 	
 	private double tripodEval(List<List<Hexagon>> hexBoard, int player){
