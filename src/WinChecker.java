@@ -59,7 +59,7 @@ public class WinChecker {
 					continue innerloop;
 				}
 
-				if (tempHexagon.value == '-') {
+				if (tempHexagon.value == 0) {
 					draw = false;
 					break outerloop;
 				}

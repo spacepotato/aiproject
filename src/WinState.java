@@ -325,7 +325,7 @@ public class WinState {
 					continue innerloop;
 				}
 
-				if (tempHexagon.value == '-') {
+				if (tempHexagon.value == 0) {
 					draw = false;
 					break outerloop;
 				}
@@ -378,7 +378,7 @@ public class WinState {
 					continue;
 				}
 				else{
-					tempHex.setValue('-');
+					tempHex.setValue(0);
 				}
 			}
 		}
