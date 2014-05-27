@@ -48,16 +48,16 @@ public class MinMaxTree implements Piece{
 		treeQueue.add(parent);
 		
 		while(!treeQueue.isEmpty()){
-			
+			System.out.println("Entered the whileLoop");
 			Node currentNode = treeQueue.poll();
 			
-			if(winCheck.getWin(currentNode.getState()) < 0){
-				continue;
-			}
+//			if(winCheck.getWin(currentNode.getState()) >= 0){
+//				continue;
+//			}
 
 			//Restricting the depth to which we will create the tree
 			if(currentNode.getPly() > 2){
-				continue;
+				break;
 			}
 			
 			for(List<Hexagon> tempList : currentNode.getState().getBoard()){
@@ -88,6 +88,7 @@ public class MinMaxTree implements Piece{
 						
 						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
 								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
+						tempHex.setValue(EMPTY);
 					}//End of if statement
 
 				}//End of inner ForLoop
@@ -95,7 +96,8 @@ public class MinMaxTree implements Piece{
 
 			
 		}//End of While Loop
-			
+		
+		System.out.println("Exited whileLoop");
 		
 		
 	}//End of Create Tree Function
