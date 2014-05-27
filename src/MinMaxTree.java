@@ -79,6 +79,11 @@ public class MinMaxTree implements Piece{
 						
 						Gameboard newState = new Gameboard(currentNode.getState());
 						newState.updateBoard(nextMove);
+						
+//						System.out.println("========= " + nextMove.Row + " === " + nextMove.Col + " ================");
+//						newState.printBoard(System.out);
+//						System.out.println("========================================================================");
+						
 
 						Node newNode = new Node(newState,currentNode.getPly()+1,nextMove);
 						newNode.setParent(currentNode);
@@ -86,28 +91,16 @@ public class MinMaxTree implements Piece{
 						currentNode.children.add(newNode);
 
 						treeQueue.add(newNode);
-						
-//						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
-//								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
 						tempHex.setValue(EMPTY);
 					}//End of if statement
 
 				}//End of inner ForLoop
 			}//End of outer ForLoop
-
-			for(List<Hexagon> tempList : currentNode.getState().getBoard()){
-				for(Hexagon tempHex : tempList){
-					if(tempHex == null){
-						continue;
-					}
-					System.out.print(tempHex.getValue());
-				}
-				System.out.println();
-			}
-			System.out.println();
-			System.out.println();
+			
+			currentNode.printChildren();
 			
 		}//End of While Loop
+		
 		
 //		System.out.println("Exited whileLoop");
 

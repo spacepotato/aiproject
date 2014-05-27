@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,5 +108,23 @@ public class Gameboard {
 
 	protected int getTotalRows() {
 		return this.totalRows;
+	}
+	
+	public void printBoard(PrintStream output) {
+
+		int tempValue = 0;
+
+		for (List<Hexagon> tempList : this.gameboard) {
+			for (Hexagon tempHex : tempList) {
+				if(tempHex == null){
+					continue;
+				}
+				tempValue = tempHex.getValue();
+				output.print(tempValue);
+				
+			}
+			output.print("\r\n");
+		}
+
 	}
 }
