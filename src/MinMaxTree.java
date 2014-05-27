@@ -48,7 +48,7 @@ public class MinMaxTree implements Piece{
 		treeQueue.add(parent);
 		
 		while(!treeQueue.isEmpty()){
-			System.out.println("Entered the whileLoop");
+//			System.out.println("Entered the whileLoop");
 			Node currentNode = treeQueue.poll();
 			
 //			if(winCheck.getWin(currentNode.getState()) >= 0){
@@ -68,6 +68,7 @@ public class MinMaxTree implements Piece{
 					}
 
 					if(tempHex.getValue() == EMPTY){
+
 						if(currentNode.getPly()%2 == 0){
 							nextPlayer = opponent;
 						} else if(currentNode.getPly()%2 == 1){
@@ -86,19 +87,30 @@ public class MinMaxTree implements Piece{
 
 						treeQueue.add(newNode);
 						
-						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
-								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
+//						System.out.println("Current Node: " + currentNode.getMove().Row + "," + currentNode.getMove().Col 
+//								+ " New Node " + newNode.getMove().Row + "," + newNode.getMove().Col);
 						tempHex.setValue(EMPTY);
 					}//End of if statement
 
 				}//End of inner ForLoop
 			}//End of outer ForLoop
 
+			for(List<Hexagon> tempList : currentNode.getState().getBoard()){
+				for(Hexagon tempHex : tempList){
+					if(tempHex == null){
+						continue;
+					}
+					System.out.print(tempHex.getValue());
+				}
+				System.out.println();
+			}
+			System.out.println();
+			System.out.println();
 			
 		}//End of While Loop
 		
-		System.out.println("Exited whileLoop");
-		
+//		System.out.println("Exited whileLoop");
+
 		
 	}//End of Create Tree Function
 	

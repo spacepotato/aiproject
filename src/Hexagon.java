@@ -19,7 +19,6 @@ public class Hexagon {
 	
 	protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
 
-	
 	public Hexagon(int row, int column, int totalRows, boolean isLeftEdge, boolean isRightEdge) {
 
 		 this.row = row;
