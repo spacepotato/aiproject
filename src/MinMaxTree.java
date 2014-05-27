@@ -436,6 +436,5 @@ public class MinMaxTree implements Piece{
 
 		
 	}
-
-	
+		
 }
