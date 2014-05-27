@@ -18,6 +18,21 @@ public class Hexagon {
 	protected Hexagon parent;
 	
 	protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
+	
+	public Hexagon(Hexagon h){
+		
+		this.row = h.row;
+		this.column = h.column;
+		this.offset  =h.offset;
+		this.checked = h.checked;
+		this.adjacencies = h.adjacencies;
+		this.isLeftEdge = h.isLeftEdge;
+		this.isRightEdge = h.isRightEdge;
+		this.value = h.value;
+		this.priorityValue = h.priorityValue;
+		this.parent = h.parent;
+		
+	}
 
 	public Hexagon(int row, int column, int totalRows, boolean isLeftEdge, boolean isRightEdge) {
 

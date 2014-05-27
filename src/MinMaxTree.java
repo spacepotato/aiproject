@@ -171,7 +171,7 @@ public class MinMaxTree implements Piece{
 
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
 			currentNode.setEvalValue(evalFunc(currentNode.getState()));
-			return evalFunc(currentNode.getState());
+			return currentNode.getEvalValue();
 		}
 		
 		value = Double.POSITIVE_INFINITY;
@@ -198,8 +198,10 @@ public class MinMaxTree implements Piece{
 	}
 
 	private Double evalFunc(Gameboard gb){
-		return (tripodEval(gb.getBoard(), this.player) - tripodEval(gb.getBoard(), this.opponent))
+		Double heuristicVal = (tripodEval(gb.getBoard(), this.player) - tripodEval(gb.getBoard(), this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
+		System.out.println("Heuristic Value = " + heuristicVal);
+		return heuristicVal;
 	}
 	
 	private double tripodEval(List<List<Hexagon>> hexBoard, int player){
@@ -214,8 +216,7 @@ public class MinMaxTree implements Piece{
 		}
 		
 	
-		int number = 0;
-		int order = 1;
+		int number = 0, maxNum = 0, order = 1;
 		
 		Comparator<Hexagon> comparator = new HexagonComparator();
 		PriorityQueue<Hexagon> hexQueue = new PriorityQueue<Hexagon>(11, comparator);
@@ -241,7 +242,7 @@ public class MinMaxTree implements Piece{
 				}
 				
 				while(!hexQueue.isEmpty()){
-					
+					System.out.println("In While Loop");
 					
 					Hexagon currentHex = hexQueue.poll();
 					
@@ -253,9 +254,13 @@ public class MinMaxTree implements Piece{
 						}
 						
 						Hexagon nextHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
-						nextHex.setParent(currentHex);
+						nextHex.setParent(new Hexagon(currentHex));
 						
 						if(nextHex.getValue() == opponent){
+							continue;
+						} else if(hexQueue.contains(nextHex)){
+							continue;
+						} else if(nextHex.getChecked() != 0){
 							continue;
 						}
 						
@@ -271,13 +276,18 @@ public class MinMaxTree implements Piece{
 					
 					currentHex.setChecked(order);
 					order++;
-				}
+				}//End of While Loop
 				
-			}
-		}
+				System.out.println("Exited While Loop, number = " + number);
+				if(number > maxNum){
+					maxNum = number;
+				}
+				number =0;
+			}//End of inner for loop
+		}//End of outer for loop
 		
 		return Math.pow(100, -number);
-	}
+	}//End of tripodEval
 	
 	int backtrace(Hexagon h){
 		
