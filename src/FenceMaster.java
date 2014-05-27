@@ -47,8 +47,10 @@ public class FenceMaster {
 			System.out.println("Column");
 			tempMove.Col = userInput.nextInt();
 			
+			System.out.println("===============================");
 			boardController.opponentMove(tempMove);
 			boardController.makeMove();
+			System.out.println("===============================");
 			
 		}
 

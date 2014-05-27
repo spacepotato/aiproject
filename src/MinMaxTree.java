@@ -53,8 +53,6 @@ public class MinMaxTree implements Piece{
 		
 		while(!treeStack.isEmpty()){
 			
-			System.out.println("We are stuck in the tree creation loop");
-			
 			Node currentNode = treeStack.pop();
 			
 
@@ -236,7 +234,6 @@ public class MinMaxTree implements Piece{
 				
 				while(!hexQueue.isEmpty()){
 					
-					System.out.println("We are stuck in the tripod loop");
 					
 					Hexagon currentHex = hexQueue.poll();
 					
@@ -282,6 +279,7 @@ public class MinMaxTree implements Piece{
 		Hexagon hex = end;
 		int number=0;
 		while(hex != start){
+			System.out.println("We are getting stuck in the backtrace loop");
 			hex = hex.parent;
 			number++;
 		}
