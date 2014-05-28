@@ -1,0 +1,35 @@
+Structure of Code:
+
+The structure of our code is fairly simple. When the referee class calls our init(n, p) method we instantiate a gameboard of size 
+n and a PlayerCustom class (which holds additional player data used for win detection). When our makeMove() function is called we 
+generate a minimax search try of ply 3 with each node storing information about its parent (if applicable), its children (if applicable)
+and a move. We then call our alphabeta search function which, using alphabeta search, determines an evaluation value for the sequence
+of moves described by a node. So for example, if we are checking a node on the lowest level, we are evaluating as if the moves contained
+in the parent node and the parent of the parent node had been made as well. We then use this evaluation value to determine which move
+should be made and return this move to the referee. 
+
+Search Strategy
+
+Evaluation Functions
+As loops and tripods are two completely different entities we have used a different method of evaluation for each. Although loops
+are very easy to form, they are very also easy to block in that you can block a loop even if it is only one move away from being complete.
+As such, the evaluation function for loops only needs to be able to pick up a loop if it is 1 or 2 moves away from being complete. 
+This is very easily achieved by simply running our checkTripodWin function for each node of the tree to see if a loop has been formed.
+If it has we return a large value if it is a win for us and a large negative value if it is a win for the opponent. 
+
+Tripods require a bit more care as they are the main target of our agent for the game and are significantly harder to track. 
+
+Clever things we have done 
+In completing this assignment we realised that there were two major things that could be an issue for our implementation, time and space.
+As stated in the specification for this assignment, we are limited to between 7.5 - 10 seconds per move and we are only allocated
+~.5mb for our agent. As such me have made several optimisations that allow us to perform within these boundaries while still maintaining
+a relatively high quality of game agent. To deal with the time considerations we realized that there were two key directions we could 
+choose from. We could either use a very simply evaluation function which would allow us to go deeper at the cost of accuracy
+or we could choose to use a complex evaluation function at the cost of depth. What we ended up deciding to do was use a complex
+evaluation function for tripod checking and a very simple one for loops. In doing so we were still able to go relatively deep into the tree
+(3 levels down) and we have still maintained a great deal of accuracy in our evaluation values.
+
+To optimise space we restructured how our application worked. Initially we had it set up so that a node contained information about 
+its parents, the move relating to the node AND a copy of the gameboard with that move made on it. Quickly realising that this was a 
+huge waste of space in large gameboards, we optimized it so that the node only kept track of the move and then when we loaded the node
+in our evaluation function we then made the node's move on the single gameboard of which we were keeping a reference to. 
