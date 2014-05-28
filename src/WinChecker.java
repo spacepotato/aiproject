@@ -33,10 +33,12 @@ public class WinChecker {
 		player2 = players.get(1);
 
 		if (player1.getPlayerWin()) {
+			System.out.println(player1.getPlayerWinState());
 			return 2;
 		}
 
 		else if (player2.getPlayerWin()) {
+			System.out.println(player2.getPlayerWinState());
 			return 1;
 		} else if (draw(board)) {
 			return 0;

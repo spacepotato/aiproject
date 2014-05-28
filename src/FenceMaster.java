@@ -51,6 +51,8 @@ public class FenceMaster {
 			boardController.opponentMove(tempMove);
 			boardController.makeMove();
 			System.out.println("===============================");
+			if(boardController.getWinner() != -1)
+				System.out.println("Game has been won" + boardController.getWinner());
 			
 		}
 

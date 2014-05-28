@@ -7,6 +7,13 @@ public class PlayerCustom {
 
 	public PlayerCustom(String name) {
 		this.playerName = name;
+		
+		if(name.equals("Black"))
+			this.playerValue = 2;
+		else
+			this.playerValue = 1;
+		
+		this.playerWin = false;
 	}
 	
 	public void setPlayerWin(boolean win){
