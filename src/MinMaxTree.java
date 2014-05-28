@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -156,16 +158,16 @@ public class MinMaxTree implements Piece {
 			Move currentMove = currentNode.getMove();
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.updateBoard(currentNode.getParent().getMove());
-			if (currentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.updateBoard(parentMove);
+			if (currentMove.Row != -1 && currentMove.Col != -1)
 
-				this.gb.updateBoard(currentNode.getMove());
+				this.gb.updateBoard(currentMove);
 			currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.revertBoard(currentNode.getParent().getMove());
+				this.gb.revertBoard(parentMove);
 			if (currentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.revertBoard(currentNode.getMove());
+				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
 
@@ -201,16 +203,16 @@ public class MinMaxTree implements Piece {
 			Move currentMove = currentNode.getMove();
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.updateBoard(currentNode.getParent().getMove());
-			if (currentMove.Row != -1 && parentMove.Col != -1)
-
-				this.gb.updateBoard(currentNode.getMove());
+				this.gb.updateBoard(parentMove);
+			if (currentMove.Row != -1 && currentMove.Col != -1)
+				this.gb.updateBoard(currentMove);
+			
 			currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.revertBoard(currentNode.getParent().getMove());
+				this.gb.revertBoard(parentMove);
 			if (currentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.revertBoard(currentNode.getMove());
+				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
 
@@ -400,10 +402,13 @@ public class MinMaxTree implements Piece {
 		// return Math.pow(base, countMaxD);
 
 		WinChecker winCheck = new WinChecker();
+		
+		
+			board.printBoard(System.out);
 
 		if (winCheck.loopWin(board, playerValue)) {
 			System.out.println("A loop win has been detected for");
-			board.printBoard(System.out);
+
 			return 10000;
 		} else {
 			return 0;
