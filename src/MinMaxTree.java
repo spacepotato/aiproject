@@ -451,7 +451,8 @@ public class MinMaxTree implements Piece {
 		// board.printBoard(System.out);
 
 		if (winCheck.loopWin(board, playerValue)) {
-			System.out.println("A loop win has been detected for");
+			System.out.println("A loop win has been detected for " + playerValue);
+			board.printBoard(System.out);
 
 			return 10000;
 		} else {

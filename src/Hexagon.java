@@ -260,7 +260,11 @@ public class Hexagon {
 
 	protected boolean getIsEdge(){
 	
-		if(this.numberOfExposedEdges() == 2){
+//		if(this.numberOfExposedEdges() == 2){
+//			return true;
+//		}
+		
+		if(this.isLeftEdge() || this.isRightEdge()){
 			return true;
 		}
 		

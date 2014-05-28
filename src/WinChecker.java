@@ -199,6 +199,8 @@ public class WinChecker {
 					continue innerloop;
 				} else if (tempHexagon.getChecked() != 0) {
 					continue innerloop;
+				} else if (tempHexagon.getIsEdge()){
+					continue innerloop;
 				}
 
 				hexagonStack.push(tempHexagon);
@@ -275,6 +277,8 @@ public class WinChecker {
 				}
 
 				if (numberOfEdgeHexagons == 0) {
+					
+					System.out.println("We are finding a loop around " + tempHexagon.getRow() + " " + tempHexagon.getColumn());
 
 					win = true; // Wins by having a loop
 					break outerloop;
