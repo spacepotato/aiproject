@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -168,12 +167,6 @@ public class MinMaxTree implements Piece {
 			// System.out.println("eval value for child : " +
 			// evalFunc(tempNode));
 
-			// TODO I Think this may be the problem. We are only considering the
-			// move that has the highest value for us
-			// For example, in the case when we are checking if the opponent is
-			// about to get a loop
-			// we are returning the correct heuristic value of -10000 but we
-			// don't make the move
 			if (tempNode.getEvalValue() > maxVal) {
 				Move tempMove = tempNode.getMove();
 				if (this.gb.getBoard().get(tempMove.Row).get(tempMove.Col)
@@ -357,7 +350,7 @@ public class MinMaxTree implements Piece {
 							int j = nextHex.whichEdge();
 							if (j != -1) {
 								if (edgeCounter[j] == 1)
-									;
+								//TODO What should go here?
 								continue;
 							}
 						}
@@ -375,10 +368,10 @@ public class MinMaxTree implements Piece {
 						number++;
 					}
 
-					// for(Hexagon printHex : hexQueue){
-					// System.out.println("Priority : " +
-					// printHex.getPriorityValue());
-					// }
+					 for(Hexagon printHex : hexQueue){
+					 System.out.println("Priority of " + printHex.getRow() + " , " + printHex.getColumn() + ": " +
+					 printHex.getPriorityValue());
+					 }
 
 					currentHex.setChecked(order);
 					order++;

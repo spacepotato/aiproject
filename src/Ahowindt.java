@@ -1,6 +1,5 @@
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Random;
 import aiproj.fencemaster.Move;
 import aiproj.fencemaster.Piece;
 import aiproj.fencemaster.Player;
@@ -23,7 +22,7 @@ public class Ahowindt implements Player, Piece {
 
 	@Override
 	public int init(int n, int p) {
-
+		
 		this.ourPlayerValue = p;
 
 		this.size = n;
@@ -54,7 +53,7 @@ public class Ahowindt implements Player, Piece {
 	@Override
 	public Move makeMove() {
 
-		Random rand = new Random();
+//		Random rand = new Random();
 		// Coordinate nextMove = null;
 
 		Move ourMove = new Move();
@@ -115,7 +114,8 @@ public class Ahowindt implements Player, Piece {
 
 		}
 		
-		System.out.println("the best move we could come up with was at " + ourMove.Row + " , " + ourMove.Col);
+		System.out.println("The best move we could come up with was at " + ourMove.Row + " , " + ourMove.Col);
+		System.out.println("This move had an evaluation value of " + board.getBoard().get(ourMove.Row).get(ourMove.Col).getPriorityValue());
 
 		this.board.updateBoard(ourMove);
 		previousMove = ourMove;

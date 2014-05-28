@@ -9,6 +9,8 @@ public class Hexagon {
 	protected int column;
 	protected int offset;
 	protected int checked;
+	
+	protected int rowTotal;
 
 	protected boolean isLeftEdge;
 	protected boolean isRightEdge;
@@ -42,6 +44,7 @@ public class Hexagon {
 		 this.value = 0;
 		 this.isLeftEdge = isLeftEdge;
 		 this.isRightEdge = isRightEdge;
+		 this.rowTotal = totalRows;
 
 
 		this.checked = 0;
@@ -295,21 +298,23 @@ public class Hexagon {
 		boolean edgeBool = (adjIsEdge || this.getIsEdge());
 		
 		if(player == this.value){
-			priorityValue = 1;
-		} else if(this.numberOfExposedEdges() == 3){
-			priorityValue = 25;
+			this.priorityValue = 1;
+		}else if(isCorner()){
+			this.priorityValue = -1;
+		}else if(edgeBool && !isCorner()){
+			this.priorityValue = 25;
 		} else if(this.value != player && this.value != EMPTY){
 			this.priorityValue = 1000;
 		} else if(this.getIsEdge() && numAdj >0){
-			priorityValue = 2;
+			this.priorityValue = 2;
 		} else if(this.getIsEdge() && numAdj == 0){
-			priorityValue = 3;
+			this.priorityValue = 3;
 		} else if(!this.getIsEdge() && adjIsEdge && numAdj >0){
-			priorityValue = 3;
+			this.priorityValue = 3;
 		} else if(!this.getIsEdge() && adjIsEdge && numAdj == 0){
-			priorityValue = 4;
+			this.priorityValue = 4;
 		} else if(!this.getIsEdge() && !adjIsEdge && numAdj >0){
-			priorityValue = 3 + numAdj;
+			this.priorityValue = 3 + numAdj;
 		} else if(this.getIsEdge() && adjIsEdge && numAdj == 0){
 			priorityValue = 6;
 		}
@@ -353,6 +358,18 @@ public class Hexagon {
 			}	
 		}
 		return -1;
+	}
+	
+	protected boolean isCorner(){
+		if(this.getIsEdge()){
+			if(this.getRow() == 0 || this.getRow() == rowTotal || this.getRow() == (rowTotal + 1)/2){
+				System.out.println("We are returning true for " + this.getRow() + " , " + this.getColumn());
+				return true;
+			}
+			else
+				return false;
+		}
+		return false;
 	}
 }
 

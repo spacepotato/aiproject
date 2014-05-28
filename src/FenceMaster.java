@@ -13,6 +13,7 @@ public class FenceMaster {
 
 		player = "Black";
 		
+		@SuppressWarnings("resource")
 		Scanner userInput = new Scanner(System.in);
 		
 //		Move first = new Move();
