@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,28 @@ public class MinMaxTree implements Piece {
 	public void runMiniMax() {
 		createTree();
 		alphaBetaSearch();
+	}
+	
+	protected void createTree2(){
+		List<Node> childrenUs = new ArrayList<Node>();
+		List<Node> childrenThem = new ArrayList<Node>();
+		
+		for(List<Hexagon> tempList: this.gb.getBoard()){
+			for(Hexagon tempHex: tempList){
+				Move moveUs = new Move();
+				Move moveThem = new Move();
+				
+				moveUs.Row = tempHex.getRow();
+				moveUs.Col = tempHex.getColumn();
+				moveUs.P = player;
+				
+				moveThem.Row = tempHex.getRow();
+				moveThem.Col = tempHex.getColumn();
+				moveThem.P = opponent;
+			}
+		}
+		
+		
 	}
 
 	protected void createTree() {
@@ -257,7 +280,12 @@ public class MinMaxTree implements Piece {
 		}
 
 		int number = 0, minNum = Integer.MAX_VALUE, order = 1;
-		int[] edgeCounter = new int[6];
+
+		int [] edgeCounter = new int[6];
+		
+		for(int i =0;i<6; i++){
+			edgeCounter[i] = 0;
+		}
 
 		Comparator<Hexagon> comparator = new HexagonComparator();
 		PriorityQueue<Hexagon> hexQueue = new PriorityQueue<Hexagon>(11,
@@ -270,11 +298,14 @@ public class MinMaxTree implements Piece {
 					continue innerloop;
 				}
 
-				tempHex.setPriorityValue(player);
-
-				if (tempHex.getValue() != player) {
+				
+				tempHex.setPriorityValue(player, hexBoard);
+				
+				if(tempHex.getValue() != player){
+					tempHex.resetPriorityValue();
 					continue innerloop;
-				} else if (tempHex.getChecked() != 0) {
+				} else if(tempHex.getChecked() != 0){
+					tempHex.resetPriorityValue();
 					continue innerloop;
 				}
 
@@ -343,7 +374,6 @@ public class MinMaxTree implements Piece {
 		}
 		return number;
 	}
-
 	private double loopEval(Gameboard board, int playerValue) {
 
 		// int countMax = 0, count = 0;

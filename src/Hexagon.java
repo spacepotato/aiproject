@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hexagon {
 
@@ -273,12 +274,53 @@ public class Hexagon {
 				+ Integer.toString(column) + ") ";
 	}
 	
-	protected void setPriorityValue(int player){
-		if(player == value){
+	protected void setPriorityValue(int player, List<List<Hexagon>> hexBoard){
+		int EMPTY = 0;
+		
+		int numAdj = this.checkAdjacency(hexBoard, player);
+		
+		if(player == this.value){
 			priorityValue = 1;
-		} else if(value == 0){
-			priorityValue = 10;
+		} else if(this.numberOfExposedEdges() == 3){
+			priorityValue = 25;
+		} else if(this.value != player && this.value != EMPTY){
+			this.priorityValue = 1000;
+		} else if(this.value == EMPTY && this.getIsEdge() && numAdj >0){
+			priorityValue = 2;
+		} else if(this.value == EMPTY && this.getIsEdge() && numAdj == 0){
+			priorityValue = 3;
+		} else if(this.value == EMPTY && !this.getIsEdge() && numAdj >0){
+			priorityValue = 3 + numAdj;
+		} else if(this.value == EMPTY && !this.getIsEdge() && numAdj == 0){
+			priorityValue = 5;
 		}
 	}
 	
+	protected void resetPriorityValue(){
+		this.priorityValue = 0;
+	}
+	
+	// Checking the 6 adjacent pieces to see if they are the same value as the
+	// hexagon we are checking
+	protected int checkAdjacency(List<List<Hexagon>> board, int player) {
+
+		ArrayList<Coordinate> adjacencies = this.getAdjacencies();
+
+		int numberAdjacent = 0;
+
+		for (Coordinate tempCoords : adjacencies) {
+			int tempColumn = tempCoords.getColumn();
+			int tempRow = tempCoords.getRow();
+
+			if (tempColumn != 999
+					&& board.get(tempRow).get(tempColumn).getValue() == player) {
+				numberAdjacent++;
+			}
+		}
+
+		return numberAdjacent;
+	}
+	
+	
 }
+

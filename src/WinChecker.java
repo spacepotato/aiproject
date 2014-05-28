@@ -92,8 +92,8 @@ public class WinChecker {
 					continue innerloop;
 				else if (tempHexagon.value != player)
 					continue innerloop;
-				else if (checkAdjacency(tempHexagon, hexagons,
-						board.getTotalRows(), player) == 0)
+				else if (tempHexagon.checkAdjacency(hexagons,
+						player) == 0)
 					continue innerloop;
 				else if (tempHexagon.getChecked() != 0)
 					continue innerloop;
@@ -318,26 +318,6 @@ public class WinChecker {
 
 	}
 
-	// Checking the 6 adjacent pieces to see if they are the same value as the
-	// hexagon we are checking
-	protected int checkAdjacency(Hexagon toCheck,
-			List<List<Hexagon>> board, int totalRows, int player) {
 
-		ArrayList<Coordinate> adjacencies = toCheck.getAdjacencies();
-
-		int numberAdjacent = 0;
-
-		for (Coordinate tempCoords : adjacencies) {
-			int tempColumn = tempCoords.getColumn();
-			int tempRow = tempCoords.getRow();
-
-			if (tempColumn != 999
-					&& board.get(tempRow).get(tempColumn).getValue() == player) {
-				numberAdjacent++;
-			}
-		}
-
-		return numberAdjacent;
-	}
 
 }
