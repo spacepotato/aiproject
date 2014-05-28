@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -166,7 +164,7 @@ public class MinMaxTree implements Piece {
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && parentMove.Col != -1)
+			if (currentMove.Row != -1 && currentMove.Col != -1)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
@@ -211,7 +209,7 @@ public class MinMaxTree implements Piece {
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && parentMove.Col != -1)
+			if (currentMove.Row != -1 && currentMove.Col != -1)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
