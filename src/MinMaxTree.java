@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -37,29 +36,46 @@ public class MinMaxTree implements Piece {
 	}
 
 	public void runMiniMax() {
-		createTree();
+		//createTree();
+		createTree2(this.parent, 1, 0);
 		alphaBetaSearch();
 	}
-	
-	protected void createTree2(){
-		List<Node> childrenUs = new ArrayList<Node>();
-		List<Node> childrenThem = new ArrayList<Node>();
+
+	protected void createTree2(Node node, int playerValue, int ply) {
 		
-		for(List<Hexagon> tempList: this.gb.getBoard()){
-			for(Hexagon tempHex: tempList){
-				Move moveUs = new Move();
-				Move moveThem = new Move();
+		
+
+		for (List<Hexagon> tempList : this.gb.getBoard()) {
+			for (Hexagon tempHex : tempList) {
 				
-				moveUs.Row = tempHex.getRow();
-				moveUs.Col = tempHex.getColumn();
-				moveUs.P = player;
+				if(tempHex == null)
+						continue;
+				Move tempMove = new Move();
+				tempMove.Row = tempHex.getRow();
+				tempMove.Col = tempHex.getColumn();
+				tempMove.P = playerValue;
 				
-				moveThem.Row = tempHex.getRow();
-				moveThem.Col = tempHex.getColumn();
-				moveThem.P = opponent;
+				Node tempNode = new Node(ply + 1, tempMove);
+				
+				node.children.add(tempNode);
+				tempNode.setParent(node);
+				
+				if(ply + 1 <= 3){
+				createTree2(tempNode, swapValue(playerValue), ply + 1);
+				}
+				else{
+					return;
+				}
 			}
 		}
-		
+
+	}
+	
+	protected int swapValue(int playerValue){
+		if(playerValue == 1)
+			return 2;
+		else
+			return 1;
 		
 	}
 
@@ -173,21 +189,25 @@ public class MinMaxTree implements Piece {
 
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
+		
+		boolean updatedParent = false;
+		boolean updatedChild = false;
+		
 
 		if (currentNode.getPly() > 1 || currentNode.children.isEmpty()) {
 			Move parentMove = currentNode.getParent().getMove();
 			Move currentMove = currentNode.getMove();
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.updateBoard(parentMove);
+				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
-
-				this.gb.updateBoard(currentMove);
+				updatedChild = this.gb.updateBoard(currentMove);
+			
 			currentNode.setEvalValue(evalFunc(this.gb));
 
-			if (parentMove.Row != -1 && parentMove.Col != -1)
+			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1)
+			if (currentMove.Row != -1 && currentMove.Col != -1 && updatedChild)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
@@ -216,6 +236,9 @@ public class MinMaxTree implements Piece {
 
 		Double value;
 		Double minVal = Double.POSITIVE_INFINITY;
+		
+		boolean updatedParent = false;
+		boolean updatedChild = false;
 
 		if (currentNode.getPly() > 1 || currentNode.children.isEmpty()) {
 			// this.gb.updateBoard(currentNode.getParent().getParent().getMove());
@@ -224,15 +247,15 @@ public class MinMaxTree implements Piece {
 			Move currentMove = currentNode.getMove();
 
 			if (parentMove.Row != -1 && parentMove.Col != -1)
-				this.gb.updateBoard(parentMove);
+				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
-				this.gb.updateBoard(currentMove);
-			
+				updatedChild = this.gb.updateBoard(currentMove);
+
 			currentNode.setEvalValue(evalFunc(this.gb));
 
-			if (parentMove.Row != -1 && parentMove.Col != -1)
+			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1)
+			if (currentMove.Row != -1 && currentMove.Col != -1 && updatedChild)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
@@ -281,9 +304,9 @@ public class MinMaxTree implements Piece {
 
 		int number = 0, minNum = Integer.MAX_VALUE, order = 1;
 
-		int [] edgeCounter = new int[6];
-		
-		for(int i =0;i<6; i++){
+		int[] edgeCounter = new int[6];
+
+		for (int i = 0; i < 6; i++) {
 			edgeCounter[i] = 0;
 		}
 
@@ -298,13 +321,12 @@ public class MinMaxTree implements Piece {
 					continue innerloop;
 				}
 
-				
 				tempHex.setPriorityValue(player, hexBoard);
-				
-				if(tempHex.getValue() != player){
+
+				if (tempHex.getValue() != player) {
 					tempHex.resetPriorityValue();
 					continue innerloop;
-				} else if(tempHex.getChecked() != 0){
+				} else if (tempHex.getChecked() != 0) {
 					tempHex.resetPriorityValue();
 					continue innerloop;
 				}
@@ -374,6 +396,7 @@ public class MinMaxTree implements Piece {
 		}
 		return number;
 	}
+
 	private double loopEval(Gameboard board, int playerValue) {
 
 		// int countMax = 0, count = 0;
@@ -430,9 +453,8 @@ public class MinMaxTree implements Piece {
 		// return Math.pow(base, countMaxD);
 
 		WinChecker winCheck = new WinChecker();
-		
-		
-			board.printBoard(System.out);
+
+		board.printBoard(System.out);
 
 		if (winCheck.loopWin(board, playerValue)) {
 			System.out.println("A loop win has been detected for");
