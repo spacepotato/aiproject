@@ -324,10 +324,8 @@ public class MinMaxTree implements Piece {
 				tempHex.setPriorityValue(player, hexBoard);
 
 				if (tempHex.getValue() != player) {
-					tempHex.resetPriorityValue();
 					continue innerloop;
 				} else if (tempHex.getChecked() != 0) {
-					tempHex.resetPriorityValue();
 					continue innerloop;
 				}
 
@@ -335,7 +333,7 @@ public class MinMaxTree implements Piece {
 					hexQueue.add(tempHex);
 					tempHex.setParent(null);
 				}
-
+				
 				while (!hexQueue.isEmpty()) {
 
 					Hexagon currentHex = hexQueue.poll();
@@ -348,7 +346,6 @@ public class MinMaxTree implements Piece {
 
 						Hexagon nextHex = hexBoard.get(coords.getRow()).get(
 								coords.getColumn());
-						nextHex.setParent(new Hexagon(currentHex));
 
 						if (nextHex.getValue() == opponent) {
 							continue;
@@ -356,43 +353,91 @@ public class MinMaxTree implements Piece {
 							continue;
 						} else if (nextHex.getChecked() != 0) {
 							continue;
+						} else if(nextHex.getIsEdge()){
+							int j = nextHex.whichEdge();
+							if(j != -1){
+								if(edgeCounter[j] == 1);
+								continue;
+							}
 						}
 
+						nextHex.setParent(new Hexagon(currentHex));
+						nextHex.setPriorityValue(player, hexBoard);
+						
+						
 						hexQueue.add(nextHex);
 
-					}
+					}//End of adjacency loop
 
 					hexQueue.comparator();
 
-					if (currentHex.getIsEdge()) {
-						number += backtrace(currentHex);
+					if (currentHex.value == EMPTY){
+						number++;
 					}
+					
+					for(Hexagon printHex : hexQueue){
+						System.out.println("Priority : " + printHex.getPriorityValue());
+					}
+
 
 					currentHex.setChecked(order);
 					order++;
+					
+					int sum = 0;
+					for(int i=0;i<6;i++){
+						sum+= edgeCounter[i];
+					}
+					
+					if(sum >= 3){
+						//Possible tripod
+						
+						while(!hexQueue.isEmpty()){
+							hexQueue.poll();
+						}
+						
+						break;
+					}
+				
 				}// End of While Loop
 
-				// System.out.println("Exited While Loop, number = " + number);
-				if (number < minNum) {
+				if(number < minNum){
 					minNum = number;
 				}
-				number = 0;
+				
 			}// End of inner for loop
 		}// End of outer for loop
-
-		return Math.pow(100, -minNum);
+		
+		resetTreeEval(hexBoard);
+		
+		return 100/minNum;
 	}// End of tripodEval
+	
+	private void resetTreeEval(List<List<Hexagon>> hexBoard){
+		
+		for(List<Hexagon> tempList : hexBoard){
+			for(Hexagon tempHex : tempList){
+				if(tempHex == null){
+					continue;
+				}
+				
+				tempHex.resetPriorityValue();
+				tempHex.setChecked(0);
+				tempHex.setParent(null);
+			}
+		}
+		
+	}
 
 	int backtrace(Hexagon h) {
 
 		Hexagon hex = h;
 		int number = 0;
 
-		while (hex.parent != null) {
+		while (hex.prevHex != null) {
 			if (hex.getValue() == EMPTY) {
 				number++;
 			}
-			hex = hex.parent;
+			hex = hex.prevHex;
 		}
 		return number;
 	}

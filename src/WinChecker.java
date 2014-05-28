@@ -134,22 +134,12 @@ public class WinChecker {
 					if (currentHex.numberOfExposedEdges() == 2) { // Checking to see if the
 														// current hexagon is
 														// only an edge piece
-						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,
-																// finding which
-																// edge of the
-																// board it is
-																// on
-
-							if (j > 5)
-								j = 0;
-
-							if (currentHex.adjacencies.get(i).getRow() == 999
-									&& currentHex.adjacencies.get(j).getRow() == 999) {
-								edgesIndicators[i] = 1;
-							}
-
-							j++;
+						
+						int i = currentHex.whichEdge();
+						if(i != -1){
+							edgesIndicators[i] = 1;
 						}
+
 
 					}
 
