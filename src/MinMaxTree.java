@@ -346,13 +346,13 @@ public class MinMaxTree implements Piece {
 							continue;
 						} else if (nextHex.getChecked() != 0) {
 							continue;
-						} else if (nextHex.getIsEdge()) {
-							int j = nextHex.whichEdge();
-							if (j != -1) {
-								if (edgeCounter[j] == 1)
-								//TODO What should go here?
-								continue;
-							}
+//						} else if (nextHex.getIsEdge()) {
+//							int j = nextHex.whichEdge();
+//							if (j != -1) {
+//								if (edgeCounter[j] == 1)
+//								//TODO What should go here?
+//								continue;
+//							}
 						}
 
 						nextHex.setParent(new Hexagon(currentHex));

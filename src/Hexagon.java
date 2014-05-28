@@ -281,6 +281,19 @@ public class Hexagon {
 				+ Integer.toString(column) + ") ";
 	}
 	
+	@Override 
+	public boolean equals(Object h){
+		
+		Hexagon tempHex = (Hexagon) h;
+		
+		if(tempHex.getRow() == this.getRow() && tempHex.getColumn() == this.getColumn()){
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
 	protected void setPriorityValue(int player, List<List<Hexagon>> hexBoard){
 		int EMPTY = 0;
 		boolean adjIsEdge = false;
