@@ -102,6 +102,13 @@ public class Gameboard {
 			return true;
 		}
 	}
+	
+	public boolean revertBoard(Move move){
+		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
+		toChange.setValue(0);
+		return true;
+		
+	}
 
 	// Getters and setters
 	protected List<List<Hexagon>> getBoard() {

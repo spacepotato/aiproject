@@ -15,6 +15,8 @@ public class MinMaxTree implements Piece{
 	private Move idealMove;
 	private int player, opponent;
 	
+	protected Gameboard gb;
+	
 	protected double base = 3;
 	
 	public MinMaxTree(Gameboard gb, int player){
@@ -22,8 +24,9 @@ public class MinMaxTree implements Piece{
 		//System.setOut(new PrintStream(new FileOutputStream("output.txt")));
 		
 		this.idealMove = new Move(player,false,0,0);
-		this.parent = new Node(gb, 1, new Move());
+		this.parent = new Node(1, new Move());
 		this.player = player;
+		this.gb = gb;
 		
 		if(player == BLACK){
 			opponent = WHITE;
@@ -60,7 +63,7 @@ public class MinMaxTree implements Piece{
 				break;
 			}
 			
-			for(List<Hexagon> tempList : currentNode.getState().getBoard()){
+			for(List<Hexagon> tempList : this.gb.getBoard()){
 				for(Hexagon tempHex : tempList){
 					
 					if(tempHex == null){
@@ -76,16 +79,16 @@ public class MinMaxTree implements Piece{
 						}
 						
 						Move nextMove = new Move(nextPlayer,false,tempHex.getRow(),tempHex.getColumn());
-						
-						Gameboard newState = new Gameboard(currentNode.getState());
-						newState.updateBoard(nextMove);
+//						
+//						Gameboard newState = new Gameboard(currentNode.getState());
+//						newState.updateBoard(nextMove);
 						
 //						System.out.println("========= " + nextMove.Row + " === " + nextMove.Col + " ================");
 //						newState.printBoard(System.out);
 //						System.out.println("========================================================================");
 						
 
-						Node newNode = new Node(newState,currentNode.getPly()+1,nextMove);
+						Node newNode = new Node(currentNode.getPly()+1,nextMove);
 						newNode.setParent(currentNode);
 						
 						currentNode.children.add(newNode);
@@ -136,7 +139,20 @@ public class MinMaxTree implements Piece{
 		
 
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode.getState()));
+			Move parentMove = currentNode.getParent().getMove();
+			Move currentMove = currentNode.getMove();
+			
+			if(parentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.updateBoard(currentNode.getParent().getMove());
+			if(currentMove.Row != -1 && parentMove.Col != -1)
+			
+			this.gb.updateBoard(currentNode.getMove());
+			currentNode.setEvalValue(evalFunc(this.gb));
+			
+			if(parentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.revertBoard(currentNode.getParent().getMove());
+			if(currentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.revertBoard(currentNode.getMove());
 			return currentNode.getEvalValue();
 		}
 		
@@ -167,7 +183,22 @@ public class MinMaxTree implements Piece{
 		
 
 		if(currentNode.getPly() > 1 || currentNode.children.isEmpty()){
-			currentNode.setEvalValue(evalFunc(currentNode.getState()));
+//			this.gb.updateBoard(currentNode.getParent().getParent().getMove());
+			
+			Move parentMove = currentNode.getParent().getMove();
+			Move currentMove = currentNode.getMove();
+			
+			if(parentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.updateBoard(currentNode.getParent().getMove());
+			if(currentMove.Row != -1 && parentMove.Col != -1)
+			
+			this.gb.updateBoard(currentNode.getMove());
+			currentNode.setEvalValue(evalFunc(this.gb));
+			
+			if(parentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.revertBoard(currentNode.getParent().getMove());
+			if(currentMove.Row != -1 && parentMove.Col != -1)
+				this.gb.revertBoard(currentNode.getMove());
 			return currentNode.getEvalValue();
 		}
 		
