@@ -55,9 +55,14 @@ public class MinMaxTree implements Piece{
 //			System.out.println("Entered the whileLoop");
 			Node currentNode = treeQueue.poll();
 			
-//			if(winCheck.getWin(currentNode.getState()) >= 0){
-//				continue;
-//			}
+			gb.updateBoard(currentNode.getMove());
+			
+			if(winCheck.getWin(gb) >= 0){
+				gb.revertBoard(currentNode.getMove());
+				continue;
+			}
+			
+			gb.revertBoard(currentNode.getMove());
 
 			//Restricting the depth to which we will create the tree
 			if(currentNode.getPly() > 3){
