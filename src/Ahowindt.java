@@ -64,31 +64,34 @@ public class Ahowindt implements Player, Piece {
 			ourMove.P = ourPlayerValue;
 			ourMove.IsSwap = true;
 
-			int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
-
-			// First move to just inside one of the corners
-			if (firstMoveLoc == 0) {
-				ourMove.Row = 1;
-				ourMove.Col = 1;
-			} else if (firstMoveLoc == 1) {
-				ourMove.Row = 1;
-				ourMove.Col = size - 1;
-			} else if (firstMoveLoc == 2) {
-				ourMove.Row = size - 1;
-				ourMove.Col = 2 * size - 3;
-			} else if (firstMoveLoc == 3) {
-				ourMove.Row = 2 * size - 3;
-				ourMove.Col = 2 * size - 3;
-			} else if (firstMoveLoc == 4) {
-				ourMove.Row = 2 * size - 3;
-				ourMove.Col = size - 1;
-			} else if (firstMoveLoc == 5) {
-				ourMove.Row = size - 1;
-				ourMove.Col = 1;
-			} else {
-				ourMove.Row = 1;
-				ourMove.Col = 1;
-			}
+//			int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
+//
+//			// First move to just inside one of the corners
+//			if (firstMoveLoc == 0) {
+//				ourMove.Row = 1;
+//				ourMove.Col = 1;
+//			} else if (firstMoveLoc == 1) {
+//				ourMove.Row = 1;
+//				ourMove.Col = size - 1;
+//			} else if (firstMoveLoc == 2) {
+//				ourMove.Row = size - 1;
+//				ourMove.Col = 2 * size - 3;
+//			} else if (firstMoveLoc == 3) {
+//				ourMove.Row = 2 * size - 3;
+//				ourMove.Col = 2 * size - 3;
+//			} else if (firstMoveLoc == 4) {
+//				ourMove.Row = 2 * size - 3;
+//				ourMove.Col = size - 1;
+//			} else if (firstMoveLoc == 5) {
+//				ourMove.Row = size - 1;
+//				ourMove.Col = 1;
+//			} else {
+//				ourMove.Row = 1;
+//				ourMove.Col = 1;
+//			}
+			
+			ourMove.Row = 1;
+			ourMove.Col = 1;
 
 			System.out
 					.println("First Move: " + ourMove.Row + "," + ourMove.Col);
@@ -111,6 +114,8 @@ public class Ahowindt implements Player, Piece {
 			ourMove = mmt.getMove();
 
 		}
+		
+		System.out.println("the best move we could come up with was at " + ourMove.Row + " , " + ourMove.Col);
 
 		this.board.updateBoard(ourMove);
 		previousMove = ourMove;
