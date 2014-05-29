@@ -11,6 +11,7 @@ public class Gameboard {
 	protected String filePath;
 	protected List<List<Hexagon>> gameboard;
 	protected int totalRows;
+	protected Move updatedMove;
 
 	public Gameboard() {
 		gameboard = new ArrayList<List<Hexagon>>();
@@ -101,6 +102,7 @@ public class Gameboard {
 		
 		else{
 			toChange.setValue(move.P);
+			this.updatedMove = move;
 			return true;
 		}
 	}
@@ -109,6 +111,7 @@ public class Gameboard {
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		toChange.setValue(0);
 		toChange.resetPriorityValue();
+		this.updatedMove = null;
 		return true;
 		
 	}
@@ -156,5 +159,9 @@ public class Gameboard {
 			output.print("\r\n");
 		}
 
+	}
+	
+	public Move getUpdatedMove(){
+		return this.updatedMove;
 	}
 }

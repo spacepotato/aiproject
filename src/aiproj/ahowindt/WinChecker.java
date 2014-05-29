@@ -202,7 +202,8 @@ public class WinChecker {
 					continue innerloop;
 				} else if (tempHexagon.getIsEdgeWinCheck()){
 					continue innerloop;
-				}
+				} else if (tempHexagon.isCorner())
+					continue innerloop;
 
 				hexagonStack.push(tempHexagon);
 
@@ -281,8 +282,8 @@ public class WinChecker {
 					
 					System.out.println("We are finding a loop around " + tempHexagon.getRow() + " " + tempHexagon.getColumn());
 
-					win = true; // Wins by having a loop
-					break outerloop;
+					return true; // Wins by having a loop
+					//break outerloop;
 				}
 
 				// resetting the tripod indicators

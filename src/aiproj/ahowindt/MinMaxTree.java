@@ -14,6 +14,8 @@ public class MinMaxTree implements Piece {
 	private Node parent;
 	private Move idealMove;
 	private int player, opponent;
+	
+	private Move forcedMove;
 
 	protected Gameboard gb;
 
@@ -25,6 +27,7 @@ public class MinMaxTree implements Piece {
 		this.parent = new Node(1, new Move());
 		this.player = player;
 		this.gb = gb;
+		this.forcedMove = null;
 
 		if (player == BLACK) {
 			opponent = WHITE;
@@ -35,8 +38,8 @@ public class MinMaxTree implements Piece {
 	}
 
 	public Move runMiniMax() {
-		createTree();
-		//createTree2(this.parent, this.player, 0);
+		//createTree();
+		createTree2(this.parent, this.player, 0);
 		return alphaBetaSearch();
 	}
 
@@ -46,6 +49,9 @@ public class MinMaxTree implements Piece {
 			for (Hexagon tempHex : tempList) {
 
 				if (tempHex == null)
+					continue;
+				
+				if(tempHex.getValue() != EMPTY)
 					continue;
 				Move tempMove = new Move();
 				tempMove.Row = tempHex.getRow();
@@ -114,7 +120,7 @@ public class MinMaxTree implements Piece {
 			}
 
 			// Restricting the depth to which we will create the tree
-			if (currentNode.getPly() > 3) {
+			if (currentNode.getPly() > 2) {
 				break;
 			}
 
@@ -173,6 +179,8 @@ public class MinMaxTree implements Piece {
 				
 			}
 		}
+		if(this.forcedMove != null)
+			return this.forcedMove;
 		return idealMove;
 
 	}
@@ -243,6 +251,8 @@ public class MinMaxTree implements Piece {
 				updatedChild = this.gb.updateBoard(currentMove);
 			if(updatedChild)
 				currentNode.setEvalValue(evalFunc(this.gb));
+			else
+				System.out.println("we are not calling eval function for move: " + currentMove.Row + " , " + currentMove.Col);
 
 			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
@@ -278,11 +288,11 @@ public class MinMaxTree implements Piece {
 		Double heuristicVal = (tripodEval(gb, this.player) - tripodEval(
 				gb, this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
-		// System.out.println("Heuristic Value = " + heuristicVal);
+//		 System.out.println("Heuristic Value = " + heuristicVal);
 		return heuristicVal;
 	}
 
-	protected double tripodEval(Gameboard board, int player) {
+protected double tripodEval(Gameboard board, int player) {
 		
 		List<List<Hexagon>> hexBoard = board.getBoard();
 		
@@ -308,9 +318,12 @@ public class MinMaxTree implements Piece {
 			System.out.println();
 		}
 
-		if (winCheck.tripodWin(board, player)) {
+if (winCheck.tripodWin(board, player)) {
 			System.out.println("A tripod win has been detected for " + player);
-			board.printBoard(System.out);
+//			board.printBoard(System.out);
+			Move toForce = board.getUpdatedMove();
+			toForce.P = swapPlayer(toForce.P);
+			this.forcedMove = toForce;
 
 			return 100000;
 		}
@@ -347,7 +360,7 @@ public class MinMaxTree implements Piece {
 				} else if (tempHex.getChecked() != 0) {
 					continue innerloop;
 				} else if(tempHex.isCorner()){
-					continue;
+					continue innerloop;
 				}
 
 				if (tempHex.getValue() == player) {
@@ -358,9 +371,9 @@ public class MinMaxTree implements Piece {
 				if(tempHex.getIsEdge() && !tempHex.isCorner()){
 					int index1 = tempHex.whichEdge();
 					if (index1 != -1) {
-						if (edgeCounter[index1] == 1){
-							continue;
-						}
+//						if (edgeCounter[index1] == 1){
+//							continue;
+//						} 
 						edgeCounter[index1] = 1;
 					}
 					System.out.println(index1 + "," + edgeCounter[index1]);
@@ -392,16 +405,19 @@ public class MinMaxTree implements Piece {
 					
 					
 					//Finding if the current hexagon is on the edge
+					int loc1 = 0;
 					if(currentHex.getIsEdge()){
 						int k = currentHex.whichEdge();
-						if(edgeCounter[k] == 1){
-							continue;
-						}
+						loc1 = k;
 						if(k != -1){
+//							if(edgeCounter[k] == 1){
+//								continue;
+//							}
 							edgeCounter[k] = 1;
 						}
 					}
 					
+					System.out.println("loc = "+ loc1 + " " + "edgeCounter = " + edgeCounter[loc1]);
 					adjLoop : for (Coordinate coords : currentHex.adjacencies) {
 
 						if (coords.getRow() == 999 || coords.getColumn() == 999) {
@@ -484,18 +500,6 @@ public class MinMaxTree implements Piece {
 				
 				initialisePriorityValues(hexBoard, player);
 				
-				for(List<Hexagon> tempList1 : hexBoard){
-					for(Hexagon tempHex1 : tempList1){
-						if(tempHex1 == null){
-							continue;
-						}
-						
-						System.out.print(" " + tempHex1.getPriorityValue());
-						
-					}
-					System.out.println();
-				}
-				
 				number = 0;
 
 			}// End of inner for loop
@@ -512,123 +516,130 @@ public class MinMaxTree implements Piece {
 			return 100.0 / minNum;
 	}// End of tripodEval
 
-	private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
-		
+private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
+	
 
-		boolean adjToEdge;
-		
-		for(List<Hexagon> tempList : hexBoard){
-			for(Hexagon tempHex : tempList){
-				if(tempHex == null){
+	boolean adjToEdge;
+	
+	for(List<Hexagon> tempList : hexBoard){
+		for(Hexagon tempHex : tempList){
+			if(tempHex == null){
+				continue;
+			}
+			tempHex.setIfUpdated(false);
+			adjToEdge = false;
+			adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
+				if(coords.getRow() == 999 || coords.getColumn() == 999){
 					continue;
 				}
-				tempHex.setIfUpdated(false);
-				adjToEdge = false;
-				adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
-					if(coords.getRow() == 999 || coords.getColumn() == 999){
-						continue;
-					}
-					Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
-					if(!tempHex.getIsEdge() && adjHex.getIsEdge()){
-						adjToEdge = true;
-						break adjLoop;
-					}
+				Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+				if(!tempHex.getIsEdge() && adjHex.getIsEdge()){
+					adjToEdge = true;
+					break adjLoop;
 				}
-				
-				int row = tempHex.getRow(), col = tempHex.getColumn();
-				if(tempHex.getValue() == player){
-					tempHex.setPriorityValue(1);
-				} else if(tempHex.getValue() != EMPTY){
-					tempHex.setPriorityValue(1000);
-				} else if(tempHex.isCorner()){
-					tempHex.setPriorityValue(30);
-				} else if(tempHex.getIsEdge()){
-					tempHex.setPriorityValue(3);
-				} else if(row == gb.getTotalRows() && col == gb.getTotalRows()){
-					tempHex.setPriorityValue(7);
-				} else if(adjToEdge){
-					tempHex.setPriorityValue(4);
-				} else{
-					tempHex.setPriorityValue(6);
+			}
+			
+			int row = tempHex.getRow(), col = tempHex.getColumn();
+			if(tempHex.getValue() == player){
+				tempHex.setPriorityValue(1);
+			} else if(tempHex.getValue() != EMPTY){
+				tempHex.setPriorityValue(1000);
+			} else if(tempHex.isCorner()){
+				tempHex.setPriorityValue(30);
+			} else if(tempHex.getIsEdge()){
+				tempHex.setPriorityValue(3);
+			} else if(row == gb.getTotalRows() && col == gb.getTotalRows()){
+				tempHex.setPriorityValue(7);
+			} else if(adjToEdge){
+				tempHex.setPriorityValue(4);
+			} else{
+				tempHex.setPriorityValue(6);
+			}
+			
+			adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
+				if(coords.getRow() == 999 || coords.getColumn() == 999){
+					continue adjLoop;
 				}
-				
-				adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
-					if(coords.getRow() == 999 || coords.getColumn() == 999){
-						continue adjLoop;
-					}
-					Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
-					if(tempHex.getValue() != player && adjHex.getValue() == player){
-						tempHex.priorityValue--;
-						tempHex.setIfUpdated(true);
-						break adjLoop;
-					}
-					
+				Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+				if(tempHex.getValue() != player && adjHex.getValue() == player){
+					tempHex.priorityValue--;
+					tempHex.setIfUpdated(true);
+					break adjLoop;
 				}
 				
 			}
+			
 		}
-		
 	}
 	
-	private void resetPriorityValues(List<List<Hexagon>> hexBoard){
-		
-		for(List<Hexagon> tempList : hexBoard){
-			for(Hexagon tempHex : tempList){
-				if(tempHex == null){
-					continue;
-				}
-				tempHex.resetPriorityValue();
+}
+
+private void resetPriorityValues(List<List<Hexagon>> hexBoard){
+	
+	for(List<Hexagon> tempList : hexBoard){
+		for(Hexagon tempHex : tempList){
+			if(tempHex == null){
+				continue;
 			}
+			tempHex.resetPriorityValue();
 		}
-		
 	}
 	
-	
-	private void resetTreeEval(List<List<Hexagon>> hexBoard) {
+}
 
-		resetPriorityValues(hexBoard);
-		for (List<Hexagon> tempList : hexBoard) {
-			for (Hexagon tempHex : tempList) {
-				if (tempHex == null) {
-					continue;
-				}
 
-				tempHex.setChecked(0);
+private void resetTreeEval(List<List<Hexagon>> hexBoard) {
 
+	resetPriorityValues(hexBoard);
+	for (List<Hexagon> tempList : hexBoard) {
+		for (Hexagon tempHex : tempList) {
+			if (tempHex == null) {
+				continue;
 			}
-		}
 
+			tempHex.setChecked(0);
+
+		}
 	}
 
-//	int backtrace(Hexagon h) {
+}
+
+//int backtrace(Hexagon h) {
 //
-//		Hexagon hex = h;
-//		int number = 0;
+//	Hexagon hex = h;
+//	int number = 0;
 //
-//		while (hex.prevHex != null) {
-//			if (hex.getValue() == EMPTY) {
-//				number++;
-//			}
-//			hex = hex.prevHex;
+//	while (hex.prevHex != null) {
+//		if (hex.getValue() == EMPTY) {
+//			number++;
 //		}
-//		return number;
+//		hex = hex.prevHex;
 //	}
+//	return number;
+//}
 
+	
 	private double loopEval(Gameboard board, int playerValue) {
 
 		WinChecker winCheck = new WinChecker();
 
-		// board.printBoard(System.out);
 
 		if (winCheck.loopWin(board, playerValue)) {
-			System.out.println("A loop win has been detected for " + playerValue);
-			board.printBoard(System.out);
-
-			return 10000;
+			Move toForce = board.getUpdatedMove();
+			toForce.P = swapPlayer(toForce.P);
+			this.forcedMove = toForce;
+			return -10000;
 		} else {
 			return 0;
 		}
 
+	}
+	
+	private int swapPlayer(int toSwap){
+		if (toSwap == 1)
+				return 2;
+		else
+			return 1;
 	}
 
 	protected Move getMove() {
