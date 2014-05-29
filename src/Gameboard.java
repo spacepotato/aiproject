@@ -137,4 +137,22 @@ public class Gameboard {
 		}
 
 	}
+	
+	public void printPriorityBoard(PrintStream output) {
+
+		int tempValue = 0;
+
+		for (List<Hexagon> tempList : this.gameboard) {
+			for (Hexagon tempHex : tempList) {
+				if(tempHex == null){
+					continue;
+				}
+				tempValue = tempHex.getPriorityValue();
+				output.print("|" + tempValue + "|");
+				
+			}
+			output.print("\r\n");
+		}
+
+	}
 }

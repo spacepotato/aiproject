@@ -180,6 +180,8 @@ public class MinMaxTree implements Piece {
 			if (tempNode.getEvalValue() >= maxVal) {
 					idealMove = tempNode.getMove();
 					maxVal = tempNode.getEvalValue();
+					
+					System.out.println("We are setting the ideal move to " + idealMove.Row + " , " + idealMove.Col + "for evaluation value " + maxVal);
 				
 			}
 		}
@@ -203,8 +205,8 @@ public class MinMaxTree implements Piece {
 				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
 				updatedChild = this.gb.updateBoard(currentMove);
-
-			currentNode.setEvalValue(evalFunc(this.gb));
+			if(updatedChild)
+				currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
@@ -251,8 +253,8 @@ public class MinMaxTree implements Piece {
 				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
 				updatedChild = this.gb.updateBoard(currentMove);
-
-			currentNode.setEvalValue(evalFunc(this.gb));
+			if(updatedChild)
+				currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
@@ -285,9 +287,13 @@ public class MinMaxTree implements Piece {
 	}
 
 	private Double evalFunc(Gameboard gb) {
+		System.out.println("Tripod eval for player " + this.player + " returns " + tripodEval(gb, this.player));
+		System.out.println("Tripod eval for opponent " + this.opponent + " returns " + tripodEval(gb, this.opponent));
 		Double heuristicVal = (tripodEval(gb, this.player) - tripodEval(
 				gb, this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
+		
+		gb.printBoard(System.out);
 		// System.out.println("Heuristic Value = " + heuristicVal);
 		return heuristicVal;
 	}
@@ -348,7 +354,6 @@ public class MinMaxTree implements Piece {
 
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
-					System.out.println("The hex we are adding is at " + tempHex.getRow() + " , " + tempHex.getColumn());
 				}
 
 				while (!hexQueue.isEmpty()) {
@@ -441,8 +446,10 @@ public class MinMaxTree implements Piece {
 			}// End of inner for loop
 		}// End of outer for loop
 
-		System.out.println("minnum = " + minNum);
-		
+//		System.out.println("minnum = " + minNum);
+//		System.out.println("##################################");
+//		board.printPriorityBoard(System.out);
+//		System.out.println("##################################");
 		resetTreeEval(hexBoard);
 		if (minNum == 0)
 			return 0;
