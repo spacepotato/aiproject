@@ -1,3 +1,4 @@
+package aiproj.ahowindt;
 import java.util.ArrayList;
 
 import aiproj.fencemaster.Move;

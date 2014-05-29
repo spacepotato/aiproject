@@ -1,3 +1,4 @@
+package aiproj.ahowindt;
 public class PlayerCustom {
 
 	protected String playerName;

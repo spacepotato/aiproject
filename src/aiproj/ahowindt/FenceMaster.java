@@ -1,3 +1,4 @@
+package aiproj.ahowindt;
 import java.util.Scanner;
 
 import aiproj.fencemaster.Move;
