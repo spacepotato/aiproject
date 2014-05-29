@@ -1,6 +1,21 @@
+/**
+ * A class representing the gameboard in Fencemaster
+ * It keeps track of the state of the gameboard
+ * and provides various methods through which the player
+ * can update the board
+ * 
+ * @param gameboard: represents the current state of the board
+ * @param totalRows: the number of rows the board has. Determined
+ * 					 based off of the dimensions passed in
+ * @param updatedMove: used to determine what move to make
+ * 					  in the case of the opponent winning.
+ * 				      basically references the move most
+ * 					  recently passed into updateBoard()
+ * 
+ * @author AHowindt and JMcLaren
+ */
 package aiproj.ahowindt;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +23,6 @@ import aiproj.fencemaster.Move;
 
 public class Gameboard {
 
-	protected String filePath;
 	protected List<List<Hexagon>> gameboard;
 	protected int totalRows;
 	protected Move updatedMove;
@@ -16,31 +30,31 @@ public class Gameboard {
 	public Gameboard() {
 		gameboard = new ArrayList<List<Hexagon>>();
 	}
-	
-	public Gameboard(Gameboard gb){
-		this.gameboard = new ArrayList<List<Hexagon>>(gb.getBoard());
-		this.totalRows = gb.totalRows;
-		this.filePath = gb.filePath;
-	}
-	
 
+	
+	/**
+	 * Populating the Arraylist of Lists of Hexagons as defined by the board layout
+	 * @param dimensions of the board
+	 * @return true if the board is set up properly and input is correct
+	 */
 	protected boolean generateHexagons(int dimensions) {
 		List<Hexagon> tempList;
+		
 		int index = 0;
-
 		int row = 0;
 		int column = dimensions - 1;
 		int offset = 0;
+		
 		boolean isLeftEdge = false;
 		boolean isRightEdge = false;
+		
 		this.totalRows = dimensions * 2 - 1;
 
 
 		for(int i = 0; i < this.totalRows; i++){
 			
-
-			
 			index = 0;
+			
 			tempList = new ArrayList<Hexagon>();
 			this.gameboard.add(row, tempList);
 			
@@ -64,11 +78,8 @@ public class Gameboard {
 				tempList.add(j, null);
 			}
 			
-			//Because we don't know how many whitespaces, we do this check to see if the character
-			//we are about to create a hexagon for is the last non-whitespace character in the line
-			//and thus can be considered as a right edge
-
-
+			//Because hexagons below the middle of the board do not start at 
+			//column = 0 we need to keep track of the offset
 			for(int k = offset; k < column + offset; k++ ){
 				
 				isLeftEdge = false;
@@ -92,6 +103,11 @@ public class Gameboard {
 
 	}
 	
+	/**
+	 * A function that makes a move on the board
+	 * @param move: the move to make
+	 * @return true if move is valid
+	 */
 	protected boolean updateBoard(Move move){
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		
@@ -107,6 +123,13 @@ public class Gameboard {
 		}
 	}
 	
+	/**
+	 * Deleting a move from the board
+	 * Useful for AB searching where you want to make a move 
+	 * and then undo it to try a different move
+	 * @param move: the move to revert
+	 * @return if reverted successfully
+	 */
 	public boolean revertBoard(Move move){
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		toChange.setValue(0);
@@ -125,41 +148,7 @@ public class Gameboard {
 		return this.totalRows;
 	}
 	
-	public void printBoard(PrintStream output) {
 
-		int tempValue = 0;
-
-		for (List<Hexagon> tempList : this.gameboard) {
-			for (Hexagon tempHex : tempList) {
-				if(tempHex == null){
-					continue;
-				}
-				tempValue = tempHex.getValue();
-				output.print(tempValue);
-				
-			}
-			output.print("\r\n");
-		}
-
-	}
-	
-	public void printPriorityBoard(PrintStream output) {
-
-		int tempValue = 0;
-
-		for (List<Hexagon> tempList : this.gameboard) {
-			for (Hexagon tempHex : tempList) {
-				if(tempHex == null){
-					continue;
-				}
-				tempValue = tempHex.getPriorityValue();
-				output.print("|" + tempValue + "|");
-				
-			}
-			output.print("\r\n");
-		}
-
-	}
 	
 	public Move getUpdatedMove(){
 		return this.updatedMove;

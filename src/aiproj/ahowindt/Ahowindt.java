@@ -1,4 +1,9 @@
+/**
+ * Main class called by the referee
+ * @author AHowindt and JMcLaren
+ */
 package aiproj.ahowindt;
+
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +27,11 @@ public class Ahowindt implements Player, Piece {
 	protected int theirPlayerValue;
 	protected int size;
 
+	/**
+	 * Initializing the board and the player
+	 * @param n: The dimension value of the board
+	 * @param p: The player value we are assigned
+	 */
 	@Override
 	public int init(int n, int p) {
 
@@ -36,6 +46,7 @@ public class Ahowindt implements Player, Piece {
 		}
 
 		this.board = new Gameboard();
+		
 		// Setting up the board based on the provided dimensions
 		this.board.generateHexagons(n);
 
@@ -51,15 +62,20 @@ public class Ahowindt implements Player, Piece {
 		}
 
 	}
-
+	
+	/**
+	 * Called by referee to prompt us to make a move on the board
+	 */
 	@Override
 	public Move makeMove() {
 
 		Random rand = new Random();
-		// Coordinate nextMove = null;
 
 		Move ourMove = new Move();
-
+		
+		//We randomly choose a piece which is one loop in from the corners 
+		//We also have it so that if our opponent goes first and makes one
+		//of these moves, we replace it
 		if (previousMove == null) {
 
 			ourMove.P = ourPlayerValue;
@@ -131,18 +147,23 @@ public class Ahowindt implements Player, Piece {
 			ourMove = mmt.runMiniMax();
 
 			}
-
+		//We need to make sure our move is valid
 		if(this.board.updateBoard(ourMove)){
-		previousMove = ourMove;
-
-		return ourMove;
+			previousMove = ourMove;
+			return ourMove;
 		}
 		else{
 			System.out.println("Invalid move made");
 			return null;
 		}
 	}
-
+	/**
+	 * Returns an integer value corresponding to the win state
+	 * -1 = game not finished
+	 *  0 = draw
+	 *  1 = WHITE win
+	 *  2 = BLACK win
+	 */
 	@Override
 	public int getWinner() {
 
@@ -151,7 +172,11 @@ public class Ahowindt implements Player, Piece {
 		return winCheck.getWin(this.board);
 
 	}
-
+	
+	/**
+	 * Updating the board based on the opponents move
+	 * @param m: the opponents move
+	 */
 	@Override
 	public int opponentMove(Move m) {
 		if (this.board.updateBoard(m)) {
@@ -163,6 +188,10 @@ public class Ahowindt implements Player, Piece {
 		}
 	}
 
+	/**
+	 * Printing the board to the output
+	 * @param output: the output to which we are printing, usually System.out
+	 */
 	@Override
 	public void printBoard(PrintStream output) {
 

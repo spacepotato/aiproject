@@ -1,7 +1,7 @@
 package aiproj.ahowindt;
 /**
  * 
- * @author James, Aston
+ * @author AHowindt and JMcLaren
  * A simple class to aid in keeping track of Adjacent hexagons
  * @param column refers to column on the game board
  * @param likewise row refers to a row on the game board
