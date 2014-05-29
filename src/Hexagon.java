@@ -259,6 +259,9 @@ public class Hexagon {
 	}
 	
 	protected int getPriorityValue(){
+		if(this.getRow() == 0 && this.getColumn() == 0 )
+			return 20000;
+		
 		return this.priorityValue;
 	}
 
@@ -364,7 +367,7 @@ public class Hexagon {
 	}
 	
 	protected int whichEdge(){
-		for(int i=0, j=1;i<6;i++){
+		for(int i=0, j=1;i<6;i++, j++){
 		
 			if (j>5){
 				j=0;

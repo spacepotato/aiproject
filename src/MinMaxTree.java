@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,10 +33,10 @@ public class MinMaxTree implements Piece {
 
 	}
 
-	public void runMiniMax() {
-		//createTree();
-		createTree2(this.parent, this.player, 0);
-		alphaBetaSearch();
+	public Move runMiniMax() {
+		createTree();
+		//createTree2(this.parent, this.player, 0);
+		return alphaBetaSearch();
 	}
 
 	protected void createTree2(Node node, int playerValue, int ply) {
@@ -165,26 +166,24 @@ public class MinMaxTree implements Piece {
 	// The minimax recursive algorithm enclosed by the searchTree function was
 	// adapted from "Artificial Intelligence: A
 	// Modern Approach" by Stuart Russell and Peter Norvig.
-	protected void alphaBetaSearch() {
+	protected Move alphaBetaSearch() {
 
 		@SuppressWarnings("unused")
 		double value = maxValue(this.parent, Double.NEGATIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
 		double maxVal = Double.NEGATIVE_INFINITY;
-
+		Move idealMove = new Move();
 		for (Node tempNode : this.parent.children) {
 			// System.out.println("eval value for child : " +
 			// evalFunc(tempNode));
 
-			if (tempNode.getEvalValue() > maxVal) {
-				Move tempMove = tempNode.getMove();
-				if (this.gb.getBoard().get(tempMove.Row).get(tempMove.Col)
-						.getValue() == 0) {
-					this.idealMove = tempNode.getMove();
+			if (tempNode.getEvalValue() >= maxVal) {
+					idealMove = tempNode.getMove();
 					maxVal = tempNode.getEvalValue();
-				}
+				
 			}
 		}
+		return idealMove;
 
 	}
 
@@ -298,6 +297,10 @@ public class MinMaxTree implements Piece {
 		List<List<Hexagon>> hexBoard = board.getBoard();
 		
 		WinChecker winCheck = new WinChecker();
+		
+		int minIndex = 0;
+		int minPriority = Integer.MAX_VALUE;
+		int counter = 0;
 
 		// board.printBoard(System.out);
 
@@ -317,7 +320,7 @@ public class MinMaxTree implements Piece {
 			opponent = WHITE;
 		}
 
-		int number = 0, minNum = Integer.MAX_VALUE, order = 1;
+		int number = 0, minNum = Integer.MIN_VALUE, order = 1;
 
 		int[] edgeCounter = new int[6];
 
@@ -326,8 +329,7 @@ public class MinMaxTree implements Piece {
 		}
 
 		Comparator<Hexagon> comparator = new HexagonComparator();
-		PriorityQueue<Hexagon> hexQueue = new PriorityQueue<Hexagon>(11,
-				comparator);
+		ArrayList<Hexagon> hexQueue = new ArrayList<Hexagon>();
 
 		for (List<Hexagon> tempList : hexBoard) {
 			innerloop: for (Hexagon tempHex : tempList) {
@@ -346,11 +348,21 @@ public class MinMaxTree implements Piece {
 
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
+					System.out.println("The hex we are adding is at " + tempHex.getRow() + " , " + tempHex.getColumn());
 				}
 
 				while (!hexQueue.isEmpty()) {
-
-					Hexagon currentHex = hexQueue.poll();
+					counter = 0;
+					minIndex = 0;
+					for(Hexagon minHex: hexQueue){
+						if(minHex.getPriorityValue() < minPriority){
+							minPriority = minHex.getPriorityValue();
+							minIndex = counter;
+						}
+						counter++;
+					}
+					Hexagon currentHex = hexQueue.get(minIndex);
+					hexQueue.remove(minIndex);
 
 					for (Coordinate coords : currentHex.adjacencies) {
 
@@ -377,26 +389,21 @@ public class MinMaxTree implements Piece {
 							continue;
 						}
 
-						nextHex.setParent(new Hexagon(currentHex));
 						nextHex.setPriorityValue(player, hexBoard);
 
 						hexQueue.add(nextHex);
 
 					}// End of adjacency loop
+//
+//					hexQueue.comparator();
 
-					hexQueue.comparator();
-
-					if (currentHex.value == EMPTY) {
+					if (currentHex.getValue() == EMPTY) {
 						number++;
 					}
 
-//					 for(Hexagon printHex : hexQueue){
-//					 System.out.println("Priority of " + printHex.getRow() + " , " + printHex.getColumn() + ": " +
-//					 printHex.getPriorityValue());
-//					 }
-
 					currentHex.setChecked(order);
 					order++;
+					
 					int k = currentHex.whichEdge();
 					if(k >0){
 						edgeCounter[k] = 1;
@@ -424,7 +431,8 @@ public class MinMaxTree implements Piece {
 					edgeCounter[x] = 0;
 				}
 
-				if (number < minNum) {
+				if (number > minNum) {
+					System.out.println(number);
 					minNum = number;
 				}
 				
@@ -433,6 +441,8 @@ public class MinMaxTree implements Piece {
 			}// End of inner for loop
 		}// End of outer for loop
 
+		System.out.println("minnum = " + minNum);
+		
 		resetTreeEval(hexBoard);
 		if (minNum == 0)
 			return 0;

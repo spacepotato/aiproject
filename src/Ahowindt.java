@@ -130,11 +130,9 @@ public class Ahowindt implements Player, Piece {
 
 			MinMaxTree mmt;
 			mmt = new MinMaxTree(board, ourPlayerValue);
-			mmt.runMiniMax();
+			ourMove = mmt.runMiniMax();
 
-			ourMove = mmt.getMove();
-
-		}
+			}
 
 		this.board.updateBoard(ourMove);
 		previousMove = ourMove;
