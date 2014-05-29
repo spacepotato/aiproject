@@ -199,7 +199,7 @@ public class WinChecker {
 					continue innerloop;
 				} else if (tempHexagon.getChecked() != 0) {
 					continue innerloop;
-				} else if (tempHexagon.getIsEdge()){
+				} else if (tempHexagon.getIsEdgeWinCheck()){
 					continue innerloop;
 				}
 
