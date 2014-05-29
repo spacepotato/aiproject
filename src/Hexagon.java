@@ -313,7 +313,7 @@ public class Hexagon {
 		if(player == this.value){
 			this.priorityValue = 1;
 		}else if(isCorner()){
-			this.priorityValue = -1;
+			this.priorityValue = 15;
 		}else if(edgeBool && !isCorner()){
 			this.priorityValue = 25;
 		} else if(this.value != player && this.value != EMPTY){
