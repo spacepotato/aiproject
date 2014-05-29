@@ -18,6 +18,7 @@ public class Hexagon {
 	protected int value;
 
 	protected int priorityValue;
+	protected boolean priorityUpdated;
 	protected Hexagon prevHex;
 	
 	protected ArrayList<Coordinate> adjacencies = new ArrayList<Coordinate>();
@@ -259,15 +260,12 @@ public class Hexagon {
 	}
 	
 	protected int getPriorityValue(){
-		if(this.getRow() == 0 && this.getColumn() == 0 )
-			return 20000;
-		
 		return this.priorityValue;
 	}
 
 	protected boolean getIsEdge(){
 	
-		if(this.numberOfExposedEdges() >= 2){
+		if(this.numberOfExposedEdges() == 2){
 			return true;
 		}
 		
@@ -304,41 +302,28 @@ public class Hexagon {
 		
 	}
 	
-	protected void setPriorityValue(int player, List<List<Hexagon>> hexBoard){
-		int EMPTY = 0;
-		boolean adjIsEdge = false;
+	protected void setPriorityValue(int value){
+		this.priorityValue = value;
+	}
+	
+	protected void updatePriorityValue(int player, List<List<Hexagon>> hexBoard, ArrayList<Hexagon> hexQueue){
 		
-		int numAdj = this.checkAdjacency(hexBoard, player);
 		
 		for(Coordinate adj : this.getAdjacencies()){
 			if(adj.getRow() == 999 || adj.getColumn() == 999){
 				continue;
-			} else if(hexBoard.get(adj.getRow()).get(adj.getColumn()).getIsEdge()){
-				adjIsEdge = true;
+			} 
+			
+			Hexagon adjHex = hexBoard.get(adj.getRow()).get(adj.getColumn());
+			if(adjHex.getValue() == 0 && !hexQueue.contains(adjHex)){
+				int PV = adjHex.getPriorityValue();
+				if(!adjHex.getIfUpdated()){
+					adjHex.setPriorityValue(PV-2);
+					adjHex.setIfUpdated(true);
+				}
 			}
 		}
-		
-		boolean edgeBool = !this.isCorner() && (this.numberOfExposedEdges() == 2);
-		
-		if(player == this.value){
-			this.priorityValue = 1;
-		}else if(this.isCorner()){
-			this.priorityValue = 25;
-		} else if(this.value != player && this.value != EMPTY){
-			this.priorityValue = 1000;
-		} else if(edgeBool && numAdj >0){
-			this.priorityValue = 2;
-		} else if(edgeBool && numAdj == 0){
-			this.priorityValue = 3;
-		} else if(!edgeBool && adjIsEdge && numAdj >0){
-			this.priorityValue = 3;
-		} else if(!edgeBool && adjIsEdge && numAdj == 0){
-			this.priorityValue = 4;
-		} else if(!edgeBool && !adjIsEdge && numAdj >0){
-			this.priorityValue = 3 + numAdj;
-		} else if(!edgeBool && !adjIsEdge && numAdj == 0){
-			priorityValue = 6;
-		}
+
 	}
 	
 	protected void resetPriorityValue(){
@@ -381,19 +366,22 @@ public class Hexagon {
 		return -1;
 	}
 	
-	protected void setPriority(int value){
-		this.priorityValue = value;
+	protected boolean isCorner(){
+		boolean bool = false;
+		
+		if(this.numberOfExposedEdges() == 3){
+			bool = true;
+		}
+		
+		return bool;
 	}
 	
-	protected boolean isCorner(){
-		if(this.getIsEdge()){
-			if(this.getRow() == 0 || this.getRow() == rowTotal || this.getRow() == (rowTotal + 1)/2){
-				return true;
-			}
-			else
-				return false;
-		}
-		return false;
+	protected void setIfUpdated(boolean bool){
+		this.priorityUpdated = bool;
+	}
+	
+	protected boolean getIfUpdated(){
+		return this.priorityUpdated;
 	}
 }
 

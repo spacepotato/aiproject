@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 import aiproj.fencemaster.Move;
@@ -74,19 +73,19 @@ public class MinMaxTree implements Piece {
 
 	}
 	
-	protected void setBoardValues(Gameboard board){
-		
-		List<List<Hexagon>> hexBoard = board.getBoard();
-		
-		for(List<Hexagon> tempList: hexBoard){
-			for(Hexagon tempHex: tempList){
-				if(tempHex.getIsEdge() && !tempHex.isCorner())
-					tempHex.setPriority(10);
-				
-				
-			}
-		}
-	}
+//	protected void setBoardValues(Gameboard board){
+//		
+//		List<List<Hexagon>> hexBoard = board.getBoard();
+//		
+//		for(List<Hexagon> tempList: hexBoard){
+//			for(Hexagon tempHex: tempList){
+//				if(tempHex.getIsEdge() && !tempHex.isCorner())
+//					tempHex.setPriority(10);
+//				
+//				
+//			}
+//		}
+//	}
 
 	protected void createTree() {
 
@@ -180,8 +179,6 @@ public class MinMaxTree implements Piece {
 			if (tempNode.getEvalValue() >= maxVal) {
 					idealMove = tempNode.getMove();
 					maxVal = tempNode.getEvalValue();
-					
-					System.out.println("We are setting the ideal move to " + idealMove.Row + " , " + idealMove.Col + "for evaluation value " + maxVal);
 				
 			}
 		}
@@ -205,8 +202,8 @@ public class MinMaxTree implements Piece {
 				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
 				updatedChild = this.gb.updateBoard(currentMove);
-			if(updatedChild)
-				currentNode.setEvalValue(evalFunc(this.gb));
+
+			currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
@@ -253,8 +250,8 @@ public class MinMaxTree implements Piece {
 				updatedParent = this.gb.updateBoard(parentMove);
 			if (currentMove.Row != -1 && currentMove.Col != -1)
 				updatedChild = this.gb.updateBoard(currentMove);
-			if(updatedChild)
-				currentNode.setEvalValue(evalFunc(this.gb));
+
+			currentNode.setEvalValue(evalFunc(this.gb));
 
 			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
@@ -287,18 +284,14 @@ public class MinMaxTree implements Piece {
 	}
 
 	private Double evalFunc(Gameboard gb) {
-		System.out.println("Tripod eval for player " + this.player + " returns " + tripodEval(gb, this.player));
-		System.out.println("Tripod eval for opponent " + this.opponent + " returns " + tripodEval(gb, this.opponent));
 		Double heuristicVal = (tripodEval(gb, this.player) - tripodEval(
 				gb, this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
-		
-		gb.printBoard(System.out);
 		// System.out.println("Heuristic Value = " + heuristicVal);
 		return heuristicVal;
 	}
 
-	private double tripodEval(Gameboard board, int player) {
+	protected double tripodEval(Gameboard board, int player) {
 		
 		List<List<Hexagon>> hexBoard = board.getBoard();
 		
@@ -308,13 +301,27 @@ public class MinMaxTree implements Piece {
 		int minPriority = Integer.MAX_VALUE;
 		int counter = 0;
 
-		// board.printBoard(System.out);
+		//board.printBoard(System.out);
+		
+		initialisePriorityValues(hexBoard, player);
+		
+		for(List<Hexagon> tempList : hexBoard){
+			for(Hexagon tempHex : tempList){
+				if(tempHex == null){
+					continue;
+				}
+				
+				System.out.print(" " + tempHex.getPriorityValue());
+				
+			}
+			System.out.println();
+		}
 
 		if (winCheck.tripodWin(board, player)) {
 			System.out.println("A tripod win has been detected for " + player);
 			board.printBoard(System.out);
 
-			return 10000;
+			return 100000;
 		}
 
 		int opponent = 0;
@@ -326,15 +333,15 @@ public class MinMaxTree implements Piece {
 			opponent = WHITE;
 		}
 
-		int number = 0, minNum = Integer.MIN_VALUE, order = 1;
+		int number = 0, minNum = Integer.MAX_VALUE, order = 1;
 
+		//Variable for counting the number of edges that have been hit so far
 		int[] edgeCounter = new int[6];
-
 		for (int i = 0; i < 6; i++) {
 			edgeCounter[i] = 0;
 		}
 
-		Comparator<Hexagon> comparator = new HexagonComparator();
+		//A queue of possible hexagons
 		ArrayList<Hexagon> hexQueue = new ArrayList<Hexagon>();
 
 		for (List<Hexagon> tempList : hexBoard) {
@@ -344,21 +351,38 @@ public class MinMaxTree implements Piece {
 					continue innerloop;
 				}
 
-				tempHex.setPriorityValue(player, hexBoard);
-
 				if (tempHex.getValue() != player) {
 					continue innerloop;
 				} else if (tempHex.getChecked() != 0) {
 					continue innerloop;
+				} else if(tempHex.isCorner()){
+					continue;
 				}
 
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
+//					System.out.println("The hex we are adding is at " + tempHex.getRow() + " , " + tempHex.getColumn());
+				}
+				
+				if(tempHex.getIsEdge() && !tempHex.isCorner()){
+					int index1 = tempHex.whichEdge();
+					if (index1 != -1) {
+						if (edgeCounter[index1] == 1){
+							continue;
+						}
+						edgeCounter[index1] = 1;
+					}
+					System.out.println(index1 + "," + edgeCounter[index1]);
 				}
 
+				
+
 				while (!hexQueue.isEmpty()) {
+					
+					//Finding the next hexagon with the highest priority
 					counter = 0;
 					minIndex = 0;
+					minPriority = Integer.MAX_VALUE;
 					for(Hexagon minHex: hexQueue){
 						if(minHex.getPriorityValue() < minPriority){
 							minPriority = minHex.getPriorityValue();
@@ -368,8 +392,26 @@ public class MinMaxTree implements Piece {
 					}
 					Hexagon currentHex = hexQueue.get(minIndex);
 					hexQueue.remove(minIndex);
-
-					for (Coordinate coords : currentHex.adjacencies) {
+					
+					//"Increasing" the priority of the surrounding hexagons
+					if(currentHex.getValue()  == EMPTY){
+						currentHex.updatePriorityValue(player, hexBoard, hexQueue);
+					}
+					
+					
+					
+					//Finding if the current hexagon is on the edge
+					if(currentHex.getIsEdge()){
+						int k = currentHex.whichEdge();
+						if(edgeCounter[k] == 1){
+							continue;
+						}
+						if(k != -1){
+							edgeCounter[k] = 1;
+						}
+					}
+					
+					adjLoop : for (Coordinate coords : currentHex.adjacencies) {
 
 						if (coords.getRow() == 999 || coords.getColumn() == 999) {
 							continue;
@@ -378,42 +420,40 @@ public class MinMaxTree implements Piece {
 						Hexagon nextHex = hexBoard.get(coords.getRow()).get(
 								coords.getColumn());
 
-						if (nextHex.getValue() == opponent) {
-							continue;
-						} else if (hexQueue.contains(nextHex)) {
-							continue;
-						} else if (nextHex.getChecked() != 0) {
-							continue;
-						} else if (nextHex.getIsEdge() && !nextHex.isCorner()) {
-							int j = nextHex.whichEdge();
-							if (j != -1) {
-								if (edgeCounter[j] == 1)
-								continue;
-							}
+						if(nextHex.getValue() == opponent){
+							continue adjLoop;
 						} else if(nextHex.isCorner()){
-							continue;
+							continue adjLoop;
+						} else if(nextHex.getChecked() != 0){
+							continue adjLoop;
+						} else if(hexQueue.contains(nextHex)){
+							continue adjLoop;
+						} else if(nextHex.getIsEdge()){
+							int loc = nextHex.whichEdge();
+							if(loc != -1){
+								if(edgeCounter[loc] == 1){
+									continue adjLoop;
+								}
+							}
 						}
-
-						nextHex.setPriorityValue(player, hexBoard);
 
 						hexQueue.add(nextHex);
 
 					}// End of adjacency loop
-//
-//					hexQueue.comparator();
 
+					//Finding the number of empty hexagons we have traversed
 					if (currentHex.getValue() == EMPTY) {
 						number++;
 					}
 
+					System.out.println("CurrentHex: " + currentHex.getRow() + "," + currentHex.getColumn() + "," + currentHex.getValue());
+					
 					currentHex.setChecked(order);
 					order++;
 					
-					int k = currentHex.whichEdge();
-					if(k >0){
-						edgeCounter[k] = 1;
-					}
 
+
+					//Finding the number of edges that have been hit for this search
 					int sum = 0;
 					for (int i = 0; i < 6; i++) {
 						sum += edgeCounter[i];
@@ -421,12 +461,9 @@ public class MinMaxTree implements Piece {
 
 					if (sum >= 3) {
 						// Possible tripod
-
 						while (!hexQueue.isEmpty()) {
-						//	hexQueue.poll();
 							hexQueue.clear();
 						}
-
 						break;
 					}
 
@@ -436,56 +473,143 @@ public class MinMaxTree implements Piece {
 					edgeCounter[x] = 0;
 				}
 
-				if (number > minNum) {
+				if (number < minNum) {
 					System.out.println(number);
 					minNum = number;
 				}
+		
+				
+				for(List<Hexagon> tempList1 : hexBoard){
+					for(Hexagon tempHex1 : tempList1){
+						if(tempHex1 == null){
+							continue;
+						}
+						
+						System.out.print(" " + tempHex1.getPriorityValue());
+						
+					}
+					System.out.println();
+				}
+				
+				initialisePriorityValues(hexBoard, player);
 				
 				number = 0;
 
 			}// End of inner for loop
 		}// End of outer for loop
 
-//		System.out.println("minnum = " + minNum);
-//		System.out.println("##################################");
-//		board.printPriorityBoard(System.out);
-//		System.out.println("##################################");
+		System.out.println("minnum = " + minNum);
+
+		
+		
 		resetTreeEval(hexBoard);
 		if (minNum == 0)
 			return 0;
 		else
-			return 100 / minNum;
+			return 100.0 / minNum;
 	}// End of tripodEval
 
+	private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
+		
+
+		boolean adjToEdge;
+		
+		for(List<Hexagon> tempList : hexBoard){
+			for(Hexagon tempHex : tempList){
+				if(tempHex == null){
+					continue;
+				}
+				tempHex.setIfUpdated(false);
+				adjToEdge = false;
+				adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
+					if(coords.getRow() == 999 || coords.getColumn() == 999){
+						continue;
+					}
+					Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+					if(!tempHex.getIsEdge() && adjHex.getIsEdge()){
+						adjToEdge = true;
+						break adjLoop;
+					}
+				}
+				
+				int row = tempHex.getRow(), col = tempHex.getColumn();
+				if(tempHex.getValue() == player){
+					tempHex.setPriorityValue(1);
+				} else if(tempHex.getValue() != EMPTY){
+					tempHex.setPriorityValue(1000);
+				} else if(tempHex.isCorner()){
+					tempHex.setPriorityValue(30);
+				} else if(tempHex.getIsEdge()){
+					tempHex.setPriorityValue(3);
+				} else if(row == gb.getTotalRows() && col == gb.getTotalRows()){
+					tempHex.setPriorityValue(7);
+				} else if(adjToEdge){
+					tempHex.setPriorityValue(4);
+				} else{
+					tempHex.setPriorityValue(6);
+				}
+				
+				adjLoop : for(Coordinate coords : tempHex.getAdjacencies()){
+					if(coords.getRow() == 999 || coords.getColumn() == 999){
+						continue adjLoop;
+					}
+					Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+					if(tempHex.getValue() != player && adjHex.getValue() == player){
+						tempHex.priorityValue--;
+						tempHex.setIfUpdated(true);
+						break adjLoop;
+					}
+					
+				}
+				
+			}
+		}
+		
+	}
+	
+	private void resetPriorityValues(List<List<Hexagon>> hexBoard){
+		
+		for(List<Hexagon> tempList : hexBoard){
+			for(Hexagon tempHex : tempList){
+				if(tempHex == null){
+					continue;
+				}
+				tempHex.resetPriorityValue();
+			}
+		}
+		
+	}
+	
+	
 	private void resetTreeEval(List<List<Hexagon>> hexBoard) {
 
+		resetPriorityValues(hexBoard);
 		for (List<Hexagon> tempList : hexBoard) {
 			for (Hexagon tempHex : tempList) {
 				if (tempHex == null) {
 					continue;
 				}
 
-				tempHex.resetPriorityValue();
 				tempHex.setChecked(0);
-				tempHex.setParent(null);
+
 			}
 		}
 
 	}
 
-	int backtrace(Hexagon h) {
-
-		Hexagon hex = h;
-		int number = 0;
-
-		while (hex.prevHex != null) {
-			if (hex.getValue() == EMPTY) {
-				number++;
-			}
-			hex = hex.prevHex;
-		}
-		return number;
-	}
+//	int backtrace(Hexagon h) {
+//
+//		Hexagon hex = h;
+//		int number = 0;
+//
+//		while (hex.prevHex != null) {
+//			if (hex.getValue() == EMPTY) {
+//				number++;
+//			}
+//			hex = hex.prevHex;
+//		}
+//		return number;
+//	}
 
 	private double loopEval(Gameboard board, int playerValue) {
 
@@ -497,7 +621,7 @@ public class MinMaxTree implements Piece {
 			System.out.println("A loop win has been detected for " + playerValue);
 			board.printBoard(System.out);
 
-			return 10000;
+			return 100000;
 		} else {
 			return 0;
 		}

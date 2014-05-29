@@ -14,8 +14,6 @@ public class Ahowindt implements Player, Piece {
 	protected Gameboard board;
 
 	protected Move previousMove;
-	protected boolean secondMove = false;
-	protected boolean thirdMove = false;
 
 	protected List<List<Hexagon>> hexBoard;
 
@@ -69,96 +67,80 @@ public class Ahowindt implements Player, Piece {
 
 			List<List<Hexagon>> tempBoard = this.board.getBoard();
 
-//			if (tempBoard.get(1).get(size - 1).getValue() == theirPlayerValue) {
-//				ourMove.Row = 1;
-//				ourMove.Col = size - 1;
-//				moveMade = true;
-//			} else if (tempBoard.get(size - 1).get(2 * size - 3).getValue() == theirPlayerValue) {
-//				ourMove.Row = size - 1;
-//				ourMove.Col = 2 * size - 3;
-//				moveMade = true;
-//			} else if (tempBoard.get(2 * size - 3).get(2 * size - 3).getValue() == theirPlayerValue) {
-//				ourMove.Row = 2 * size - 3;
-//				ourMove.Col = 2 * size - 3;
-//				moveMade = true;
-//			} else if (tempBoard.get(2 * size - 3).get(size - 1).getValue() == theirPlayerValue) {
-//				ourMove.Row = 2 * size - 3;
-//				ourMove.Col = size - 1;
-//				moveMade = true;
-//			} else if (tempBoard.get(size - 1).get(1).getValue() == theirPlayerValue) {
-//				ourMove.Row = size - 1;
-//				ourMove.Col = 1;
-//				moveMade = true;
-//			} else if (tempBoard.get(1).get(1).getValue() == theirPlayerValue) {
-//				ourMove.Row = 1;
-//				ourMove.Col = 1;
-//				moveMade = true;
-//			}
-//			if (!moveMade) {
-//				int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
+			if (tempBoard.get(1).get(size - 1).getValue() == theirPlayerValue) {
+				ourMove.Row = 1;
+				ourMove.Col = size - 1;
+				moveMade = true;
+			} else if (tempBoard.get(size - 1).get(2 * size - 3).getValue() == theirPlayerValue) {
+				ourMove.Row = size - 1;
+				ourMove.Col = 2 * size - 3;
+				moveMade = true;
+			} else if (tempBoard.get(2 * size - 3).get(2 * size - 3).getValue() == theirPlayerValue) {
+				ourMove.Row = 2 * size - 3;
+				ourMove.Col = 2 * size - 3;
+				moveMade = true;
+			} else if (tempBoard.get(2 * size - 3).get(size - 1).getValue() == theirPlayerValue) {
+				ourMove.Row = 2 * size - 3;
+				ourMove.Col = size - 1;
+				moveMade = true;
+			} else if (tempBoard.get(size - 1).get(1).getValue() == theirPlayerValue) {
+				ourMove.Row = size - 1;
+				ourMove.Col = 1;
+				moveMade = true;
+			} else if (tempBoard.get(1).get(1).getValue() == theirPlayerValue) {
+				ourMove.Row = 1;
+				ourMove.Col = 1;
+				moveMade = true;
+			}
+			if (!moveMade) {
+				int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
 
 				// First move to just inside one of the corners
-//				if (firstMoveLoc == 0) {
-//					ourMove.Row = 1;
-//					ourMove.Col = 1;
-//				} else if (firstMoveLoc == 1) {
-//					ourMove.Row = 1;
-//					ourMove.Col = size - 1;
-//				} else if (firstMoveLoc == 2) {
-//					ourMove.Row = size - 1;
-//					ourMove.Col = 2 * size - 3;
-//				} else if (firstMoveLoc == 3) {
-//					ourMove.Row = 2 * size - 3;
-//					ourMove.Col = 2 * size - 3;
-//				} else if (firstMoveLoc == 4) {
-//					ourMove.Row = 2 * size - 3;
-//					ourMove.Col = size - 1;
-//				} else if (firstMoveLoc == 5) {
-//					ourMove.Row = size - 1;
-//					ourMove.Col = 1;
-//				} else {
-//					ourMove.Row = 1;
-//					ourMove.Col = 1;
-//				}
-//			}
+				if (firstMoveLoc == 0) {
+					ourMove.Row = 1;
+					ourMove.Col = 1;
+				} else if (firstMoveLoc == 1) {
+					ourMove.Row = 1;
+					ourMove.Col = size - 1;
+				} else if (firstMoveLoc == 2) {
+					ourMove.Row = size - 1;
+					ourMove.Col = 2 * size - 3;
+				} else if (firstMoveLoc == 3) {
+					ourMove.Row = 2 * size - 3;
+					ourMove.Col = 2 * size - 3;
+				} else if (firstMoveLoc == 4) {
+					ourMove.Row = 2 * size - 3;
+					ourMove.Col = size - 1;
+				} else if (firstMoveLoc == 5) {
+					ourMove.Row = size - 1;
+					ourMove.Col = 1;
+				} else {
+					ourMove.Row = 1;
+					ourMove.Col = 1;
+				}
+			}
 				
-				ourMove.Row = 1;
-				ourMove.Col = 1;
-				
-				secondMove = true;
 
 		}
-			
-			else if(secondMove){
-				ourMove.Row = 0;
-				ourMove.Col = 1;
-				ourMove.P = ourPlayerValue;
-				
-				secondMove = false;
-				
-				thirdMove = true;
-			}
-		
-			else if(thirdMove){
-				ourMove.Row = 1;
-				ourMove.Col = 0;
-				ourMove.P = ourPlayerValue;
-				
-				thirdMove = false;
-			}
 
 		else {
 
 			MinMaxTree mmt;
 			mmt = new MinMaxTree(board, ourPlayerValue);
-			ourMove = mmt.runMiniMax();
+			mmt.runMiniMax();
+			ourMove = mmt.getMove();
 
 			}
 
-		this.board.updateBoard(ourMove);
+		if(this.board.updateBoard(ourMove)){
 		previousMove = ourMove;
 
 		return ourMove;
+		}
+		else{
+			System.out.println("Invalid move made");
+			return null;
+		}
 	}
 
 	@Override
