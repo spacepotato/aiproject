@@ -1,5 +1,7 @@
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Random;
+
 import aiproj.fencemaster.Move;
 import aiproj.fencemaster.Piece;
 import aiproj.fencemaster.Player;
@@ -22,7 +24,7 @@ public class Ahowindt implements Player, Piece {
 
 	@Override
 	public int init(int n, int p) {
-		
+
 		this.ourPlayerValue = p;
 
 		this.size = n;
@@ -53,7 +55,7 @@ public class Ahowindt implements Player, Piece {
 	@Override
 	public Move makeMove() {
 
-//		Random rand = new Random();
+		Random rand = new Random();
 		// Coordinate nextMove = null;
 
 		Move ourMove = new Move();
@@ -62,35 +64,62 @@ public class Ahowindt implements Player, Piece {
 
 			ourMove.P = ourPlayerValue;
 			ourMove.IsSwap = true;
+			boolean moveMade = false;
 
-//			int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
-//
-//			// First move to just inside one of the corners
-//			if (firstMoveLoc == 0) {
-//				ourMove.Row = 1;
-//				ourMove.Col = 1;
-//			} else if (firstMoveLoc == 1) {
-//				ourMove.Row = 1;
-//				ourMove.Col = size - 1;
-//			} else if (firstMoveLoc == 2) {
-//				ourMove.Row = size - 1;
-//				ourMove.Col = 2 * size - 3;
-//			} else if (firstMoveLoc == 3) {
-//				ourMove.Row = 2 * size - 3;
-//				ourMove.Col = 2 * size - 3;
-//			} else if (firstMoveLoc == 4) {
-//				ourMove.Row = 2 * size - 3;
-//				ourMove.Col = size - 1;
-//			} else if (firstMoveLoc == 5) {
-//				ourMove.Row = size - 1;
-//				ourMove.Col = 1;
-//			} else {
-//				ourMove.Row = 1;
-//				ourMove.Col = 1;
-//			}
-			
-			ourMove.Row = 1;
-			ourMove.Col = 1;
+			List<List<Hexagon>> tempBoard = this.board.getBoard();
+
+			if (tempBoard.get(1).get(size - 1).getValue() == theirPlayerValue) {
+				ourMove.Row = 1;
+				ourMove.Col = size - 1;
+				moveMade = true;
+			} else if (tempBoard.get(size - 1).get(2 * size - 3).getValue() == theirPlayerValue) {
+				ourMove.Row = size - 1;
+				ourMove.Col = 2 * size - 3;
+				moveMade = true;
+			} else if (tempBoard.get(2 * size - 3).get(2 * size - 3).getValue() == theirPlayerValue) {
+				ourMove.Row = 2 * size - 3;
+				ourMove.Col = 2 * size - 3;
+				moveMade = true;
+			} else if (tempBoard.get(2 * size - 3).get(size - 1).getValue() == theirPlayerValue) {
+				ourMove.Row = 2 * size - 3;
+				ourMove.Col = size - 1;
+				moveMade = true;
+			} else if (tempBoard.get(size - 1).get(1).getValue() == theirPlayerValue) {
+				ourMove.Row = size - 1;
+				ourMove.Col = 1;
+				moveMade = true;
+			} else if (tempBoard.get(1).get(1).getValue() == theirPlayerValue) {
+				ourMove.Row = 1;
+				ourMove.Col = 1;
+				moveMade = true;
+			}
+			if (!moveMade) {
+				int firstMoveLoc = Math.abs(rand.nextInt(100)) % 6;
+
+				// First move to just inside one of the corners
+				if (firstMoveLoc == 0) {
+					ourMove.Row = 1;
+					ourMove.Col = 1;
+				} else if (firstMoveLoc == 1) {
+					ourMove.Row = 1;
+					ourMove.Col = size - 1;
+				} else if (firstMoveLoc == 2) {
+					ourMove.Row = size - 1;
+					ourMove.Col = 2 * size - 3;
+				} else if (firstMoveLoc == 3) {
+					ourMove.Row = 2 * size - 3;
+					ourMove.Col = 2 * size - 3;
+				} else if (firstMoveLoc == 4) {
+					ourMove.Row = 2 * size - 3;
+					ourMove.Col = size - 1;
+				} else if (firstMoveLoc == 5) {
+					ourMove.Row = size - 1;
+					ourMove.Col = 1;
+				} else {
+					ourMove.Row = 1;
+					ourMove.Col = 1;
+				}
+			}
 
 			System.out
 					.println("First Move: " + ourMove.Row + "," + ourMove.Col);
@@ -100,26 +129,29 @@ public class Ahowindt implements Player, Piece {
 		else if (secondMove == true) {
 			ourMove.Row = 0;
 			ourMove.Col = 1;
-			ourMove.P = 1;
+			ourMove.P = ourPlayerValue;
 			secondMove = false;
 		}
 
 		else {
 
 			MinMaxTree mmt;
-			mmt = new MinMaxTree(board, WHITE);
+			mmt = new MinMaxTree(board, ourPlayerValue);
 			mmt.runMiniMax();
 
 			ourMove = mmt.getMove();
 
 		}
-		
-		System.out.println("The best move we could come up with was at " + ourMove.Row + " , " + ourMove.Col);
-		System.out.println("This move had an evaluation value of " + board.getBoard().get(ourMove.Row).get(ourMove.Col).getPriorityValue());
+
+		System.out.println("The best move we could come up with was at "
+				+ ourMove.Row + " , " + ourMove.Col);
+		System.out.println("This move had an evaluation value of "
+				+ board.getBoard().get(ourMove.Row).get(ourMove.Col)
+						.getPriorityValue());
 
 		this.board.updateBoard(ourMove);
 		previousMove = ourMove;
-		
+
 		printBoard(System.out);
 		return ourMove;
 	}
@@ -151,12 +183,12 @@ public class Ahowindt implements Player, Piece {
 
 		for (List<Hexagon> tempList : this.hexBoard) {
 			for (Hexagon tempHex : tempList) {
-				if(tempHex == null){
+				if (tempHex == null) {
 					continue;
 				}
 				tempValue = tempHex.getValue();
 				output.print(tempValue);
-				
+
 			}
 			output.print("\r\n");
 		}

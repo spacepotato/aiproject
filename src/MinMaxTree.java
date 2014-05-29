@@ -19,8 +19,6 @@ public class MinMaxTree implements Piece {
 
 	public MinMaxTree(Gameboard gb, int player) {
 
-		// System.setOut(new PrintStream(new FileOutputStream("output.txt")));
-
 		this.idealMove = new Move(player, false, 0, 0);
 		this.parent = new Node(1, new Move());
 		this.player = player;
@@ -36,7 +34,7 @@ public class MinMaxTree implements Piece {
 
 	public void runMiniMax() {
 		// createTree();
-		createTree2(this.parent, 1, 0);
+		createTree2(this.parent, this.player, 0);
 		alphaBetaSearch();
 	}
 
@@ -68,10 +66,10 @@ public class MinMaxTree implements Piece {
 	}
 
 	protected int swapValue(int playerValue) {
-		if (playerValue == 1)
-			return 2;
+		if (playerValue == WHITE)
+			return BLACK;
 		else
-			return 1;
+			return WHITE;
 
 	}
 
@@ -85,7 +83,6 @@ public class MinMaxTree implements Piece {
 		treeQueue.add(parent);
 
 		while (!treeQueue.isEmpty()) {
-			// System.out.println("Entered the whileLoop");
 			Node currentNode = treeQueue.poll();
 
 			if (currentNode.getMove().Row != -1
@@ -148,8 +145,6 @@ public class MinMaxTree implements Piece {
 			// currentNode.printChildren();
 
 		}// End of While Loop
-
-		// System.out.println("Exited whileLoop");
 
 	}// End of Create Tree Function
 
