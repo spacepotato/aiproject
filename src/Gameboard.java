@@ -106,6 +106,7 @@ public class Gameboard {
 	public boolean revertBoard(Move move){
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		toChange.setValue(0);
+		toChange.resetPriorityValue();
 		return true;
 		
 	}

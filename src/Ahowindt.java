@@ -126,13 +126,6 @@ public class Ahowindt implements Player, Piece {
 			secondMove = true;
 		}
 
-		else if (secondMove == true) {
-			ourMove.Row = 0;
-			ourMove.Col = 1;
-			ourMove.P = ourPlayerValue;
-			secondMove = false;
-		}
-
 		else {
 
 			MinMaxTree mmt;
@@ -143,16 +136,9 @@ public class Ahowindt implements Player, Piece {
 
 		}
 
-		System.out.println("The best move we could come up with was at "
-				+ ourMove.Row + " , " + ourMove.Col);
-		System.out.println("This move had an evaluation value of "
-				+ board.getBoard().get(ourMove.Row).get(ourMove.Col)
-						.getPriorityValue());
-
 		this.board.updateBoard(ourMove);
 		previousMove = ourMove;
 
-		printBoard(System.out);
 		return ourMove;
 	}
 

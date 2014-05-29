@@ -33,7 +33,7 @@ public class MinMaxTree implements Piece {
 	}
 
 	public void runMiniMax() {
-		// createTree();
+		//createTree();
 		createTree2(this.parent, this.player, 0);
 		alphaBetaSearch();
 	}
@@ -71,6 +71,20 @@ public class MinMaxTree implements Piece {
 		else
 			return WHITE;
 
+	}
+	
+	protected void setBoardValues(Gameboard board){
+		
+		List<List<Hexagon>> hexBoard = board.getBoard();
+		
+		for(List<Hexagon> tempList: hexBoard){
+			for(Hexagon tempHex: tempList){
+				if(tempHex.getIsEdge() && !tempHex.isCorner())
+					tempHex.setPriority(10);
+				
+				
+			}
+		}
 	}
 
 	protected void createTree() {
@@ -272,14 +286,27 @@ public class MinMaxTree implements Piece {
 	}
 
 	private Double evalFunc(Gameboard gb) {
-		Double heuristicVal = (tripodEval(gb.getBoard(), this.player) - tripodEval(
-				gb.getBoard(), this.opponent))
+		Double heuristicVal = (tripodEval(gb, this.player) - tripodEval(
+				gb, this.opponent))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
 		// System.out.println("Heuristic Value = " + heuristicVal);
 		return heuristicVal;
 	}
 
-	private double tripodEval(List<List<Hexagon>> hexBoard, int player) {
+	private double tripodEval(Gameboard board, int player) {
+		
+		List<List<Hexagon>> hexBoard = board.getBoard();
+		
+		WinChecker winCheck = new WinChecker();
+
+		// board.printBoard(System.out);
+
+		if (winCheck.tripodWin(board, player)) {
+			System.out.println("A tripod win has been detected for " + player);
+			board.printBoard(System.out);
+
+			return 10000;
+		}
 
 		int opponent = 0;
 
@@ -319,7 +346,6 @@ public class MinMaxTree implements Piece {
 
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
-					tempHex.setParent(null);
 				}
 
 				while (!hexQueue.isEmpty()) {
@@ -341,13 +367,14 @@ public class MinMaxTree implements Piece {
 							continue;
 						} else if (nextHex.getChecked() != 0) {
 							continue;
-//						} else if (nextHex.getIsEdge()) {
-//							int j = nextHex.whichEdge();
-//							if (j != -1) {
-//								if (edgeCounter[j] == 1)
-//								//TODO What should go here?
-//								continue;
-//							}
+						} else if (nextHex.getIsEdge() && !nextHex.isCorner()) {
+							int j = nextHex.whichEdge();
+							if (j != -1) {
+								if (edgeCounter[j] == 1)
+								continue;
+							}
+						} else if(nextHex.isCorner()){
+							continue;
 						}
 
 						nextHex.setParent(new Hexagon(currentHex));
@@ -363,13 +390,17 @@ public class MinMaxTree implements Piece {
 						number++;
 					}
 
-					 for(Hexagon printHex : hexQueue){
-					 System.out.println("Priority of " + printHex.getRow() + " , " + printHex.getColumn() + ": " +
-					 printHex.getPriorityValue());
-					 }
+//					 for(Hexagon printHex : hexQueue){
+//					 System.out.println("Priority of " + printHex.getRow() + " , " + printHex.getColumn() + ": " +
+//					 printHex.getPriorityValue());
+//					 }
 
 					currentHex.setChecked(order);
 					order++;
+					int k = currentHex.whichEdge();
+					if(k >0){
+						edgeCounter[k] = 1;
+					}
 
 					int sum = 0;
 					for (int i = 0; i < 6; i++) {
@@ -380,17 +411,24 @@ public class MinMaxTree implements Piece {
 						// Possible tripod
 
 						while (!hexQueue.isEmpty()) {
-							hexQueue.poll();
+						//	hexQueue.poll();
+							hexQueue.clear();
 						}
 
 						break;
 					}
 
 				}// End of While Loop
+				
+				for(int x = 0; x < 6; x++){
+					edgeCounter[x] = 0;
+				}
 
 				if (number < minNum) {
 					minNum = number;
 				}
+				
+				number = 0;
 
 			}// End of inner for loop
 		}// End of outer for loop
