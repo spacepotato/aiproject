@@ -318,8 +318,9 @@ protected double tripodEval(Gameboard board, int player) {
 			System.out.println();
 		}
 
-if (winCheck.tripodWin(board, player)) {
-			System.out.println("A tripod win has been detected for " + player);
+		if (winCheck.tripodWin(board, player)) {
+			System.out.println("A tripod win has been detected for " + 
+					player);
 //			board.printBoard(System.out);
 			Move toForce = board.getUpdatedMove();
 			toForce.P = swapPlayer(toForce.P);
@@ -365,15 +366,13 @@ if (winCheck.tripodWin(board, player)) {
 
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
-//					System.out.println("The hex we are adding is at " + tempHex.getRow() + " , " + tempHex.getColumn());
+//					System.out.println("The hex we are adding is at " + 
+					//tempHex.getRow() + " , " + tempHex.getColumn());
 				}
 				
 				if(tempHex.getIsEdge() && !tempHex.isCorner()){
 					int index1 = tempHex.whichEdge();
 					if (index1 != -1) {
-//						if (edgeCounter[index1] == 1){
-//							continue;
-//						} 
 						edgeCounter[index1] = 1;
 					}
 					System.out.println(index1 + "," + edgeCounter[index1]);
@@ -399,7 +398,8 @@ if (winCheck.tripodWin(board, player)) {
 					
 					//"Increasing" the priority of the surrounding hexagons
 					if(currentHex.getValue()  == EMPTY){
-						currentHex.updatePriorityValue(player, hexBoard, hexQueue);
+						currentHex.updatePriorityValue(player, hexBoard, 
+								hexQueue);
 					}
 					
 					
@@ -410,17 +410,21 @@ if (winCheck.tripodWin(board, player)) {
 						int k = currentHex.whichEdge();
 						loc1 = k;
 						if(k != -1){
-//							if(edgeCounter[k] == 1){
-//								continue;
-//							}
+							if(currentHex.getValue() == EMPTY && 
+									edgeCounter[k] == 1){
+								continue;
+							}
 							edgeCounter[k] = 1;
 						}
 					}
 					
-					System.out.println("loc = "+ loc1 + " " + "edgeCounter = " + edgeCounter[loc1]);
-					adjLoop : for (Coordinate coords : currentHex.adjacencies) {
+					System.out.println("loc = "+ loc1 + " " + "edgeCounter = "
+							+ edgeCounter[loc1]);
+					adjLoop : for (Coordinate coords : currentHex.adjacencies)
+					{
 
-						if (coords.getRow() == 999 || coords.getColumn() == 999) {
+						if (coords.getRow() == 999 || coords.getColumn() 
+								== 999) {
 							continue;
 						}
 
@@ -453,14 +457,17 @@ if (winCheck.tripodWin(board, player)) {
 						number++;
 					}
 
-					System.out.println("CurrentHex: " + currentHex.getRow() + "," + currentHex.getColumn() + "," + currentHex.getValue());
+					System.out.println("CurrentHex: " + currentHex.getRow() + 
+							"," + currentHex.getColumn() + "," + 
+							currentHex.getValue());
 					
 					currentHex.setChecked(order);
 					order++;
 					
 
 
-					//Finding the number of edges that have been hit for this search
+					//Finding the number of edges that have been hit 
+					//for this search
 					int sum = 0;
 					for (int i = 0; i < 6; i++) {
 						sum += edgeCounter[i];
@@ -476,6 +483,7 @@ if (winCheck.tripodWin(board, player)) {
 
 				}// End of While Loop
 				
+				//Reseting the edge counter for the next search
 				for(int x = 0; x < 6; x++){
 					edgeCounter[x] = 0;
 				}
@@ -498,6 +506,7 @@ if (winCheck.tripodWin(board, player)) {
 					System.out.println();
 				}
 				
+				//Re-initisalising Priority Values
 				initialisePriorityValues(hexBoard, player);
 				
 				number = 0;
@@ -516,10 +525,12 @@ if (winCheck.tripodWin(board, player)) {
 			return 100.0 / minNum;
 	}// End of tripodEval
 
-private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
+private void initialisePriorityValues(List<List<Hexagon>> hexBoard, 
+		int player){
 	
 
 	boolean adjToEdge;
+	int n = (gb.getTotalRows()+1)/2;
 	
 	for(List<Hexagon> tempList : hexBoard){
 		for(Hexagon tempHex : tempList){
@@ -532,7 +543,8 @@ private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
 				if(coords.getRow() == 999 || coords.getColumn() == 999){
 					continue;
 				}
-				Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
+				Hexagon adjHex = 
+						hexBoard.get(coords.getRow()).get(coords.getColumn());
 				if(!tempHex.getIsEdge() && adjHex.getIsEdge()){
 					adjToEdge = true;
 					break adjLoop;
@@ -548,7 +560,10 @@ private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
 				tempHex.setPriorityValue(30);
 			} else if(tempHex.getIsEdge()){
 				tempHex.setPriorityValue(3);
-			} else if(row == gb.getTotalRows() && col == gb.getTotalRows()){
+			} else if(row == 1 || row == n-1 || row == 2*(n-1) && (col == 1 ||
+					col == n-1 || col == 2*(n-1))){
+				tempHex.setPriorityValue(3);
+			} else if(row == n-1 && col == n-1){
 				tempHex.setPriorityValue(7);
 			} else if(adjToEdge){
 				tempHex.setPriorityValue(4);
@@ -560,8 +575,10 @@ private void initialisePriorityValues(List<List<Hexagon>> hexBoard, int player){
 				if(coords.getRow() == 999 || coords.getColumn() == 999){
 					continue adjLoop;
 				}
-				Hexagon adjHex = hexBoard.get(coords.getRow()).get(coords.getColumn());
-				if(tempHex.getValue() != player && adjHex.getValue() == player){
+				Hexagon adjHex = 
+						hexBoard.get(coords.getRow()).get(coords.getColumn());
+				if(tempHex.getValue() != player && 
+						adjHex.getValue() == player){
 					tempHex.priorityValue--;
 					tempHex.setIfUpdated(true);
 					break adjLoop;

@@ -318,10 +318,10 @@ public class Hexagon {
 			Hexagon adjHex = hexBoard.get(adj.getRow()).get(adj.getColumn());
 			if(adjHex.getValue() == 0 && !hexQueue.contains(adjHex)){
 				int PV = adjHex.getPriorityValue();
-//				if(!adjHex.getIfUpdated()){
-					adjHex.setPriorityValue(PV-1);
+				if(!adjHex.getIfUpdated()){
+					adjHex.setPriorityValue(PV-2);
 					adjHex.setIfUpdated(true);
-	//			}
+				}
 			}
 		}
 

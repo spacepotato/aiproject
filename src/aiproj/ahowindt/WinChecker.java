@@ -133,7 +133,8 @@ public class WinChecker {
 							.getAdjacencies()) {
 
 						// Check if next hexagon is on the board
-						if (coords.getRow() == 999 || coords.getColumn() == 999)
+						if (coords.getRow() == 999 || coords.getColumn() 
+								== 999)
 							continue adjacencyLoop;
 
 						Hexagon next = hexagons.get(coords.getRow()).get(
@@ -141,8 +142,8 @@ public class WinChecker {
 
 						if (next.value != player)
 							continue adjacencyLoop;
-						// Check if next hexagon has already been checked, or to
-						// be checked
+						// Check if next hexagon has already been checked, or 
+						// to be checked
 						else if (hexagonStack.contains(next)
 								|| next.checked != 0)
 							continue adjacencyLoop;
@@ -154,13 +155,9 @@ public class WinChecker {
 					}// End of adjacencyLoop
 
 					// Determining whether a tripod has been formed.
-					// ====================================================================================================================
+					// =======================================================
 
-					if (currentHex.numberOfExposedEdges() == 2) { // Checking to
-																	// see if
-																	// the
-						// current hexagon is
-						// only an edge piece
+					if (currentHex.numberOfExposedEdges() == 2) { 
 
 						int i = currentHex.whichEdge();
 						if (i != -1) {
@@ -174,10 +171,10 @@ public class WinChecker {
 
 				}// End of while loop
 
-				// ====================================================================================================================
+				// ===========================================================
 
 				// Determining if a tripod has occurred
-				// ====================================================================================================================
+				// ===========================================================
 
 				// Summing the number of edge hexagons possible for a tree...
 				for (int i = 0; i < 6; i++) {
@@ -237,8 +234,9 @@ public class WinChecker {
 					continue innerloop;
 				} else if (tempHexagon.getIsEdgeWinCheck()) {
 					continue innerloop;
-				} else if (tempHexagon.isCorner())
+				} else if (tempHexagon.isCorner()){
 					continue innerloop;
+				}
 
 				hexagonStack.push(tempHexagon);
 
@@ -249,7 +247,8 @@ public class WinChecker {
 							.getAdjacencies()) {
 
 						// Check if next hexagon is on the board
-						if (coords.getRow() == 999 || coords.getColumn() == 999)
+						if (coords.getRow() == 999 || coords.getColumn() == 
+								999)
 							continue adjacencyLoop;
 
 						Hexagon next = hexagons.get(coords.getRow()).get(
@@ -258,8 +257,8 @@ public class WinChecker {
 						if (next.value == player) {
 							continue adjacencyLoop;
 						}
-						// Check if next hexagon has already been checked, or to
-						// be checked
+						// Check if next hexagon has already been checked, or 
+						// to be checked
 						else if (hexagonStack.contains(next)
 								|| next.checked != 0) {
 							continue adjacencyLoop;
@@ -272,25 +271,20 @@ public class WinChecker {
 					}// End of adjacencyLoop
 
 					// Determining whether a tripod has been formed.
-					// ====================================================================================================================
-
-					if (currentHex.numberOfExposedEdges() == 2) { // Checking to
-																	// see if
-																	// the
-						// current hexagon is
-						// only an edge piece
-						for (int i = 0, j = 1; i < 6; i++) { // If not a corner,
-																// finding which
-																// edge of the
-																// board it is
-																// on
+					// =======================================================
+					
+					//If the hexagon is on an edge of the board, find which
+					//edge it is on
+					if (currentHex.numberOfExposedEdges() == 2) { 
+						for (int i = 0, j = 1; i < 6; i++) { 
 
 							if (j > 5) {
 								j = 0;
 							}
 
 							if (currentHex.adjacencies.get(i).getRow() == 999
-									&& currentHex.adjacencies.get(j).getRow() == 999) {
+									&& currentHex.adjacencies.get(j).getRow() 
+									== 999) {
 								edgesIndicators[i] = 1;
 							}
 
@@ -304,10 +298,9 @@ public class WinChecker {
 
 				}// End of while loop
 
-				// ====================================================================================================================
-
+				// ===========================================================
 				// Determining if a tripod has occurred
-				// ====================================================================================================================
+				// ===========================================================
 
 				// Summing the number of edge hexagons possible for a tree...
 				for (int i = 0; i < 6; i++) {
@@ -338,8 +331,8 @@ public class WinChecker {
 	}
 
 	/**
-	 * Because we are keeping track of whether or not we have checked a hexagon 
-	 * we need a way to reset them back to an unchecked state
+	 * Because we are keeping track of whether or not we have checked a  
+	 * hexagon we need a way to reset them back to an unchecked state
 	 * for when we run the next check
 	 * @param board: the current gameboard
 	 */

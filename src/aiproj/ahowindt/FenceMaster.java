@@ -34,7 +34,7 @@ public class FenceMaster {
 			boardController.printBoard(System.out);
 			System.out.println("===============================");
 			if(boardController.getWinner() != -1)
-				System.out.println("Game has been won" + boardController.getWinner());
+				System.out.println("Game has been won " + boardController.getWinner());
 			
 		}
 
