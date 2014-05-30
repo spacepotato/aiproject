@@ -1,4 +1,14 @@
+/**
+ * A class used in the creation of the minimax tree
+ * which allows us to store information about:
+ * @param parent: the parent node to this one
+ * @param children: a list of all the child nodes of this one
+ * @param newMove: the move that this node represents
+ * 
+ * @author Ahowindt and JMcLaren
+ */
 package aiproj.ahowindt;
+
 import java.util.ArrayList;
 
 import aiproj.fencemaster.Move;
@@ -11,26 +21,30 @@ public class Node {
 	private int ply;
 	private Move newMove;
 	protected ArrayList<Node> children;
+	protected boolean hasParent;
 
 	public Node(int ply, Move move) {
 		this.evalValue = 0;
 		this.ply = ply;
 		this.newMove = move;
 		this.children = new ArrayList<Node>();
+		this.hasParent = false;
 
 	}
 
+	//Getters and Setters
 	protected void setParent(Node parentNode) {
 		this.parent = parentNode;
+		this.hasParent = true;
 	}
 
 	protected Node getParent() {
 		return this.parent;
 	}
 
-//	protected Gameboard getState() {
-//		return this.state;
-//	}
+	protected boolean getIsParent(){
+		return this.hasParent;
+	}
 
 	protected double getEvalValue() {
 		return this.evalValue;
@@ -48,13 +62,7 @@ public class Node {
 		return this.newMove;
 	}
 
-	public void printChildren() {
-		System.out.println("========== " + this.getMove().Row + " , "
-				+ this.getMove().Col + " ==========");
-		for (Node tempNode : this.children) {
-			System.out.println("Node value: " + tempNode.getMove().Row + " , "
-					+ tempNode.getMove().Col);
-		}
-		System.out.println("===================================");
+	protected ArrayList<Node> getChildren(){
+		return this.children;
 	}
 }
