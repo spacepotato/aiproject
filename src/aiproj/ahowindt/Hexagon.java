@@ -47,7 +47,7 @@ public class Hexagon {
 		 this.isLeftEdge = isLeftEdge;
 		 this.isRightEdge = isRightEdge;
 		 this.rowTotal = totalRows;
-		 this.priorityValue = 110;
+//		 this.priorityValue = 110;
 
 
 		this.checked = 0;
@@ -327,9 +327,9 @@ public class Hexagon {
 
 	}
 	
-	protected void resetPriorityValue(){
-		this.priorityValue = 110;
-	}
+//	protected void resetPriorityValue(){
+//		this.priorityValue = 110;
+//	}
 	
 	// Checking the 6 adjacent pieces to see if they are the same value as the
 	// hexagon we are checking

@@ -26,6 +26,7 @@ public class Gameboard {
 	protected List<List<Hexagon>> gameboard;
 	protected int totalRows;
 	protected Move updatedMove;
+	protected Move prevoiusMove;
 
 	public Gameboard() {
 		gameboard = new ArrayList<List<Hexagon>>();
@@ -133,7 +134,7 @@ public class Gameboard {
 	public boolean revertBoard(Move move){
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 		toChange.setValue(0);
-		toChange.resetPriorityValue();
+//		toChange.resetPriorityValue();
 		this.updatedMove = null;
 		return true;
 		

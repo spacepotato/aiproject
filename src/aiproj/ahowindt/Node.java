@@ -54,4 +54,8 @@ public class Node {
 	protected Move getMove() {
 		return this.newMove;
 	}
+	
+	protected ArrayList<Node> getChildren(){
+		return this.children;
+	}
 }
