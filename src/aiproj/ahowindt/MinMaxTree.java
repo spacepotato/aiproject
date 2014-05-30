@@ -38,8 +38,8 @@ public class MinMaxTree implements Piece {
 	}
 
 	public Move runMiniMax() {
-		//createTree();
-		createTree2(this.parent, this.player, 0);
+		createTree();
+		//createTree2(this.parent, this.player, 0);
 		return alphaBetaSearch();
 	}
 
@@ -190,23 +190,18 @@ public class MinMaxTree implements Piece {
 		Double value;
 		Double maxVal = Double.NEGATIVE_INFINITY;
 
-		boolean updatedParent = false;
-		boolean updatedChild = false;
 
-		if (currentNode.getPly() > 1 || currentNode.children.isEmpty()) {
+		if (currentNode.children.isEmpty()) {
+			
 			Move parentMove = currentNode.getParent().getMove();
 			Move currentMove = currentNode.getMove();
 
-			if (parentMove.Row != -1 && parentMove.Col != -1)
-				updatedParent = this.gb.updateBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1)
-				updatedChild = this.gb.updateBoard(currentMove);
-			if(updatedChild)
+				this.gb.updateBoard(parentMove);
+				this.gb.updateBoard(currentMove);
+
 				currentNode.setEvalValue(evalFunc(this.gb));
 
-			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1 && updatedChild)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
@@ -239,24 +234,17 @@ public class MinMaxTree implements Piece {
 		boolean updatedParent = false;
 		boolean updatedChild = false;
 
-		if (currentNode.getPly() > 1 || currentNode.children.isEmpty()) {
-			// this.gb.updateBoard(currentNode.getParent().getParent().getMove());
-
+		if (currentNode.children.isEmpty()) {
+			
 			Move parentMove = currentNode.getParent().getMove();
 			Move currentMove = currentNode.getMove();
 
-			if (parentMove.Row != -1 && parentMove.Col != -1)
-				updatedParent = this.gb.updateBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1)
-				updatedChild = this.gb.updateBoard(currentMove);
-			if(updatedChild)
-				currentNode.setEvalValue(evalFunc(this.gb));
-			else
-				System.out.println("we are not calling eval function for move: " + currentMove.Row + " , " + currentMove.Col);
+				this.gb.updateBoard(parentMove);
+				this.gb.updateBoard(currentMove);
 
-			if (parentMove.Row != -1 && parentMove.Col != -1 && updatedParent)
+				currentNode.setEvalValue(evalFunc(this.gb));
+
 				this.gb.revertBoard(parentMove);
-			if (currentMove.Row != -1 && currentMove.Col != -1 && updatedChild)
 				this.gb.revertBoard(currentMove);
 			return currentNode.getEvalValue();
 		}
@@ -323,7 +311,8 @@ protected double tripodEval(Gameboard board, int player) {
 					player);
 //			board.printBoard(System.out);
 			Move toForce = board.getUpdatedMove();
-			toForce.P = swapPlayer(toForce.P);
+			if(toForce.P != this.player)
+				toForce.P = swapPlayer(toForce.P);
 			this.forcedMove = toForce;
 
 			return 100000;
@@ -643,7 +632,8 @@ private void resetTreeEval(List<List<Hexagon>> hexBoard) {
 
 		if (winCheck.loopWin(board, playerValue)) {
 			Move toForce = board.getUpdatedMove();
-			toForce.P = swapPlayer(toForce.P);
+			if(toForce.P != this.player)
+				toForce.P = swapPlayer(toForce.P);
 			this.forcedMove = toForce;
 			return -10000;
 		} else {
