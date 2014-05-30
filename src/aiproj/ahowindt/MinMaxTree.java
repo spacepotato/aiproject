@@ -2,8 +2,11 @@ package aiproj.ahowindt;
 /**
  * This class runs our alpha-beta search for the board game. It returns an
  * ideal move given a particular game board state.
+ * @param: Gameboard gb - the game board for a particular move
+ * @param: int player - integer indicator of which player the computer is
+ * @author: Ahowindt (588384) and JMclaren (524772)
+ * @return: An ideal move for the next move
  */
-
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,11 +21,10 @@ public class MinMaxTree implements Piece {
 	private Node parent;
 	private Move idealMove;
 	private int player, opponent;
-
 	protected Gameboard gb;
-
 	protected double base = 3;
 
+	//Main class constructor
 	public MinMaxTree(Gameboard gb, int player) {
 
 		this.idealMove = new Move(player, false, 0, 0);
@@ -38,38 +40,13 @@ public class MinMaxTree implements Piece {
 
 	}
 
+	//Runs the alpha-beta search algorithm
 	public Move runMiniMax() {
 		createTree();
 		return alphaBetaSearch();
 	}
 
-	protected void createTree2(Node node, int playerValue, int ply) {
-
-		for (List<Hexagon> tempList : this.gb.getBoard()) {
-			for (Hexagon tempHex : tempList) {
-
-				if (tempHex == null)
-					continue;
-				Move tempMove = new Move();
-				tempMove.Row = tempHex.getRow();
-				tempMove.Col = tempHex.getColumn();
-				tempMove.P = playerValue;
-
-				Node tempNode = new Node(ply + 1, tempMove);
-
-				node.children.add(tempNode);
-				tempNode.setParent(node);
-
-				if (ply + 1 <= 3) {
-					createTree2(tempNode, swapValue(playerValue), ply + 1);
-				} else {
-					return;
-				}
-			}
-		}
-
-	}
-
+	//Small function for swapping the player values
 	protected int swapValue(int playerValue) {
 		if (playerValue == WHITE)
 			return BLACK;
@@ -78,6 +55,7 @@ public class MinMaxTree implements Piece {
 
 	}
 
+	//Function to create the search space tree. 
 	protected void createTree() {
 
 		int nextPlayer = opponent;
@@ -87,6 +65,7 @@ public class MinMaxTree implements Piece {
 
 		treeQueue.add(parent);
 
+		//While loop to loop over possible new nodes in for the tree
 		while (!treeQueue.isEmpty()) {
 			Node currentNode = treeQueue.poll();
 
@@ -165,7 +144,8 @@ public class MinMaxTree implements Piece {
 		return idealMove;
 
 	}
-
+	
+	//Function for determining which move the Max player would make
 	protected Double maxValue(Node currentNode, Double alpha, Double beta) {
 
 		Double value;
@@ -213,6 +193,7 @@ public class MinMaxTree implements Piece {
 		return value;
 	}
 
+	//Function for determining which move the Min player will choose 
 	protected Double minValue(Node currentNode, Double alpha, Double beta) {
 
 		Double value;
@@ -264,6 +245,7 @@ public class MinMaxTree implements Piece {
 		return value;
 	}
 
+	//Main evaluation function that returns the value of a particular state
 	private Double evalFunc(Gameboard gb) {
 		Double heuristicVal = (tripodEval(gb, this.player) - tripodEval(
 				gb, this.opponent))
@@ -271,19 +253,23 @@ public class MinMaxTree implements Piece {
 		return heuristicVal;
 	}
 
+	//Tripod evaluation function - works by counting the number of moves that
+	//are required to get from the current board state to a winning tripod 
+	//state. Works by using greedy search based on priority values of 
+	//hexagons
 	protected double tripodEval(Gameboard board, int player) {
 		
 		List<List<Hexagon>> hexBoard = board.getBoard();
-		
 		WinChecker winCheck = new WinChecker();
-		
 		int minIndex = 0;
 		int minPriority = Integer.MAX_VALUE;
 		int counter = 0;
 		
+		//Initialising priority values for the board
 		initialisePriorityValues(hexBoard, player);
 		
-
+		//If the current node of the tree has a winnning state, we return a 
+		//very large value
 		if (winCheck.tripodWin(board, player)) {
 
 			return 100000;
@@ -308,7 +294,9 @@ public class MinMaxTree implements Piece {
 
 		//A queue of possible hexagons
 		ArrayList<Hexagon> hexQueue = new ArrayList<Hexagon>();
-
+		
+		//Looping over the entire board to find the first hexagon that has 
+		//the players piece.
 		for (List<Hexagon> tempList : hexBoard) {
 			innerloop: for (Hexagon tempHex : tempList) {
 
@@ -323,11 +311,14 @@ public class MinMaxTree implements Piece {
 				} else if(tempHex.isCorner()){
 					continue;
 				}
-
+				
+				//Only adding hexagons that have a player piece in them 
+				//initially
 				if (tempHex.getValue() == player) {
 					hexQueue.add(tempHex);
 				}
 				
+				//Seeing if this hexagon is location on an edge				
 				if(tempHex.getIsEdge() && !tempHex.isCorner()){
 					int index1 = tempHex.whichEdge();
 					if (index1 != -1) {
@@ -337,8 +328,6 @@ public class MinMaxTree implements Piece {
 						edgeCounter[index1] = 1;
 					}
 				}
-
-				
 
 				while (!hexQueue.isEmpty()) {
 					
@@ -353,6 +342,7 @@ public class MinMaxTree implements Piece {
 						}
 						counter++;
 					}
+					
 					Hexagon currentHex = hexQueue.get(minIndex);
 					hexQueue.remove(minIndex);
 					
@@ -361,9 +351,7 @@ public class MinMaxTree implements Piece {
 						currentHex.updatePriorityValue(player, 
 								hexBoard, hexQueue);
 					}
-					
-					
-					
+										
 					//Finding if the current hexagon is on the edge
 					if(currentHex.getIsEdge()){
 						int k = currentHex.whichEdge();
@@ -375,6 +363,8 @@ public class MinMaxTree implements Piece {
 						}
 					}
 					
+					//Looping over adjacent hexagons and adding them to 
+					//the queue if they have met the specified conditions
 					adjLoop : for (Coordinate coords : 
 						currentHex.adjacencies) {
 
@@ -412,11 +402,9 @@ public class MinMaxTree implements Piece {
 						number++;
 					}
 
-					
+					//Making sure we don't check the same hexagon twice
 					currentHex.setChecked(order);
 					order++;
-					
-
 
 					//Finding the number of edges that have been 
 					//hit for this search
@@ -435,15 +423,16 @@ public class MinMaxTree implements Piece {
 
 				}// End of While Loop
 				
+				//Reseting edge counter for the next possible tripod
 				for(int x = 0; x < 6; x++){
 					edgeCounter[x] = 0;
 				}
-
+				
+				//Finding the minimum number of moves to the next tripod
 				if (number < minNum) {
 					minNum = number;
 				}
 
-				
 				initialisePriorityValues(hexBoard, player);
 				
 				number = 0;
@@ -451,9 +440,6 @@ public class MinMaxTree implements Piece {
 			}// End of inner for loop
 		}// End of outer for loop
 
-
-		
-		
 		resetTreeEval(hexBoard);
 		if (minNum == 0)
 			return 0;
@@ -461,6 +447,8 @@ public class MinMaxTree implements Piece {
 			return 100.0 / minNum;
 	}// End of tripodEval
 
+	//A function to intialise the priority values of each hexagon on the 
+	//board according to where it is located, and what is surrounding it
 	private void initialisePriorityValues(List<List<Hexagon>> hexBoard, 
 			int player){
 		
@@ -525,7 +513,8 @@ public class MinMaxTree implements Piece {
 		}
 		
 	}
-	
+
+	//Function to reset the priority values for each hexagon
 	private void resetPriorityValues(List<List<Hexagon>> hexBoard){
 		
 		for(List<Hexagon> tempList : hexBoard){
@@ -539,7 +528,7 @@ public class MinMaxTree implements Piece {
 		
 	}
 	
-	
+	//Function to reset certain parameters at the end of the treeEval function
 	private void resetTreeEval(List<List<Hexagon>> hexBoard) {
 
 		resetPriorityValues(hexBoard);
@@ -556,6 +545,9 @@ public class MinMaxTree implements Piece {
 
 	}
 
+	//Loop evaluation function. Since a loop can be easily blocked or made,
+	//the function only returns a value when it detects a possible future
+	//loop.
 	private double loopEval(Gameboard board, int playerValue) {
 
 		WinChecker winCheck = new WinChecker();
@@ -569,10 +561,49 @@ public class MinMaxTree implements Piece {
 
 	}
 
+	//Getter and setter - retrieves ideal move
 	protected Move getMove() {
 		return this.idealMove;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+//============================================================================
+//Functions that were not used
+//============================================================================
 
+	//Another function for creating a tree of the search space. Functions 
+	//differently by using recursion instead of a while loop.
+	protected void createTree2(Node node, int playerValue, int ply) {
+
+		for (List<Hexagon> tempList : this.gb.getBoard()) {
+			for (Hexagon tempHex : tempList) {
+
+				if (tempHex == null)
+					continue;
+				Move tempMove = new Move();
+				tempMove.Row = tempHex.getRow();
+				tempMove.Col = tempHex.getColumn();
+				tempMove.P = playerValue;
+
+				Node tempNode = new Node(ply + 1, tempMove);
+
+				node.children.add(tempNode);
+				tempNode.setParent(node);
+
+				if (ply + 1 <= 3) {
+					createTree2(tempNode, swapValue(playerValue), ply + 1);
+				} else {
+					return;
+				}
+			}
+		}
+
+	}
 
 }
