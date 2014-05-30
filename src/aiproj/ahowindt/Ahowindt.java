@@ -29,8 +29,11 @@ public class Ahowindt implements Player, Piece {
 
 	/**
 	 * Initializing the board and the player
-	 * @param n: The dimension value of the board
-	 * @param p: The player value we are assigned
+	 * 
+	 * @param n
+	 *            : The dimension value of the board
+	 * @param p
+	 *            : The player value we are assigned
 	 */
 	@Override
 	public int init(int n, int p) {
@@ -73,9 +76,9 @@ public class Ahowindt implements Player, Piece {
 
 		Move ourMove = new Move();
 
-		//We randomly choose a piece which is one loop in from the corners 
-		//We also have it so that if our opponent goes first and makes one
-		//of these moves, we replace it
+		// We randomly choose a piece which is one loop in from the corners
+		// We also have it so that if our opponent goes first and makes one
+		// of these moves, we replace it
 		if (previousMove == null) {
 
 			ourMove.P = ourPlayerValue;
@@ -84,27 +87,33 @@ public class Ahowindt implements Player, Piece {
 
 			List<List<Hexagon>> tempBoard = this.board.getBoard();
 
-			if (tempBoard.get(1).get(size - 1).getValue() == theirPlayerValue) {
+			if (tempBoard.get(1).get(size - 1).getValue() == theirPlayerValue)
+			{
 				ourMove.Row = 1;
 				ourMove.Col = size - 1;
 				moveMade = true;
-			} else if (tempBoard.get(size - 1).get(2 * size - 3).getValue() == theirPlayerValue) {
+			} else if (tempBoard.get(size - 1).get(2 * size - 3)
+					.getValue() == theirPlayerValue) {
 				ourMove.Row = size - 1;
 				ourMove.Col = 2 * size - 3;
 				moveMade = true;
-			} else if (tempBoard.get(2 * size - 3).get(2 * size - 3).getValue() == theirPlayerValue) {
+			} else if (tempBoard.get(2 * size - 3).get(2 * size - 3)
+					.getValue() == theirPlayerValue) {
 				ourMove.Row = 2 * size - 3;
 				ourMove.Col = 2 * size - 3;
 				moveMade = true;
-			} else if (tempBoard.get(2 * size - 3).get(size - 1).getValue() == theirPlayerValue) {
+			} else if (tempBoard.get(2 * size - 3).get(size - 1)
+					.getValue() == theirPlayerValue) {
 				ourMove.Row = 2 * size - 3;
 				ourMove.Col = size - 1;
 				moveMade = true;
-			} else if (tempBoard.get(size - 1).get(1).getValue() == theirPlayerValue) {
+			} else if (tempBoard.get(size - 1).get(1)
+					.getValue() == theirPlayerValue) {
 				ourMove.Row = size - 1;
 				ourMove.Col = 1;
 				moveMade = true;
-			} else if (tempBoard.get(1).get(1).getValue() == theirPlayerValue) {
+			} else if (tempBoard.get(1).get(1)
+					.getValue() == theirPlayerValue) {
 				ourMove.Row = 1;
 				ourMove.Col = 1;
 				moveMade = true;
@@ -137,7 +146,6 @@ public class Ahowindt implements Player, Piece {
 				}
 			}
 
-
 		}
 
 		else {
@@ -146,23 +154,20 @@ public class Ahowindt implements Player, Piece {
 			mmt = new MinMaxTree(board, ourPlayerValue);
 			ourMove = mmt.runMiniMax();
 
-			}
-		//We need to make sure our move is valid
-		if(this.board.updateBoard(ourMove)){
+		}
+		// We need to make sure our move is valid
+		if (this.board.updateBoard(ourMove)) {
 			previousMove = ourMove;
 			return ourMove;
-		}
-		else{
+		} else {
 			System.out.println("Invalid move made");
 			return null;
 		}
 	}
+
 	/**
-	 * Returns an integer value corresponding to the win state
-	 * -1 = game not finished
-	 *  0 = draw
-	 *  1 = WHITE win
-	 *  2 = BLACK win
+	 * Returns an integer value corresponding to the win state -1 = game not
+	 * finished 0 = draw 1 = WHITE win 2 = BLACK win
 	 */
 	@Override
 	public int getWinner() {
@@ -175,7 +180,9 @@ public class Ahowindt implements Player, Piece {
 
 	/**
 	 * Updating the board based on the opponents move
-	 * @param m: the opponents move
+	 * 
+	 * @param m
+	 *            : the opponents move
 	 */
 	@Override
 	public int opponentMove(Move m) {
@@ -190,7 +197,9 @@ public class Ahowindt implements Player, Piece {
 
 	/**
 	 * Printing the board to the output
-	 * @param output: the output to which we are printing, usually System.out
+	 * 
+	 * @param output
+	 *            : the output to which we are printing, usually System.out
 	 */
 	@Override
 	public void printBoard(PrintStream output) {

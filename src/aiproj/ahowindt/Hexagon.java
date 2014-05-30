@@ -39,7 +39,8 @@ public class Hexagon {
 		
 	}
 
-	public Hexagon(int row, int column, int totalRows, boolean isLeftEdge, boolean isRightEdge) {
+	public Hexagon(int row, int column, int totalRows, boolean isLeftEdge, 
+			boolean isRightEdge) {
 
 		 this.row = row;
 		 this.column = column;
@@ -295,7 +296,8 @@ public class Hexagon {
 		
 		Hexagon tempHex = (Hexagon) h;
 		
-		if(tempHex.getRow() == this.getRow() && tempHex.getColumn() == this.getColumn()){
+		if(tempHex.getRow() == this.getRow() && tempHex
+				.getColumn() == this.getColumn()){
 			return true;
 		}
 		
@@ -307,7 +309,8 @@ public class Hexagon {
 		this.priorityValue = value;
 	}
 	
-	protected void updatePriorityValue(int player, List<List<Hexagon>> hexBoard, ArrayList<Hexagon> hexQueue){
+	protected void updatePriorityValue(int player, 
+			List<List<Hexagon>> hexBoard, ArrayList<Hexagon> hexQueue){
 		
 		
 		for(Coordinate adj : this.getAdjacencies()){
@@ -344,7 +347,8 @@ public class Hexagon {
 			int tempRow = tempCoords.getRow();
 
 			if (tempColumn != 999
-					&& board.get(tempRow).get(tempColumn).getValue() == player) {
+					&& board.get(tempRow).get(tempColumn)
+					.getValue() == player) {
 				numberAdjacent++;
 			}
 		}

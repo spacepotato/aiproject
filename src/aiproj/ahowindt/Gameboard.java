@@ -34,7 +34,8 @@ public class Gameboard {
 
 
 	/**
-	 * Populating the Arraylist of Lists of Hexagons as defined by the board layout
+	 * Populating the Arraylist of Lists of Hexagons as defined by the 
+	 * board layout
 	 * @param dimensions of the board
 	 * @return true if the board is set up properly and input is correct
 	 */
@@ -94,7 +95,8 @@ public class Gameboard {
 					isRightEdge = true;
 				}
 
-				tempList.add(index + offset, new Hexagon(row, index + offset, this.totalRows, isLeftEdge, isRightEdge));
+				tempList.add(index + offset, new Hexagon(row, index + offset,
+						this.totalRows, isLeftEdge, isRightEdge));
 				index++;
 
 			}
@@ -112,7 +114,8 @@ public class Gameboard {
 	protected boolean updateBoard(Move move){
 		Hexagon toChange = this.gameboard.get(move.Row).get(move.Col);
 
-		//If the square is already occupied and the move is not a swap move then it must be an illegal move
+		//If the square is already occupied and the move is not a swap move 
+		//then it must be an illegal move
 		if(toChange.getValue() != 0 && !move.IsSwap){
 			return false;
 		}
