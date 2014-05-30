@@ -23,6 +23,8 @@ public class MinMaxTree implements Piece {
 	private int player, opponent;
 	protected Gameboard gb;
 	protected double base = 3;
+	
+	protected Move forcedMove;
 
 	//Main class constructor
 	public MinMaxTree(Gameboard gb, int player) {
@@ -31,6 +33,8 @@ public class MinMaxTree implements Piece {
 		this.parent = new Node(1, new Move());
 		this.player = player;
 		this.gb = gb;
+		
+		this.forcedMove = null;
 
 		if (player == BLACK) {
 			opponent = WHITE;
@@ -140,6 +144,10 @@ public class MinMaxTree implements Piece {
 					maxVal = tempNode.getEvalValue();
 				
 			}
+		}
+		
+		if(forcedMove != null){
+			return forcedMove;
 		}
 		return idealMove;
 
@@ -270,11 +278,17 @@ public class MinMaxTree implements Piece {
 		
 		//If the current node of the tree has a winnning state, we return a 
 		//very large value
-		if (winCheck.tripodWin(board, player)) {
-
-			return 100000;
-		}
-
+		if (winCheck.loopWin(board, player)) {
+			Move toForce = board.getUpdatedMove();
+			if(toForce != null){
+			toForce.P = swapValue(toForce.P);
+			this.forcedMove = toForce;
+			return -10000;
+			}
+			else{
+				return 0;
+			}
+		} 
 		int opponent = 0;
 
 		// Determining the colour of the opponent
@@ -552,9 +566,17 @@ public class MinMaxTree implements Piece {
 
 		WinChecker winCheck = new WinChecker();
 
-		if (winCheck.loopWin(board, playerValue)) {
 
-			return 100000;
+		if (winCheck.loopWin(board, playerValue)) {
+			Move toForce = board.getUpdatedMove();
+			if(toForce != null){
+			toForce.P = swapValue(toForce.P);
+			this.forcedMove = toForce;
+			return -10000;
+			}
+			else{
+				return 0;
+			}
 		} else {
 			return 0;
 		}
