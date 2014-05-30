@@ -21,22 +21,29 @@ public class Node {
 	private int ply;
 	private Move newMove;
 	protected ArrayList<Node> children;
+	protected boolean hasParent;
 
 	public Node(int ply, Move move) {
 		this.evalValue = 0;
 		this.ply = ply;
 		this.newMove = move;
 		this.children = new ArrayList<Node>();
+		this.hasParent = false;
 
 	}
 	
 	//Getters and Setters
 	protected void setParent(Node parentNode) {
 		this.parent = parentNode;
+		this.hasParent = true;
 	}
 
 	protected Node getParent() {
 		return this.parent;
+	}
+	
+	protected boolean getIsParent(){
+		return this.hasParent;
 	}
 
 	protected double getEvalValue() {

@@ -19,8 +19,6 @@ public class MinMaxTree implements Piece {
 
 	protected Gameboard gb;
 
-	protected double base = 3;
-
 	public MinMaxTree(Gameboard gb, int player) {
 
 		this.idealMove = new Move(player, false, 0, 0);
@@ -38,8 +36,11 @@ public class MinMaxTree implements Piece {
 	}
 
 	public Move runMiniMax() {
-		createTree2(this.parent, this.player, 0);
+		
+		createTree();
+//		createTree2(this.parent, this.player, 0);
 		return alphaBetaSearch();
+		
 	}
 
 	protected void createTree2(Node node, int playerValue, int ply) {
@@ -87,13 +88,17 @@ public class MinMaxTree implements Piece {
 	// Modern Approach" by Stuart Russell and Peter Norvig.
 	protected Move alphaBetaSearch() {
 
-		@SuppressWarnings("unused")
 		double value = maxValue(this.parent, Double.NEGATIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
+		System.out.println("value-alpha-beta = " + value);
+		
 		double maxVal = Double.NEGATIVE_INFINITY;
 		Move idealMove = new Move();
 		for (Node tempNode : this.parent.children) {
-			if (tempNode.getEvalValue() > maxVal) {
+			System.out.println("tempNode.getEvalValue() = " 
+		+ tempNode.getEvalValue());
+
+			if (tempNode.getEvalValue() >= maxVal) {
 					idealMove = tempNode.getMove();
 					maxVal = tempNode.getEvalValue();
 				
@@ -107,11 +112,13 @@ public class MinMaxTree implements Piece {
 
 	protected Double maxValue(Node currentNode, Double alpha, Double beta) {
 
-		Double value;
-		Double maxVal = Double.NEGATIVE_INFINITY;
+		double value;
+		double maxVal = Double.NEGATIVE_INFINITY;
 
 		if (currentNode.children.isEmpty()) {
-			currentNode.setEvalValue(evalFunc(this.gb));
+			double val1 = evalFunc(this.gb, currentNode.getMove());
+			System.out.println("Eval value = " + val1 + " PLY: " + currentNode.getPly());
+			currentNode.setEvalValue(val1);
 			this.gb.revertBoard(currentNode.getMove());
 			return currentNode.getEvalValue();
 		}
@@ -119,12 +126,13 @@ public class MinMaxTree implements Piece {
 		value = Double.NEGATIVE_INFINITY;
 
 		for (Node tempNode : currentNode.children) {
+			this.gb.updateBoard(tempNode.getMove());
 			value = Math.max(value, minValue(tempNode, alpha, beta));
-			
+			this.gb.revertBoard(tempNode.getMove());
 			if (value > maxVal) {
 				maxVal = value;
 			}
-			currentNode.setEvalValue(maxVal);
+			
 			if (value >= beta) {
 				return value;
 			}
@@ -132,20 +140,21 @@ public class MinMaxTree implements Piece {
 			alpha = Math.max(alpha, value);
 
 		}
-		if(currentNode.getMove().Row != -1){
-			this.gb.revertBoard(currentNode.getMove());
-		}
+		
+		currentNode.setEvalValue(maxVal);
+
 		return value;
 	}
 
 	protected Double minValue(Node currentNode, Double alpha, Double beta) {
 
-		Double value;
-		Double minVal = Double.POSITIVE_INFINITY;
+		double value;
+		double minVal = Double.POSITIVE_INFINITY;
 
 		if (currentNode.children.isEmpty()) {
-
-			currentNode.setEvalValue(evalFunc(this.gb));
+			double val1 = evalFunc(this.gb, currentNode.getMove());
+			System.out.println("Eval value = " + val1 + " PLY: " + currentNode.getPly());
+			currentNode.setEvalValue(val1);
 			this.gb.revertBoard(currentNode.getMove());
 			return currentNode.getEvalValue();
 
@@ -154,14 +163,13 @@ public class MinMaxTree implements Piece {
 		value = Double.POSITIVE_INFINITY;
 
 		for (Node tempNode : currentNode.children) {
-
+			this.gb.updateBoard(tempNode.getMove());
 			value = Math.min(value, maxValue(tempNode, alpha, beta));
-
+			this.gb.revertBoard(tempNode.getMove());
 			if (value < minVal) {
 				minVal = value;
 			}
 
-			currentNode.setEvalValue(minVal);
 
 			if (value <= alpha) {
 				return value;
@@ -171,19 +179,20 @@ public class MinMaxTree implements Piece {
 
 		}
 
-		this.gb.revertBoard(currentNode.getMove());
+		currentNode.setEvalValue(minVal);
+		
 		return value;
 	}
 
-	private Double evalFunc(Gameboard gb) {
-		Double heuristicVal = (tripodEval2(gb, this.player) - tripodEval2(
-				gb, this.opponent))
+	private Double evalFunc(Gameboard gb, Move updateMove) {
+		Double heuristicVal = (tripodEval2(gb, this.player, updateMove) 
+				- tripodEval2(gb, this.opponent, updateMove))
 				+ (loopEval(gb, this.player) - loopEval(gb, this.opponent));
 		return heuristicVal;
 	}
 
 
-protected double tripodEval2(Gameboard board, int player){
+protected double tripodEval2(Gameboard board, int player, Move updateMove){
 	
 	WinChecker winCheck = new WinChecker();
 	
@@ -198,23 +207,17 @@ protected double tripodEval2(Gameboard board, int player){
 		return 100000;
 	}
 	
-	Move getValue = board.getUpdatedMove();
-	if(getValue != null){
-	board.revertBoard(getValue);
+	board.revertBoard(updateMove);
 	initialisePriorityValues(board.getBoard(), player);
 	
 	double toReturn = board.getBoard()
-			.get(getValue.Row).get(getValue.Col).getPriorityValue();
+			.get(updateMove.Row).get(updateMove.Col).getPriorityValue();
 	
-	board.updateBoard(getValue);
+	board.updateBoard(updateMove);
 	
 	
 	return 100.0/toReturn;
-	}
-	else{
-		System.out.println("getValue = null");
-		return 0;
-	}
+
 }
 
 boolean hexIsLink(List<List<Hexagon>> hexBoard, Hexagon hex, int player){
@@ -331,17 +334,17 @@ private void initialisePriorityValues(List<List<Hexagon>> hexBoard,
 			
 	}//End of outer for loop
 	
-	for(List<Hexagon> tempList1 : hexBoard){
-		for(Hexagon tempHex1 : tempList1){
-			if(tempHex1 == null){
-				continue;
-			}
-			System.out.print(" " + tempHex1.getPriorityValue());
-		}
-		System.out.println();
-	}//End of printing forloop
-	
-	System.out.println();
+//	for(List<Hexagon> tempList1 : hexBoard){
+//		for(Hexagon tempHex1 : tempList1){
+//			if(tempHex1 == null){
+//				continue;
+//			}
+//			System.out.print(" " + tempHex1.getPriorityValue());
+//		}
+//		System.out.println();
+//	}//End of printing forloop
+//	
+//	System.out.println();
 	
 }//End of tripodEval2
 	
@@ -475,17 +478,17 @@ protected double tripodEval(Gameboard board, int player) {
 		
 		initialisePriorityValues(hexBoard, player);
 		
-		for(List<Hexagon> tempList : hexBoard){
-			for(Hexagon tempHex : tempList){
-				if(tempHex == null){
-					continue;
-				}
-				
-				System.out.print(" " + tempHex.getPriorityValue());
-				
-			}
-			System.out.println();
-		}
+//		for(List<Hexagon> tempList : hexBoard){
+//			for(Hexagon tempHex : tempList){
+//				if(tempHex == null){
+//					continue;
+//				}
+//				
+//				System.out.print(" " + tempHex.getPriorityValue());
+//				
+//			}
+//			System.out.println();
+//		}
 
 		if (winCheck.tripodWin(board, player)) {
 			System.out.println("A tripod win has been detected for " + 
@@ -587,8 +590,8 @@ protected double tripodEval(Gameboard board, int player) {
 						}
 					}
 					
-					System.out.println("loc = "+ loc1 + " " + "edgeCounter = "
-							+ edgeCounter[loc1]);
+//					System.out.println("loc = "+ loc1 + " " + "edgeCounter = "
+//							+ edgeCounter[loc1]);
 					adjLoop : for (Coordinate coords : currentHex.adjacencies)
 					{
 
@@ -626,9 +629,9 @@ protected double tripodEval(Gameboard board, int player) {
 						number++;
 					}
 
-					System.out.println("CurrentHex: " + currentHex.getRow() + 
-							"," + currentHex.getColumn() + "," + 
-							currentHex.getValue());
+//					System.out.println("CurrentHex: " + currentHex.getRow() + 
+//							"," + currentHex.getColumn() + "," + 
+//							currentHex.getValue());
 					
 					currentHex.setChecked(order);
 					order++;
@@ -658,22 +661,22 @@ protected double tripodEval(Gameboard board, int player) {
 				}
 
 				if (number < minNum) {
-					System.out.println(number);
+//					System.out.println(number);
 					minNum = number;
 				}
 		
 				
-				for(List<Hexagon> tempList1 : hexBoard){
-					for(Hexagon tempHex1 : tempList1){
-						if(tempHex1 == null){
-							continue;
-						}
-						
-						System.out.print(" " + tempHex1.getPriorityValue());
-						
-					}
-					System.out.println();
-				}
+//				for(List<Hexagon> tempList1 : hexBoard){
+//					for(Hexagon tempHex1 : tempList1){
+//						if(tempHex1 == null){
+//							continue;
+//						}
+//						
+//						System.out.print(" " + tempHex1.getPriorityValue());
+//						
+//					}
+//					System.out.println();
+//				}
 				
 				//Re-initisalising Priority Values
 				initialisePriorityValues(hexBoard, player);
